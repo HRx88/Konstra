@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Chat System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .auth-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .user-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .user-type-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-type-option.active {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+            color: #667eea;
+        }
+
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-button:active {
+            transform: translateY(0);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .auth-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success-message {
+            background-color: #efe;
+            border: 1px solid #cfc;
+            color: #363;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account to continue chatting</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <form id="login-form">
+            <div class="user-type-selector">
+                <div class="user-type-option active" data-type="User">User</div>
+                <div class="user-type-option" data-type="Admin">Admin</div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+
+            <button type="submit" class="auth-button" id="login-button">
+                Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Don't have an account? <a href="register.html">Sign up here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // User type selection
+        const userTypeOptions = document.querySelectorAll('.user-type-option');
+        let selectedUserType = 'User';
+
+        userTypeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                userTypeOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                selectedUserType = option.dataset.type;
+            });
+        });
+
+        // Form submission
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('login-button');
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+
+            // Hide messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Validation
+            if (!email || !password) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            // Show loading state
+            loginButton.textContent = 'Signing In...';
+            loginButton.classList.add('loading');
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showSuccess('Login successful! Redirecting...');
+
+                    // Store user details in localStorage based on user type
+                    if (data.user.UserType === 'User') {
+                        localStorage.setItem('memberDetails', JSON.stringify({
+                            memberID: data.user.ID,
+                            username: data.user.Username,
+                            email: data.user.Email,
+                            profilePicture: data.user.ProfilePicture,
+                            role: data.user.Role
+                        }));
+                    } else if (data.user.UserType === 'Admin') {
+                        localStorage.setItem('adminDetails', JSON.stringify({
+                            adminID: data.user.ID,
+                            username: data.user.Username,
+                            email: data.user.Email,
+                            profilePicture: data.user.ProfilePicture,
+                            role: data.user.Role
+                        }));
+                    }
+
+                    // Store token
+                    localStorage.setItem('token', data.token);
+
+                    // Redirect to chat page after short delay
+                    setTimeout(() => {
+                        window.location.href = 'chat.html';
+                    }, 1000);
+                } else {
+                    showError(data.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Network error. Please try again.');
+            } finally {
+                // Reset button
+                loginButton.textContent = 'Sign In';
+                loginButton.classList.remove('loading');
+            }
+        });
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function showSuccess(message) {
+            const successElement = document.getElementById('success-message');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+
+        // Check if user is already logged in
+        function checkExistingLogin() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Verify token is still valid
+                fetch('/api/auth/profile', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = 'chat.html';
+                        }
+                    })
+                    .catch(() => {
+                        // Token is invalid, clear storage
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('memberDetails');
+                        localStorage.removeItem('adminDetails');
+                    });
+            }
+        }
+
+        // Check for existing login on page load
+        checkExistingLogin();
+    </script>
+</body>
+
+</html>
