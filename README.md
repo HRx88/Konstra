@@ -10,6 +10,6 @@
    ```
    npm run dev
    ```
-3. Visit http://localhost:3000 to see the static client and test /api/health via the button.
+3. Visit http://localhost:8 to see the static client and test /api/health via the button.
 
 ## Project Structure
