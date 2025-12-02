@@ -8,11 +8,13 @@ const path = require("path");
 // Body Parser
 const bodyParser = require("body-parser");
 const authRoutes = require('./routes/authRoutes');
+const chatRoutes = require("./routes/message.routes");
+const documentRoutes = require('./routes/document.routes');
 // ========== WebSocket Server ==========
 const http = require("http");
 const { Server } = require("socket.io");
 const Message = require("./models/message");
-const User = require("./models/user");
+
 // ========== Set-Up ==========
 // Initiating app
 const app = express();
@@ -232,7 +234,7 @@ app.use(bodyParser.json());
 
 // ========== Routes ==========
 
-const chatRoutes = require("./controllers/message.routes");
+app.use("/api/documents", documentRoutes);
 app.use("/api/message", chatRoutes);
 app.use('/api/auth', authRoutes);
 // ========== Initialise Server ==========
