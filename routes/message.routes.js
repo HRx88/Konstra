@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 // ========== Controllers ==========
-const MessageController = require('./messageController');
+const MessageController = require('../controllers/messageController');
 
 // ========== Routes ==========
 
