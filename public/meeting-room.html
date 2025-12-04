@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Session</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Loading Screen */
+        .splash-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        /* Video Area */
+        .video-wrapper {
+            width: 100%;
+            height: 100%;
+            display: none;
+            /* Hidden initially */
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* Top Bar Overlay */
+        .room-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 25px;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            pointer-events: none;
+            /* Let clicks pass through to iframe where no buttons exist */
+        }
+
+        .header-controls {
+            pointer-events: auto;
+            /* Re-enable clicks for buttons */
+        }
+
+        .badge-role {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loadingArea" class="splash-screen">
+        <div class="spinner-border text-light mb-4" style="width: 3rem; height: 3rem;" role="status"></div>
+        <h3 class="fw-light">Connecting to secure room...</h3>
+        <p class="text-white-50">Please allow camera and microphone access.</p>
+    </div>
+
+    <div id="errorArea" class="splash-screen" style="display: none;">
+        <i class="fas fa-video-slash fa-4x text-danger mb-4"></i>
+        <h3 id="errorTitle">Connection Failed</h3>
+        <p id="errorText" class="text-white-50 mb-4">We couldn't connect you to the room.</p>
+        <a href="my-meetings.html" class="btn btn-outline-light px-4 rounded-pill">Return to Dashboard</a>
+    </div>
+
+    <div id="videoArea" class="video-wrapper">
+        <div class="room-header">
+            <div class="d-flex align-items-center">
+                <span id="roleBadge" class="badge-role me-3">
+                    <i class="fas fa-user me-2"></i>Guest
+                </span>
+                <span class="text-white-50 small d-none d-md-block">Encrypted Connection <i
+                        class="fas fa-lock ms-1"></i></span>
+            </div>
+
+            <div class="header-controls">
+                <a href="my-meetings.html" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold">
+                    <i class="fas fa-phone-slash me-2"></i> Leave
+                </a>
+            </div>
+        </div>
+
+        <div id="iframeContainer" style="width:100%; height:100%"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const meetingID = params.get('id');
+
+            if (!meetingID) {
+                showError("Invalid Link", "No meeting ID provided.");
+                return;
+            }
+
+            const user = getUserDetails();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const userID = user.memberID || user.adminID || user.UserID;
+            const userType = user.memberID ? 'User' : 'Admin';
+
+            try {
+                // Fetch Link
+                const response = await fetch(`/api/meetings/join/${meetingID}?userID=${userID}&userType=${userType}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    initializeRoom(data.roomUrl, userType);
+                } else {
+                    showError("Access Denied", data.error || "Unable to join room.");
+                }
+
+            } catch (err) {
+                console.error(err);
+                showError("Network Error", "Server is unreachable.");
+            }
+        });
+
+        function initializeRoom(url, userType) {
+            // UI Updates
+            const badge = document.getElementById('roleBadge');
+            if (userType === 'Admin') {
+                badge.innerHTML = '<i class="fas fa-crown text-warning me-2"></i> Host (Admin)';
+                badge.style.border = '1px solid rgba(255, 193, 7, 0.5)';
+            } else {
+                badge.innerHTML = '<i class="fas fa-user me-2"></i> Participant';
+            }
+
+            // Create Iframe safely
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.allow = "camera; microphone; fullscreen; display-capture; autoplay; screen-wake-lock";
+
+            // Append and Switch View
+            document.getElementById('iframeContainer').appendChild(iframe);
+
+            // Small delay to smooth transition
+            setTimeout(() => {
+                document.getElementById('loadingArea').style.display = 'none';
+                document.getElementById('videoArea').style.display = 'block';
+            }, 1000);
+        }
+
+        function getUserDetails() {
+            return JSON.parse(localStorage.getItem("memberDetails")) || JSON.parse(localStorage.getItem("adminDetails"));
+        }
+
+        function showError(title, msg) {
+            document.getElementById('loadingArea').style.display = 'none';
+            document.getElementById('videoArea').style.display = 'none';
+
+            const errArea = document.getElementById('errorArea');
+            errArea.style.display = 'flex';
+
+            document.getElementById('errorTitle').innerText = title;
+            document.getElementById('errorText').innerText = msg;
+        }
+    </script>
+</body>
+
+</html>

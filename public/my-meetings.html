@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-bottom: 1px solid #dee2e6;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .meeting-card {
+            background: white;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+
+        .meeting-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .date-box {
+            background: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+            padding: 10px;
+            min-width: 70px;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-footer-custom {
+            background: transparent;
+            border-top: 1px solid #f0f0f0;
+            padding: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-dark"><i class="fas fa-layer-group text-primary me-2"></i> Meetings</h4>
+            <div>
+                <span id="roleBadge" class="badge bg-light text-dark border me-2">Loading...</span>
+                <a href="booking-Consultation.html" class="btn btn-primary btn-sm rounded-pill px-3">
+                    <i class="fas fa-plus me-1"></i> New Booking
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="loader" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+
+        <div class="row g-4" id="meetingsGrid"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadMeetings);
+
+        async function loadMeetings() {
+            const member = JSON.parse(localStorage.getItem("memberDetails"));
+            const admin = JSON.parse(localStorage.getItem("adminDetails"));
+
+            if (!member && !admin) { window.location.href = "login.html"; return; }
+
+            const userType = member ? 'User' : 'Admin';
+            const userID = member ? member.memberID : admin.adminID;
+            const userName = member ? member.Username : admin.Username;
+
+            // UI Updates
+            document.getElementById('roleBadge').textContent = userType === 'Admin' ? 'Admin View' : `Hello, ${userName}`;
+            document.getElementById('roleBadge').className = userType === 'Admin' ? 'badge bg-danger bg-opacity-10 text-danger border border-danger' : 'badge bg-primary bg-opacity-10 text-primary border border-primary';
+
+            try {
+                const response = await fetch(`/api/meetings/user/${userID}/${userType}`);
+                const data = await response.json();
+                document.getElementById('loader').style.display = 'none';
+
+                if (data.success) {
+                    renderGrid(data.meetings, userType);
+                } else {
+                    document.getElementById('meetingsGrid').innerHTML = `<div class="col-12"><div class="alert alert-warning">${data.error}</div></div>`;
+                }
+            } catch (err) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('meetingsGrid').innerHTML = `<div class="col-12"><div class="alert alert-danger">Network Error</div></div>`;
+            }
+        }
+
+        function renderGrid(meetings, userType) {
+            const grid = document.getElementById('meetingsGrid');
+
+            if (!meetings || meetings.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="text-muted mb-3"><i class="far fa-calendar-times fa-4x"></i></div>
+                        <h5>No meetings scheduled</h5>
+                        <p class="text-muted">You have no upcoming sessions booked.</p>
+                        <a href="booking-Consultation.html" class="btn btn-outline-primary">Book Now</a>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = meetings.map(m => {
+                const dateObj = new Date(m.StartTime);
+                const day = dateObj.getDate();
+                const month = dateObj.toLocaleString('default', { month: 'short' });
+                const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const isOnline = m.MeetingType === 'Online';
+                const isPast = new Date() > new Date(m.EndTime);
+
+                // Admin Info
+                const adminInfo = userType === 'Admin' && m.UserName
+                    ? `<div class="mt-2 small text-muted border-top pt-2"><i class="fas fa-user-circle me-1"></i> ${m.UserName}</div>`
+                    : '';
+
+                // Action Button Logic
+                let btnHtml = '';
+                if (isPast) {
+                    btnHtml = `<button class="btn btn-secondary btn-sm w-100 disabled" disabled>Ended</button>`;
+                } else if (isOnline) {
+                    const btnClass = userType === 'Admin' ? 'btn-outline-danger' : 'btn-success';
+                    const btnText = userType === 'Admin' ? 'Launch as Host' : 'Join Room';
+                    btnHtml = `<a href="meeting-room.html?id=${m.MeetingID}" class="btn ${btnClass} btn-sm w-100 fw-bold"><i class="fas fa-video me-1"></i> ${btnText}</a>`;
+                } else {
+                    btnHtml = `<button class="btn btn-light text-muted btn-sm w-100 disabled"><i class="fas fa-map-marker-alt me-1"></i> In Person</button>`;
+                }
+
+                return `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="meeting-card d-flex flex-column h-100 ${isPast ? 'opacity-75' : ''}">
+                            <div class="p-3 d-flex align-items-start">
+                                <div class="date-box me-3 ${isPast ? 'bg-secondary text-white' : 'bg-light text-dark'}">
+                                    <div class="h4 fw-bold mb-0">${day}</div>
+                                    <div class="small text-uppercase">${month}</div>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 200px;">${m.EventName}</h6>
+                                    <div class="text-muted small"><i class="far fa-clock me-1"></i> ${time}</div>
+                                    <span class="badge ${isOnline ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'} status-badge mt-2">
+                                        ${m.MeetingType}
+                                    </span>
+                                    ${adminInfo}
+                                </div>
+                            </div>
+                            <div class="card-footer-custom mt-auto">
+                                ${btnHtml}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+
+</html>

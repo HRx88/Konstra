@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require("./routes/message.routes");
 const documentRoutes = require('./routes/document.routes');
+const MeetingRoutes = require('./routes/meeting.routes');
 // ========== WebSocket Server ==========
 const http = require("http");
 const { Server } = require("socket.io");
@@ -237,6 +238,7 @@ app.use(bodyParser.json());
 app.use("/api/documents", documentRoutes);
 app.use("/api/message", chatRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/meetings', MeetingRoutes);
 // ========== Initialise Server ==========
 // Server Listening at port 8000
 server.listen(PORT, () => {
