@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Processing Enrollment...</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #f8f9fa;
+            text-align: center;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .card {
+            padding: 40px;
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .icon-success {
+            font-size: 5rem;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .icon-error {
+            font-size: 5rem;
+            color: #dc3545;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="card">
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+        </div>
+        <h3>Finalizing Enrollment...</h3>
+        <p class="text-muted">Verifying payment and securing your spot. Please do not close this window.</p>
+    </div>
+
+    <!-- Success State -->
+    <div id="successState" class="card" style="display: none;">
+        <div class="icon-success"><i class="fas fa-check-circle"></i></div>
+        <h1 class="fw-bold">Enrollment Confirmed!</h1>
+        <p class="text-muted">Thank you. Your payment was successful and a confirmation email has been sent.</p>
+        <a href="printadobe_revamp.html" class="btn btn-dark mt-3">Back to Home</a>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="card" style="display: none;">
+        <div class="icon-error"><i class="fas fa-times-circle"></i></div>
+        <h3 class="fw-bold">Something went wrong</h3>
+        <p class="text-muted" id="errorMsg">We received your payment, but couldn't save the enrollment details.</p>
+        <div class="alert alert-secondary mt-2 small">
+            Payment Ref: <span id="paymentId" class="fw-bold"></span>
+        </div>
+        <p class="small text-muted">Please contact support with the reference above.</p>
+        <a href="printadobe_revamp.html" class="btn btn-outline-dark mt-3">Go Home</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Get Session ID from URL (Stripe adds this on redirect)
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+
+            // 2. Get Form Data from Session Storage (Saved in enrollment.html)
+            const enrollmentJson = sessionStorage.getItem('pendingEnrollment');
+
+            if (!sessionId) {
+                // Direct access attempt
+                window.location.href = 'printadobe_revamp.html';
+                return;
+            }
+
+            if (!enrollmentJson) {
+                // If session storage is cleared but we have a session ID, we can't create enrollment
+                // In a real app, you might try to recover or just tell user to contact support
+                showError("Session Expired", "Enrollment data missing. Please try booking again.");
+                return;
+            }
+
+            const enrollmentData = JSON.parse(enrollmentJson);
+
+            // 3. Call Backend to Save Enrollment
+            try {
+                const payload = {
+                    ...enrollmentData,
+                    paymentId: sessionId,
+                    amount: enrollmentData.amount || 0
+                };
+
+                const response = await fetch('/api/enrollments/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Clear storage to prevent double submission
+                    sessionStorage.removeItem('pendingEnrollment');
+
+                    // Show Success UI
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('successState').style.display = 'block';
+                } else {
+                    throw new Error(result.error || "Database save failed");
+                }
+
+            } catch (err) {
+                console.error(err);
+                showError(err.message, sessionId);
+            }
+        });
+
+        function showError(msg, refId) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('errorMsg').innerText = msg;
+            if (refId) document.getElementById('paymentId').innerText = refId;
+        }
+    </script>
+
+</body>
+
+</html>

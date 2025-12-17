@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintAdobe - Education & Trips</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --brand-yellow: #FFD200;
+            --brand-dark: #1a1a1a;
+            --primary-red: #d32f2f;
+            --hover-red: #b71c1c;
+            --light-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        /* --- Navbar & Hero --- */
+        .navbar-custom {
+            background-color: white;
+            border-bottom: 3px solid var(--primary-red);
+        }
+
+        .brand-text {
+            color: var(--primary-red);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background-color: var(--brand-yellow);
+            padding: 60px 0 40px;
+            text-align: center;
+        }
+
+        .hero-title {
+            color: var(--brand-dark);
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .hero-subtitle {
+            color: #2c2c2c;
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        /* --- Tabs Styling --- */
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+            justify-content: center;
+            margin-bottom: 40px;
+            margin-top: -20px;
+            background: white;
+            padding-top: 20px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #555;
+            font-weight: 600;
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-red);
+            border-color: transparent;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-red);
+            border: none;
+            border-bottom: 3px solid var(--primary-red);
+            background: transparent;
+        }
+
+        /* --- Cards --- */
+        .program-card {
+            border: 1px solid #eee;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            background: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .program-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(211, 47, 47, 0.15);
+            border-color: var(--primary-red);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            background-color: #eee;
+        }
+
+        .card-body {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            color: #666;
+            font-size: 0.95rem;
+            flex-grow: 1;
+            margin-bottom: 15px;
+        }
+
+        /* --- PRICE TAG STYLING --- */
+        .price-tag {
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .price-sub {
+            font-size: 0.9rem;
+            color: #777;
+            font-weight: 400;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: auto;
+            transition: background 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--hover-red);
+            color: white;
+        }
+
+        /* --- Intake & Trip Specifics --- */
+        .spots-badge {
+            font-size: 0.85rem;
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            padding: 5px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .spots-badge.full {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+
+        .trip-meta {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand brand-text" href="#"><i class="fas fa-print me-2"></i>PrintAdobe</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#"
+                            style="color:var(--primary-red)">Programs</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title display-4">Build the Future</h1>
+            <p class="hero-subtitle lead">
+                PrintAdobe is Konstra's education-driven initiative designed to inspire the next generation of builders,
+                architects, and engineers through robotics, automation, and immersive travel experiences.
+            </p>
+        </div>
+    </section>
+
+    <div class="container pb-5">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="education-tab" data-bs-toggle="tab" data-bs-target="#education"
+                    type="button" role="tab">
+                    <i class="fas fa-graduation-cap me-2"></i>Education Programs
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="trip-tab" data-bs-toggle="tab" data-bs-target="#trip" type="button"
+                    role="tab">
+                    <i class="fas fa-plane-departure me-2"></i>Immersive Trips
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+
+            <div class="tab-pane fade show active" id="education" role="tabpanel">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="program-card">
+                            <img src="https://images.unsplash.com/photo-1581092921461-eab6245b0262?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                class="card-img-top" alt="Robotics">
+                            <div class="card-body">
+                                <h5 class="card-title">Engineering & Robotics</h5>
+
+                                <div class="mb-2">
+                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 15/20
+                                        Enrolled</span>
+                                </div>
+
+                                <p class="card-text">Master automation, coding, and robotic control for modern
+                                    construction environments.</p>
+                                <div class="price-tag">$499 <span class="price-sub">/ course</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Engineering & Robotics', 'Education', '499', 'https://images.unsplash.com/photo-1581092921461-eab6245b0262?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
+                                    Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="program-card">
+                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                class="card-img-top" alt="Architecture">
+                            <div class="card-body">
+                                <h5 class="card-title">Architecture & Design</h5>
+
+                                <div class="mb-2">
+                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 8/15
+                                        Enrolled</span>
+                                </div>
+
+                                <p class="card-text">Explore new forms, materials, and sustainable urban planning using
+                                    3D tech.</p>
+                                <div class="price-tag">$550 <span class="price-sub">/ course</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Architecture & Design', 'Education', '550', 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
+                                    Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="program-card">
+                            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                class="card-img-top" alt="Business">
+                            <div class="card-body">
+                                <h5 class="card-title">Business & Innovation</h5>
+
+                                <div class="mb-2">
+                                    <span class="spots-badge full"><i class="fas fa-user-graduate me-1"></i> 18/20
+                                        Enrolled</span>
+                                </div>
+
+                                <p class="card-text">Develop strategies for integrating automation into global
+                                    industries and markets.</p>
+                                <div class="price-tag">$399 <span class="price-sub">/ workshop</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Business & Innovation', 'Education', '399', 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
+                                    Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="program-card">
+                            <img src="https://images.unsplash.com/photo-1625246333195-5848b44911f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                class="card-img-top" alt="Agriculture">
+                            <div class="card-body">
+                                <h5 class="card-title">Sustainable Living</h5>
+
+                                <div class="mb-2">
+                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 10/25
+                                        Enrolled</span>
+                                </div>
+
+                                <p class="card-text">Explore how 3D printing and design can enhance agricultural
+                                    sustainability.</p>
+                                <div class="price-tag">$450 <span class="price-sub">/ course</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Sustainable Living', 'Education', '450', 'https://images.unsplash.com/photo-1625246333195-5848b44911f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
+                                    Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="trip" role="tabpanel">
+                <h3 class="text-center mb-4" style="color: #555;">Join Our Upcoming Site Visits</h3>
+                <div class="row g-4 justify-content-center">
+
+                    <div class="col-md-4">
+                        <div class="program-card">
+                            <div style="position: relative;">
+                                <img src="https://images.unsplash.com/photo-1596236569720-33436d9337cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                    class="card-img-top" alt="Factory Tour">
+                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">Popular</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title m-0">Automated Factory Tour</h5>
+                                </div>
+                                <div class="trip-meta">
+                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Berlin</span>
+                                    <span><i class="fas fa-clock text-danger"></i> 3 Days</span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="spots-badge"><i class="fas fa-users me-1"></i> 8/10 Spots Filled</span>
+                                </div>
+                                <p class="card-text">A immersive trip to our main robotics facility. See massive 3D
+                                    printers in action.</p>
+                                <div class="price-tag">$1,200 <span class="price-sub">/ person</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Automated Factory Tour', 'Trip', '1200', 'https://images.unsplash.com/photo-1596236569720-33436d9337cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
+                                    Trip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="program-card">
+                            <img src="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                class="card-img-top" alt="Nature Site">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title m-0">Sustainable Eco-Village</h5>
+                                </div>
+                                <div class="trip-meta">
+                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Austin</span>
+                                    <span><i class="fas fa-clock text-danger"></i> 4 Days</span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="spots-badge"><i class="fas fa-users me-1"></i> 5/12 Spots Filled</span>
+                                </div>
+                                <p class="card-text">Visit the world's first fully 3D-printed eco-village. Learn about
+                                    off-grid living systems.</p>
+                                <div class="price-tag">$1,500 <span class="price-sub">/ person</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Sustainable Eco-Village', 'Trip', '1500', 'https://images.unsplash.com/photo-1470058869958-2a77ade41c02?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
+                                    Trip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="program-card">
+                            <div style="position: relative;">
+                                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+                                    class="card-img-top" alt="Construction Site">
+                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Filling
+                                    Fast</span>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h5 class="card-title m-0">Mega-Structure Site</h5>
+                                </div>
+                                <div class="trip-meta">
+                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Dubai</span>
+                                    <span><i class="fas fa-clock text-danger"></i> 2 Days</span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="spots-badge full"><i class="fas fa-users me-1"></i> 19/20 Spots
+                                        Filled</span>
+                                </div>
+                                <p class="card-text">Witness the construction of the world's largest printed commercial
+                                    complex.</p>
+                                <div class="price-tag">$950 <span class="price-sub">/ person</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment('Mega-Structure Site', 'Trip', '950', 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
+                                    Trip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // FIX: Added 'imageUrl' as the 4th argument
+        function goToEnrollment(item, type, price, imageUrl) {
+            // Encode parameters to be URL safe
+            const url = `enrollment.html?item=${encodeURIComponent(item)}&type=${encodeURIComponent(type)}&price=${price}&image=${encodeURIComponent(imageUrl)}`;
+            window.location.href = url;
+        }
+    </script>
+</body>
+
+</html>
