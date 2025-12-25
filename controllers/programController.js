@@ -2,34 +2,98 @@ const Program = require('../models/program');
 
 class ProgramController {
 
-   // Create Checkout Session
-    static async createCheckoutSession(req, res) {
+   // 1. Get all active programs
+    static async getAll(req, res) {
         try {
-            const { amount, item, currency = 'usd' } = req.body;
-
-            // Determine base URL dynamically (works for localhost and production)
-            const origin = req.headers.origin || 'http://localhost:8000';
-            
-            // Stripe requires absolute URLs
-            // {CHECKOUT_SESSION_ID} is a template string that Stripe replaces automatically
-            const successUrl = `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`;
-            const cancelUrl = `${origin}/printadobe.html`;
-
-            const session = await Payment.createCheckoutSession(
-                amount, 
-                item, 
-                successUrl, 
-                cancelUrl, 
-                currency
-            );
-
-            res.status(200).json({
-                sessionId: session.id
-            });
-
+            const programs = await Program.getAllPrograms();
+            res.status(200).json(programs);
         } catch (error) {
-            console.error('[STRIPE CHECKOUT ERROR]:', error.message);
-            res.status(500).json({ error: error.message });
+            console.error('Controller Error - getAll:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // 2. Get a single program by ID
+    static async getOne(req, res) {
+        const id = parseInt(req.params.id);
+        
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid Program ID' });
+        }
+
+        try {
+            const program = await Program.getProgramById(id);
+            if (!program) {
+                return res.status(404).json({ error: 'Program not found' });
+            }
+            res.status(200).json(program);
+        } catch (error) {
+            console.error('Controller Error - getOne:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // 3. Create a new program
+    static async create(req, res) {
+        try {
+            const data = req.body;
+            
+            // Basic validation
+            if (!data.title || !data.type || !data.price || !data.duration || !data.maxParticipants) {
+                return res.status(400).json({ error: 'Missing required fields (title, type, price, duration, maxParticipants)' });
+            }
+
+            const newProgramId = await Program.createProgram(data);
+            res.status(201).json({ message: 'Program created successfully', programId: newProgramId });
+        } catch (error) {
+            console.error('Controller Error - create:', error);
+            res.status(500).json({ error: 'Failed to create program' });
+        }
+    }
+
+    // 4. Update an existing program
+    static async update(req, res) {
+        const id = parseInt(req.params.id);
+        const data = req.body;
+
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid Program ID' });
+        }
+
+        try {
+            // Optional: Check if program exists first
+            const existingProgram = await Program.getProgramById(id);
+            if (!existingProgram) {
+                return res.status(404).json({ error: 'Program not found' });
+            }
+
+            await Program.updateProgram(id, data);
+            res.status(200).json({ message: 'Program updated successfully' });
+        } catch (error) {
+            console.error('Controller Error - update:', error);
+            res.status(500).json({ error: 'Failed to update program' });
+        }
+    }
+
+    // 5. Delete (Soft Delete) a program
+    static async delete(req, res) {
+        const id = parseInt(req.params.id);
+
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid Program ID' });
+        }
+
+        try {
+            const existingProgram = await Program.getProgramById(id);
+            if (!existingProgram) {
+                return res.status(404).json({ error: 'Program not found' });
+            }
+
+            await Program.deleteProgram(id);
+            res.status(200).json({ message: 'Program deleted successfully' });
+        } catch (error) {
+            console.error('Controller Error - delete:', error);
+            res.status(500).json({ error: 'Failed to delete program' });
         }
     }
 }

@@ -4,20 +4,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Dashboard</title>
+    <title>My Meetings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f4f6f9;
             font-family: 'Segoe UI', sans-serif;
+            overflow-x: hidden;
         }
 
+        /* SIDEBAR */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1a1a1a;
+            color: white;
+            padding-top: 20px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+        }
+
+        .brand-text {
+            color: #d32f2f;
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-decoration: none;
+        }
+
+        .nav-link {
+            color: #b0b0b0;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            transition: 0.3s;
+            border-left: 4px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            background-color: #2c2c2c;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .nav-link i {
+            width: 30px;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* Meeting Cards */
         .dashboard-header {
             background: white;
-            border-bottom: 1px solid #dee2e6;
-            padding: 20px 0;
+            border-radius: 10px;
+            padding: 20px;
             margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .meeting-card {
@@ -25,7 +94,7 @@
             border: none;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
             height: 100%;
         }
 
@@ -42,25 +111,50 @@
             min-width: 70px;
         }
 
-        .status-badge {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
         .card-footer-custom {
             background: transparent;
             border-top: 1px solid #f0f0f0;
             padding: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="dashboard-header">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h4 class="mb-0 fw-bold text-dark"><i class="fas fa-layer-group text-primary me-2"></i> Meetings</h4>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="brand-text"><i class="fas fa-print me-2"></i>Portal</a>
+        </div>
+        <div class="d-flex flex-column" id="sidebarLinks">
+        </div>
+        <div class="logout-btn">
+            <button onclick="logout()" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+                Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <button class="btn btn-dark d-md-none mb-3"
+            onclick="document.getElementById('sidebar').classList.toggle('active')">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="dashboard-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold text-dark"><i class="fas fa-video text-primary me-2"></i>Scheduled Meetings</h4>
             <div>
                 <span id="roleBadge" class="badge bg-light text-dark border me-2">Loading...</span>
                 <a href="booking-Consultation.html" class="btn btn-primary btn-sm rounded-pill px-3">
@@ -68,20 +162,19 @@
                 </a>
             </div>
         </div>
-    </div>
 
-    <div class="container">
         <div id="loader" class="text-center py-5">
             <div class="spinner-border text-primary" role="status"></div>
         </div>
 
         <div class="row g-4" id="meetingsGrid"></div>
-    </div>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', loadMeetings);
+        function logout() { localStorage.clear(); window.location.href = "index.html"; }
 
-        async function loadMeetings() {
+        document.addEventListener('DOMContentLoaded', async () => {
             const member = JSON.parse(localStorage.getItem("memberDetails"));
             const admin = JSON.parse(localStorage.getItem("adminDetails"));
 
@@ -89,12 +182,36 @@
 
             const userType = member ? 'User' : 'Admin';
             const userID = member ? member.memberID : admin.adminID;
-            const userName = member ? member.Username : admin.Username;
+            const userName = member ? member.username : admin.username;
 
-            // UI Updates
-            document.getElementById('roleBadge').textContent = userType === 'Admin' ? 'Admin View' : `Hello, ${userName}`;
-            document.getElementById('roleBadge').className = userType === 'Admin' ? 'badge bg-danger bg-opacity-10 text-danger border border-danger' : 'badge bg-primary bg-opacity-10 text-primary border border-primary';
+            // --- DYNAMIC SIDEBAR LINKS ---
+            const sidebarLinks = document.getElementById('sidebarLinks');
+            if (userType === 'Admin') {
+                sidebarLinks.innerHTML = `
+        <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
+        <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
+        <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Meeting</a>
+        <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
+        <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+        <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
+        <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+    `;
+            } else {
+                sidebarLinks.innerHTML = `
+                    <a href="user_dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                    <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> My Meetings</a>
+                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Messages</a>
+                    <a href="#" class="nav-link"><i class="fas fa-cog"></i> Profile</a>
+                `;
+            }
 
+            // Header Info
+            const badge = document.getElementById('roleBadge');
+            badge.textContent = userType === 'Admin' ? 'Admin Mode' : `Hello, ${userName}`;
+            badge.className = userType === 'Admin' ? 'badge bg-danger bg-opacity-10 text-danger border border-danger me-2' : 'badge bg-primary bg-opacity-10 text-primary border border-primary me-2';
+
+            // Load Data
             try {
                 const response = await fetch(`/api/meetings/user/${userID}/${userType}`);
                 const data = await response.json();
@@ -109,70 +226,41 @@
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('meetingsGrid').innerHTML = `<div class="col-12"><div class="alert alert-danger">Network Error</div></div>`;
             }
-        }
+        });
 
         function renderGrid(meetings, userType) {
             const grid = document.getElementById('meetingsGrid');
-
             if (!meetings || meetings.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-12 text-center py-5">
-                        <div class="text-muted mb-3"><i class="far fa-calendar-times fa-4x"></i></div>
-                        <h5>No meetings scheduled</h5>
-                        <p class="text-muted">You have no upcoming sessions booked.</p>
-                        <a href="booking-Consultation.html" class="btn btn-outline-primary">Book Now</a>
-                    </div>`;
+                grid.innerHTML = `<div class="col-12 text-center py-5 text-muted"><h5>No meetings found</h5></div>`;
                 return;
             }
 
             grid.innerHTML = meetings.map(m => {
                 const dateObj = new Date(m.StartTime);
-                const day = dateObj.getDate();
-                const month = dateObj.toLocaleString('default', { month: 'short' });
-                const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                 const isOnline = m.MeetingType === 'Online';
                 const isPast = new Date() > new Date(m.EndTime);
 
-                // Admin Info
-                const adminInfo = userType === 'Admin' && m.UserName
-                    ? `<div class="mt-2 small text-muted border-top pt-2"><i class="fas fa-user-circle me-1"></i> ${m.UserName}</div>`
-                    : '';
-
-                // Action Button Logic
-                let btnHtml = '';
-                if (isPast) {
-                    btnHtml = `<button class="btn btn-secondary btn-sm w-100 disabled" disabled>Ended</button>`;
-                } else if (isOnline) {
-                    const btnClass = userType === 'Admin' ? 'btn-outline-danger' : 'btn-success';
-                    const btnText = userType === 'Admin' ? 'Launch as Host' : 'Join Room';
-                    btnHtml = `<a href="meeting-room.html?id=${m.MeetingID}" class="btn ${btnClass} btn-sm w-100 fw-bold"><i class="fas fa-video me-1"></i> ${btnText}</a>`;
-                } else {
-                    btnHtml = `<button class="btn btn-light text-muted btn-sm w-100 disabled"><i class="fas fa-map-marker-alt me-1"></i> In Person</button>`;
-                }
+                let btnHtml = isPast ?
+                    `<button class="btn btn-secondary btn-sm w-100 disabled">Ended</button>` :
+                    (isOnline ? `<a href="meeting-room.html?id=${m.MeetingID}" class="btn ${userType === 'Admin' ? 'btn-outline-danger' : 'btn-success'} btn-sm w-100"><i class="fas fa-video me-1"></i> Join Room</a>` :
+                        `<button class="btn btn-light text-muted btn-sm w-100 disabled">In Person</button>`);
 
                 return `
                     <div class="col-md-6 col-lg-4">
-                        <div class="meeting-card d-flex flex-column h-100 ${isPast ? 'opacity-75' : ''}">
+                        <div class="meeting-card d-flex flex-column h-100">
                             <div class="p-3 d-flex align-items-start">
-                                <div class="date-box me-3 ${isPast ? 'bg-secondary text-white' : 'bg-light text-dark'}">
-                                    <div class="h4 fw-bold mb-0">${day}</div>
-                                    <div class="small text-uppercase">${month}</div>
+                                <div class="date-box me-3">
+                                    <div class="h4 fw-bold mb-0">${dateObj.getDate()}</div>
+                                    <div class="small text-uppercase">${dateObj.toLocaleString('default', { month: 'short' })}</div>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold text-dark mb-1 text-truncate" style="max-width: 200px;">${m.EventName}</h6>
-                                    <div class="text-muted small"><i class="far fa-clock me-1"></i> ${time}</div>
-                                    <span class="badge ${isOnline ? 'bg-info bg-opacity-10 text-info' : 'bg-warning bg-opacity-10 text-warning'} status-badge mt-2">
-                                        ${m.MeetingType}
-                                    </span>
-                                    ${adminInfo}
+                                    <h6 class="fw-bold mb-1 text-truncate" style="max-width: 180px;">${m.EventName}</h6>
+                                    <div class="text-muted small"><i class="far fa-clock"></i> ${dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                 </div>
                             </div>
-                            <div class="card-footer-custom mt-auto">
-                                ${btnHtml}
-                            </div>
+                            <div class="card-footer-custom mt-auto">${btnHtml}</div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             }).join('');
         }
     </script>
