@@ -10,16 +10,73 @@
 
     <style>
         body {
+            background-color: #000;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            /* Prevent scrolling during call */
             margin: 0;
             padding: 0;
-            background-color: #000;
-            color: #fff;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
         }
 
-        /* Loading Screen */
+        /* 1. DASHBOARD SIDEBAR (Fixed Left) */
+        .dash-sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #1a1a1a;
+            color: white;
+            padding-top: 20px;
+            z-index: 3000;
+            /* Higher than video overlays */
+            transition: transform 0.3s ease;
+        }
+
+        .dash-sidebar .nav-link {
+            color: #b0b0b0;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: 0.3s;
+        }
+
+        .dash-sidebar .nav-link:hover,
+        .dash-sidebar .nav-link.active {
+            color: white;
+            background-color: #2c2c2c;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .dash-sidebar i {
+            width: 30px;
+            font-size: 1.1rem;
+        }
+
+        .brand-text {
+            color: #d32f2f;
+            font-weight: 800;
+            font-size: 1.5rem;
+            text-decoration: none;
+            padding-left: 25px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* 2. MAIN VIDEO WRAPPER (Pushed Right) */
+        .video-main-area {
+            margin-left: 250px;
+            /* Sidebar width */
+            width: calc(100% - 250px);
+            height: 100vh;
+            position: relative;
+            background-color: #000;
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+
+        /* --- VIDEO UI ELEMENTS --- */
         .splash-screen {
             position: absolute;
             top: 0;
@@ -34,12 +91,11 @@
             z-index: 2000;
         }
 
-        /* Video Area */
-        .video-wrapper {
+        .video-container {
             width: 100%;
             height: 100%;
             display: none;
-            /* Hidden initially */
+            /* Hidden until loaded */
             position: relative;
         }
 
@@ -50,7 +106,7 @@
             display: block;
         }
 
-        /* Top Bar Overlay */
+        /* Floating Header inside Video Area */
         .room-header {
             position: absolute;
             top: 0;
@@ -63,13 +119,14 @@
             align-items: center;
             z-index: 1000;
             pointer-events: none;
-            /* Let clicks pass through to iframe where no buttons exist */
+            /* Allow clicks to pass through to video */
         }
 
         .header-controls {
             pointer-events: auto;
-            /* Re-enable clicks for buttons */
         }
+
+        /* Re-enable buttons */
 
         .badge-role {
             background: rgba(255, 255, 255, 0.2);
@@ -78,47 +135,99 @@
             border-radius: 30px;
             font-size: 0.85rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .dash-sidebar {
+                transform: translateX(-100%);
+            }
+
+            .dash-sidebar.active {
+                transform: translateX(0);
+            }
+
+            .video-main-area {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            /* Toggle Button */
+            #mobileDashToggle {
+                display: block !important;
+                position: absolute;
+                top: 15px;
+                left: 15px;
+                z-index: 4000;
+                background: rgba(0, 0, 0, 0.5);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div id="loadingArea" class="splash-screen">
-        <div class="spinner-border text-light mb-4" style="width: 3rem; height: 3rem;" role="status"></div>
-        <h3 class="fw-light">Connecting to secure room...</h3>
-        <p class="text-white-50">Please allow camera and microphone access.</p>
-    </div>
+    <nav class="dash-sidebar" id="dashSidebar">
+        <a href="#" class="brand-text"><i class="fas fa-print me-2"></i>Portal</a>
 
-    <div id="errorArea" class="splash-screen" style="display: none;">
-        <i class="fas fa-video-slash fa-4x text-danger mb-4"></i>
-        <h3 id="errorTitle">Connection Failed</h3>
-        <p id="errorText" class="text-white-50 mb-4">We couldn't connect you to the room.</p>
-        <a href="my-meetings.html" class="btn btn-outline-light px-4 rounded-pill">Return to Dashboard</a>
-    </div>
-
-    <div id="videoArea" class="video-wrapper">
-        <div class="room-header">
-            <div class="d-flex align-items-center">
-                <span id="roleBadge" class="badge-role me-3">
-                    <i class="fas fa-user me-2"></i>Guest
-                </span>
-                <span class="text-white-50 small d-none d-md-block">Encrypted Connection <i
-                        class="fas fa-lock ms-1"></i></span>
-            </div>
-
-            <div class="header-controls">
-                <a href="my-meetings.html" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold">
-                    <i class="fas fa-phone-slash me-2"></i> Leave
-                </a>
-            </div>
+        <div class="d-flex flex-column" id="dashLinks">
         </div>
 
-        <div id="iframeContainer" style="width:100%; height:100%"></div>
+        <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
+            <button onclick="logout()" class="btn btn-outline-danger w-100">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <button class="btn d-none" id="mobileDashToggle"
+        onclick="document.getElementById('dashSidebar').classList.toggle('active')">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div class="video-main-area">
+
+        <div id="loadingArea" class="splash-screen">
+            <div class="spinner-border text-light mb-4" style="width: 3rem; height: 3rem;" role="status"></div>
+            <h3 class="fw-light text-white">Connecting to secure room...</h3>
+            <p class="text-white-50">Please allow camera and microphone access.</p>
+        </div>
+
+        <div id="errorArea" class="splash-screen" style="display: none;">
+            <i class="fas fa-video-slash fa-4x text-danger mb-4"></i>
+            <h3 id="errorTitle" class="text-white">Connection Failed</h3>
+            <p id="errorText" class="text-white-50 mb-4">We couldn't connect you to the room.</p>
+            <a href="my-meetings.html" class="btn btn-outline-light px-4 rounded-pill">Return to Dashboard</a>
+        </div>
+
+        <div id="videoContainer" class="video-container">
+            <div class="room-header">
+                <div class="d-flex align-items-center">
+                    <span id="roleBadge" class="badge-role me-3">Guest</span>
+                    <span class="text-white-50 small d-none d-md-block">
+                        <i class="fas fa-lock ms-1"></i> Encrypted End-to-End
+                    </span>
+                </div>
+                <div class="header-controls">
+                    <a href="my-meetings.html" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold shadow">
+                        <i class="fas fa-phone-slash me-2"></i> Leave
+                    </a>
+                </div>
+            </div>
+
+            <div id="iframeWrapper" style="width:100%; height:100%"></div>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // 1. Sidebar Logic (Shared)
+            setupSidebar();
+
+            // 2. Meeting Logic
             const params = new URLSearchParams(window.location.search);
             const meetingID = params.get('id');
 
@@ -128,16 +237,12 @@
             }
 
             const user = getUserDetails();
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
+            if (!user) { window.location.href = 'login.html'; return; }
 
-            const userID = user.memberID || user.adminID || user.UserID;
+            const userID = user.memberID || user.adminID;
             const userType = user.memberID ? 'User' : 'Admin';
 
             try {
-                // Fetch Link
                 const response = await fetch(`/api/meetings/join/${meetingID}?userID=${userID}&userType=${userType}`);
                 const data = await response.json();
 
@@ -146,35 +251,61 @@
                 } else {
                     showError("Access Denied", data.error || "Unable to join room.");
                 }
-
             } catch (err) {
                 console.error(err);
                 showError("Network Error", "Server is unreachable.");
             }
         });
 
+        function setupSidebar() {
+            const member = JSON.parse(localStorage.getItem("memberDetails"));
+            const admin = JSON.parse(localStorage.getItem("adminDetails"));
+            const userType = member ? 'User' : (admin ? 'Admin' : null);
+
+            const dashLinks = document.getElementById('dashLinks');
+
+            // "Active" class is on 'Meetings' or 'Live Room'
+            if (userType === 'Admin') {
+               dashLinks.innerHTML = `
+            <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
+            <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
+            <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Live Room</a>
+            <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
+            <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+            <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
+            <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+        `;
+            } else {
+                dashLinks.innerHTML = `
+                    <a href="user_dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                    <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Live Room</a>
+                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Messages</a>
+                    <a href="#" class="nav-link"><i class="fas fa-cog"></i> Profile</a>
+                `;
+            }
+        }
+
         function initializeRoom(url, userType) {
-            // UI Updates
+            // Update UI Badge
             const badge = document.getElementById('roleBadge');
             if (userType === 'Admin') {
-                badge.innerHTML = '<i class="fas fa-crown text-warning me-2"></i> Host (Admin)';
+                badge.innerHTML = '<i class="fas fa-crown text-warning me-2"></i> Host';
                 badge.style.border = '1px solid rgba(255, 193, 7, 0.5)';
             } else {
                 badge.innerHTML = '<i class="fas fa-user me-2"></i> Participant';
             }
 
-            // Create Iframe safely
+            // Create Iframe
             const iframe = document.createElement('iframe');
             iframe.src = url;
             iframe.allow = "camera; microphone; fullscreen; display-capture; autoplay; screen-wake-lock";
+            document.getElementById('iframeWrapper').appendChild(iframe);
 
-            // Append and Switch View
-            document.getElementById('iframeContainer').appendChild(iframe);
-
-            // Small delay to smooth transition
+            // Switch Views
             setTimeout(() => {
                 document.getElementById('loadingArea').style.display = 'none';
-                document.getElementById('videoArea').style.display = 'block';
+                document.getElementById('videoContainer').style.display = 'block';
             }, 1000);
         }
 
@@ -182,9 +313,14 @@
             return JSON.parse(localStorage.getItem("memberDetails")) || JSON.parse(localStorage.getItem("adminDetails"));
         }
 
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+
         function showError(title, msg) {
             document.getElementById('loadingArea').style.display = 'none';
-            document.getElementById('videoArea').style.display = 'none';
+            document.getElementById('videoContainer').style.display = 'none';
 
             const errArea = document.getElementById('errorArea');
             errArea.style.display = 'flex';
