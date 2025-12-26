@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage NGO Projects - Konstra Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/home.css">
+    <style>
+        :root {
+            --admin-red: #d32f2f;
+            --dark-bg: #1a1a1a;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --ngo-selected: #fff1f1;
+            --header-bg: #ffffff;
+            --breadcrumb-color: #6c757d;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: #333;
+        }
+
+        #nav-project {
+            color: white;
+            background-color: #2c2c2c;
+            border-left: 4px solid var(--admin-red);
+        }
+
+        .main-content {
+            background: #f4f6f9;
+            min-height: 100vh;
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        /* Professional Header */
+        .page-header {
+            background: var(--header-bg);
+            padding: 1.5rem 2.5rem 0.5rem 2.5rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin-bottom: 2rem;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-title-area h2 {
+            font-weight: 800;
+            color: #2d3436;
+            margin-bottom: 0.25rem;
+            font-size: 1.75rem;
+        }
+
+        .breadcrumb-hint {
+            font-size: 0.85rem;
+            color: var(--breadcrumb-color);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .content-wrap {
+            padding: 0 2.5rem 2.5rem 2.5rem;
+        }
+
+        .glass-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* NGO Card List - Integrated & High Visibility */
+        .ngo-card-list {
+            display: flex;
+            gap: 1.25rem;
+            overflow-x: auto;
+            padding: 0.75rem 0.25rem 1.75rem 0.25rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--admin-red) #f0f0f0;
+        }
+
+        .ngo-card-list::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .ngo-card-list::-webkit-scrollbar-thumb {
+            background: #dcdde1;
+            border-radius: 10px;
+        }
+
+        .ngo-card-list:hover::-webkit-scrollbar-thumb {
+            background: var(--admin-red);
+        }
+
+        .ngo-item-card {
+            min-width: 280px;
+            background: #ffffff;
+            border: 1px solid #dcdde1;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            position: relative;
+        }
+
+        .ngo-item-card:hover {
+            border-color: var(--admin-red);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .ngo-item-card.active {
+            background: #ffffff;
+            border-color: var(--admin-red);
+            border-width: 2px;
+            box-shadow: 0 8px 20px rgba(211, 47, 47, 0.12);
+            z-index: 10;
+        }
+
+        .ngo-item-card.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: var(--admin-red);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .ngo-avatar {
+            width: 46px;
+            height: 46px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--admin-red);
+            font-size: 1.25rem;
+            border: 1px solid #f1f2f6;
+            transition: all 0.2s;
+        }
+
+        .active .ngo-avatar {
+            background: var(--ngo-selected);
+            border-color: rgba(211, 47, 47, 0.2);
+            color: var(--admin-red);
+        }
+
+        .ngo-info h6 {
+            margin: 0;
+            font-weight: 800;
+            color: #2d3436;
+            font-size: 1.05rem;
+            letter-spacing: -0.2px;
+        }
+
+        .ngo-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #636e72;
+            font-weight: 500;
+        }
+
+        .form-section {
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .form-section h5 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #4b4b4b;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 6px;
+            padding: 0.7rem 1rem;
+            border: 1px solid #ced4da;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--admin-red);
+            box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            color: #4b4b4b;
+            font-weight: 600;
+        }
+
+        .btn-premium {
+            background: var(--admin-red);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.8rem 2.5rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(211, 47, 47, 0.1);
+        }
+
+        .btn-premium:hover {
+            background: #b71c1c;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(211, 47, 47, 0.2);
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        #statusMessage {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            z-index: 1050;
+            display: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .progress-preview {
+            height: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+        }
+
+        .progress-bar {
+            background-color: var(--admin-red);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="admin-home.html" class="brand-text"><i class="fas fa-print me-2"></i>AdminPanel</a>
+        </div>
+        <div class="d-flex flex-column">
+            <a href="admin-home.html" class="nav-link" id="nav-dashboard"><i class="fas fa-tachometer-alt"></i>
+                Dashboard</a>
+            <a href="admin-doc.html" class="nav-link" id="nav-document"><i class="fas fa-folder-open"></i> Document</a>
+            <a href="chat.html" class="nav-link" id="nav-chat"><i class="fas fa-comments"></i> Chat</a>
+            <a href="my-meetings.html" class="nav-link" id="nav-meeting"><i class="fas fa-video"></i> Meeting</a>
+            <a href="admin-printadobe.html" class="nav-link" id="nav-printadobe"><i class="fas fa-graduation-cap"></i>
+                PrintAdobe</a>
+            <a href="admin-credentials.html" class="nav-link" id="nav-credentials"><i class="fas fa-certificate"></i>
+                Credentials</a>
+            <a href="admin-projects.html" class="nav-link active" id="nav-project"><i class="fas fa-tasks"></i>
+                Project</a>
+            <a href="admin-profile.html" class="nav-link" id="nav-profile"><i class="fas fa-user-circle"></i>
+                Profile</a>
+        </div>
+        <div class="logout-btn-container">
+            <button onclick="logout()" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+                Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div id="statusMessage" class="alert shadow-sm"></div>
+
+        <div class="container-fluid">
+            <!-- Professional Integrated Header -->
+            <div class="page-header">
+                <div class="header-top">
+                    <div class="header-title-area">
+                        <h2 class="fw-bold">NGO Project Management</h2>
+                        <p class="text-muted mb-0">Monitor and update progress milestones for NGO partners.</p>
+                    </div>
+                    <div class="header-action-area d-none d-md-block">
+                        <span class="badge bg-light text-dark border p-2 px-3">
+                            <i class="fas fa-user-shield me-2 text-primary"></i>Admin Portal
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Integrated Card Selection -->
+                <div id="ngoCardList" class="ngo-card-list">
+                    <!-- Cards will be injected here -->
+                    <div class="text-center w-100">
+                        <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-wrap">
+
+                <div id="statsFormContainer" style="display: none;">
+                    <div class="glass-card">
+                        <form id="ngoStatsForm">
+                            <input type="hidden" id="selectedNgoId">
+
+                            <div class="form-section">
+                                <h5><i class="fas fa-chart-line me-2 text-primary"></i>Financial & Overall Progress</h5>
+                                <div class="stats-grid">
+                                    <div>
+                                        <label class="form-label">Total Funding ($)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">$</span>
+                                            <input type="number" id="totalFunding" class="form-control" placeholder="0">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Project Progress (%)</label>
+                                        <div class="input-group">
+                                            <input type="number" id="progress" class="form-control" min="0" max="100"
+                                                placeholder="0" oninput="updateProgressBar(this.value)">
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <div class="progress progress-preview">
+                                            <div id="progressBar" class="progress-bar" role="progressbar"
+                                                style="width: 0%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h5><i class="fas fa-tools me-2 text-success"></i>Construction Metrics</h5>
+                                <div class="stats-grid">
+                                    <div>
+                                        <label class="form-label">Houses Built (Target)</label>
+                                        <input type="number" id="housesBuilt" class="form-control" placeholder="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Homes Completed</label>
+                                        <input type="number" id="homesCompleted" class="form-control" placeholder="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">Work In Progress</label>
+                                        <input type="number" id="constructionInProgress" class="form-control"
+                                            placeholder="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <h5><i class="fas fa-globe me-2 text-warning"></i>Impact Statistics</h5>
+                                <div class="stats-grid">
+                                    <div>
+                                        <label class="form-label">Impacted Families</label>
+                                        <input type="number" id="impactedFamilies" class="form-control" placeholder="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">CO2 Saved (kg)</label>
+                                        <div class="input-group">
+                                            <input type="number" id="co2Saved" class="form-control" placeholder="0">
+                                            <span class="input-group-text">kg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-end pt-3">
+                                <button type="button" class="btn btn-outline-secondary me-2"
+                                    onclick="loadNGOStats(document.getElementById('selectedNgoId').value)">Reset
+                                    Changes</button>
+                                <button type="submit" class="btn btn-premium">Update NGO Records</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Placeholder -->
+                <div id="placeholderState" class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-4x text-muted opacity-25 mb-3"></i>
+                    <h4 class="text-muted">Select an NGO partner above to start managing data</h4>
+                </div>
+            </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchNGOs();
+
+            // const admin = JSON.parse(localStorage.getItem('adminDetails'));
+            // if (!admin) {
+            //     // Keep for logic, but don't force redirect in this dev environment
+            // }
+        });
+
+        async function fetchNGOs() {
+            try {
+                const response = await fetch('/api/ngo-stats/ngos');
+                const ngos = await response.json();
+
+                const list = document.getElementById('ngoCardList');
+                list.innerHTML = '';
+
+                if (ngos.length === 0) {
+                    list.innerHTML = '<div class="alert alert-info w-100">No NGOs available.</div>';
+                    return;
+                }
+
+                ngos.forEach(ngo => {
+                    const card = document.createElement('div');
+                    card.className = 'ngo-item-card';
+                    card.id = `ngo-card-${ngo.ID}`;
+                    // card.style.animation = `fadeUp 0.4s ease forwards ${index * 0.1}s`; // Removed animation
+                    card.onclick = () => selectNGO(ngo.ID);
+
+                    card.innerHTML = `
+                        <div class="ngo-avatar">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="ngo-info">
+                            <h6>${ngo.Username}</h6>
+                            <p>${ngo.Email}</p>
+                        </div>
+                    `;
+                    list.appendChild(card);
+                });
+            } catch (error) {
+                showStatus('Error synchronizing with NGO records', 'danger');
+            }
+        }
+
+        function selectNGO(userId) {
+            const cards = document.querySelectorAll('.ngo-item-card');
+            cards.forEach(c => c.classList.remove('active'));
+
+            const selectedCard = document.getElementById(`ngo-card-${userId}`);
+            if (selectedCard) {
+                selectedCard.classList.add('active');
+                // Auto scroll card into view inside the header (removed)
+                // selectedCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+
+            loadNGOStats(userId);
+        }
+
+        async function loadNGOStats(userId) {
+            if (!userId) return;
+
+            try {
+                const response = await fetch(`/api/ngo-stats/${userId}`);
+                const stats = await response.json();
+
+                document.getElementById('selectedNgoId').value = userId;
+                document.getElementById('statsFormContainer').style.display = 'block';
+                document.getElementById('placeholderState').style.display = 'none';
+
+                // Fill form
+                document.getElementById('totalFunding').value = stats.TotalFunding || 0;
+                document.getElementById('progress').value = stats.Progress || 0;
+                document.getElementById('housesBuilt').value = stats.HousesBuilt || 0;
+                document.getElementById('homesCompleted').value = stats.HomesCompleted || 0;
+                document.getElementById('constructionInProgress').value = stats.ConstructionInProgress || 0;
+                document.getElementById('impactedFamilies').value = stats.ImpactedFamilies || 0;
+                document.getElementById('co2Saved').value = stats.CO2Saved || 0;
+
+                updateProgressBar(stats.Progress || 0);
+
+                // Smooth scroll to container (removed)
+                // window.scrollTo({
+                //     top: document.getElementById('statsFormContainer').offsetTop - 200,
+                //     behavior: 'smooth'
+                // });
+
+            } catch (error) {
+                showStatus('Error fetching NGO statistics', 'danger');
+            }
+        }
+
+        function updateProgressBar(value) {
+            const bar = document.getElementById('progressBar');
+            bar.style.width = Math.min(Math.max(value, 0), 100) + '%';
+        }
+
+        document.getElementById('ngoStatsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById('selectedNgoId').value;
+
+            const data = {
+                totalFunding: document.getElementById('totalFunding').value,
+                progress: document.getElementById('progress').value,
+                housesBuilt: document.getElementById('housesBuilt').value,
+                homesCompleted: document.getElementById('homesCompleted').value,
+                constructionInProgress: document.getElementById('constructionInProgress').value,
+                impactedFamilies: document.getElementById('impactedFamilies').value,
+                co2Saved: document.getElementById('co2Saved').value
+            };
+
+            try {
+                const response = await fetch(`/api/ngo-stats/${userId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    showStatus('Statistics updated successfully', 'success');
+                } else {
+                    throw new Error('Update failed');
+                }
+            } catch (error) {
+                showStatus('Network error during synchronization', 'danger');
+            }
+        });
+
+        function showStatus(text, type) {
+            const msg = document.getElementById('statusMessage');
+            msg.className = `alert alert-${type} shadow-sm`;
+            msg.innerText = text;
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 2500);
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+
+</html>
