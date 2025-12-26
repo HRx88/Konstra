@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const EmailService = require('../utils/emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
@@ -33,11 +34,11 @@ class AuthController {
 
       // Generate JWT token
       const token = jwt.sign(
-        { 
-          userId: result.user.UserID, 
+        {
+          userId: result.user.UserID,
           userType: 'User',
           username: result.user.Username,
-          email: result.user.Email 
+          email: result.user.Email
         },
         JWT_SECRET,
         { expiresIn: '24h' }
@@ -58,6 +59,36 @@ class AuthController {
     }
   }
 
+  // Register NGO (Admin tool)
+  static async registerNGO(req, res) {
+    try {
+      // Check if requester is admin
+      if (req.user.userType !== 'Admin') {
+        return res.status(403).json({ success: false, message: 'Unauthorized. Admin access required.' });
+      }
+
+      const { username, email, password } = req.body;
+
+      if (!username || !email || !password) {
+        return res.status(400).json({ success: false, message: 'All fields are required' });
+      }
+
+      const ngo = await User.registerWithRole({ username, email, password }, 'NGO');
+
+      // Send welcome email
+      await EmailService.sendNGOWelcomeEmail(email, username, password);
+
+      res.status(201).json({
+        success: true,
+        message: 'NGO account created successfully and welcome email sent.',
+        user: ngo
+      });
+    } catch (error) {
+      console.error('Register NGO Error:', error);
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
   // Login user
   static async login(req, res) {
     try {
@@ -75,11 +106,11 @@ class AuthController {
 
       // Generate JWT token
       const token = jwt.sign(
-        { 
-          userId: result.user.ID, 
+        {
+          userId: result.user.ID,
           userType: result.user.UserType,
           username: result.user.Username,
-          email: result.user.Email 
+          email: result.user.Email
         },
         JWT_SECRET,
         { expiresIn: '24h' }
@@ -105,7 +136,7 @@ class AuthController {
     try {
       // This assumes you have auth middleware that adds user to req
       const user = await User.getUserById(req.user.userId, req.user.userType);
-      
+
       if (!user) {
         return res.status(404).json({
           success: false,
@@ -129,12 +160,12 @@ class AuthController {
   // Update user profile
   static async updateProfile(req, res) {
     try {
-      const { username, profilePicture } = req.body;
-      
+      const { username, email, password, profilePicture } = req.body;
+
       const updatedUser = await User.updateProfile(
-        req.user.userId, 
-        req.user.userType, 
-        { username, profilePicture }
+        req.user.userId,
+        req.user.userType,
+        { username, email, password, profilePicture }
       );
 
       res.json({
@@ -148,6 +179,54 @@ class AuthController {
         success: false,
         message: error.message
       });
+    }
+  }
+
+  // Reset any user password (Admin tool)
+  static async resetUserPassword(req, res) {
+    try {
+      if (req.user.userType !== 'Admin') {
+        return res.status(403).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const { userId, userType, newPassword } = req.body;
+
+      if (!userId || !userType || !newPassword) {
+        return res.status(400).json({ success: false, message: 'Missing required fields' });
+      }
+
+      const user = await User.getUserById(userId, userType);
+      if (!user) {
+        return res.status(404).json({ success: false, message: 'User not found' });
+      }
+
+      await User.resetPassword(userId, userType, newPassword);
+
+      // Optionally send email
+      await EmailService.sendPasswordResetEmail(user.Email, newPassword);
+
+      res.json({
+        success: true,
+        message: `Password for ${user.Username} has been reset and notification sent.`
+      });
+    } catch (error) {
+      console.error('Reset User Password Error:', error);
+      res.status(400).json({ success: false, message: error.message });
+    }
+  }
+
+  // Get all users for management (Admin tool)
+  static async getAllUsers(req, res) {
+    try {
+      if (req.user.userType !== 'Admin') {
+        return res.status(403).json({ success: false, message: 'Unauthorized' });
+      }
+
+      const users = await User.getAllUsers();
+      res.json({ success: true, users });
+    } catch (error) {
+      console.error('Get All Users Error:', error);
+      res.status(500).json({ success: false, message: 'Internal server error' });
     }
   }
 }

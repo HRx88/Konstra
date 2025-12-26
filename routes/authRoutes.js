@@ -11,4 +11,9 @@ router.post('/login', AuthController.login);
 router.get('/profile', authMiddleware, AuthController.getProfile);
 router.put('/profile', authMiddleware, AuthController.updateProfile);
 
+// Administrative routes (protected by middleware, role checked in controller)
+router.post('/register-ngo', authMiddleware, AuthController.registerNGO);
+router.post('/reset-password', authMiddleware, AuthController.resetUserPassword);
+router.get('/users', authMiddleware, AuthController.getAllUsers);
+
 module.exports = router;
