@@ -14,6 +14,7 @@ const MeetingRoutes = require('./routes/meeting.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const programRoutes = require('./routes/program.routes');
 const credentialRoutes = require('./routes/credential.routes');
+const ngoStatsRoutes = require('./routes/ngoStats.routes');
 // ========== WebSocket Server ==========
 const http = require("http");
 const { Server } = require("socket.io");
@@ -94,16 +95,16 @@ io.on("connection", (socket) => {
       }
 
       // Determine recipient using both ID and Type
-      const isSenderParticipant1 = 
-        msg.senderID === conversation.Participant1ID && 
+      const isSenderParticipant1 =
+        msg.senderID === conversation.Participant1ID &&
         msg.senderType === conversation.Participant1Type;
 
-      const recipientID = isSenderParticipant1 
-        ? conversation.Participant2ID 
+      const recipientID = isSenderParticipant1
+        ? conversation.Participant2ID
         : conversation.Participant1ID;
 
-      const recipientType = isSenderParticipant1 
-        ? conversation.Participant2Type 
+      const recipientType = isSenderParticipant1
+        ? conversation.Participant2Type
         : conversation.Participant1Type;
 
       console.log(`[WS] Determined recipient: ${recipientID} (${recipientType})`);
@@ -206,7 +207,7 @@ io.on("connection", (socket) => {
   socket.on("newConversationCreated", async (data) => {
     try {
       const { conversationID, userID, userType } = data;
-      
+
       // Notify both participants about the new conversation
       const conversation = await Message.getConversationById(conversationID);
       if (!conversation) return;
@@ -245,6 +246,7 @@ app.use('/api/meetings', MeetingRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/credentials', credentialRoutes);
+app.use('/api/ngo-stats', ngoStatsRoutes);
 
 // ========== Initialise Server ==========
 // Server Listening at port 8000
