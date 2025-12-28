@@ -12,6 +12,7 @@ const MessageController = require('../controllers/messageController');
 // ========== API Routes ==========
 // Conversation routes
 router.get("/conversations/:userID/:userType", MessageController.getUserConversations);
+router.get("/search", MessageController.searchConversations);
 router.post("/conversations/get-or-create", MessageController.getOrCreateConversation);
 router.get("/conversations/:conversationID", MessageController.getConversationById);
 
@@ -29,6 +30,6 @@ router.post("/users/online", MessageController.userOnline);
 router.post("/users/offline", MessageController.userOffline);
 
 // Utility routes
-router.get("/unread-count/:conversationID/:userID/:userType", MessageController.getUnreadCount); 
+router.get("/unread-count/:conversationID/:userID/:userType", MessageController.getUnreadCount);
 // ========== Export ==========
 module.exports = router;
