@@ -58,6 +58,9 @@ const upload = multer({
 
 // ========== Routes ==========
 
+// SSE Route
+router.get("/events/:userID", DocumentController.subscribeEvents);
+
 // ========== API Routes ==========
 // Document upload
 router.post("/upload", upload.single('document'), DocumentController.uploadDocument);
