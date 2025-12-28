@@ -399,7 +399,7 @@ class User {
       pool = await sql.connect(dbConfig);
       const result = await pool.request()
         .input('role', sql.NVarChar, role)
-        .query('SELECT UserID as ID, Username, Email, Role, CreatedAt FROM Users WHERE Role = @role');
+        .query('SELECT UserID as ID, Username, Email, Role, ProfilePicture, CreatedAt FROM Users WHERE Role = @role');
       return result.recordset;
     } catch (err) {
       console.error('Get All By Role Error:', err);

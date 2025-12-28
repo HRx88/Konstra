@@ -85,17 +85,29 @@
         }
 
         /* NGO Card List - Integrated & High Visibility */
+        /* NGO Card List - Grid Layout */
         .ngo-card-list {
-            display: flex;
-            gap: 1.25rem;
-            overflow-x: auto;
-            padding: 0.75rem 0.25rem 1.75rem 0.25rem;
-            scrollbar-width: thin;
-            scrollbar-color: var(--admin-red) #f0f0f0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            padding: 0.75rem 0.5rem 1.75rem 0.25rem;
+            /* Added padding-right/left for scrollbar space */
+            max-height: 600px;
+            /* Limit height to show approx 3 rows */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
         }
 
-        .ngo-card-list::-webkit-scrollbar {
-            height: 5px;
+        @media (max-width: 992px) {
+            .ngo-card-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .ngo-card-list {
+                grid-template-columns: 1fr;
+            }
         }
 
         .ngo-card-list::-webkit-scrollbar-thumb {
@@ -482,10 +494,19 @@
                     card.id = `ngo-card-${ngo.ID}`;
                     card.onclick = () => selectNGO(ngo.ID);
 
+                    // Image logic: Use ProfilePicture if available, else use Icon
+                    let avatarHtml = '';
+                    if (ngo.ProfilePicture) {
+                        avatarHtml = `<img src="${ngo.ProfilePicture}" alt="Profile" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">`;
+                    } else {
+                        avatarHtml = `
+                            <div class="ngo-avatar">
+                                <i class="fas fa-building"></i>
+                            </div>`;
+                    }
+
                     card.innerHTML = `
-                        <div class="ngo-avatar">
-                            <i class="fas fa-building"></i>
-                        </div>
+                        ${avatarHtml}
                         <div class="ngo-info">
                             <h6>${ngo.Username}</h6>
                             <p>${ngo.Email}</p>
