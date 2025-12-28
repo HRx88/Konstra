@@ -2,7 +2,39 @@ const Document = require("../models/document");
 const path = require('path');
 const fs = require('fs');
 
+// Store active SSE clients: Map<userID, res>
+const clients = new Map();
+
 class DocumentController {
+  // Subscribe to SSE updates
+  static async subscribeEvents(req, res) {
+    const { userID } = req.params;
+
+    // SSE Headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    // Register client
+    clients.set(parseInt(userID), res);
+
+    // Cleanup on close
+    req.on('close', () => {
+      clients.delete(parseInt(userID));
+    });
+  }
+
+  // Helper to send update to user
+  static sendUpdateToUser(userID) {
+    const targetID = parseInt(userID);
+
+    const clientRes = clients.get(targetID);
+    if (clientRes) {
+      clientRes.write(`data: update\n\n`);
+    }
+  }
+
   // Upload document
   static async uploadDocument(req, res) {
     try {
@@ -28,6 +60,9 @@ class DocumentController {
       };
 
       const result = await Document.uploadDocument(documentData);
+
+      // Notify Client via SSE
+      DocumentController.sendUpdateToUser(userID);
 
       res.status(200).json({
         success: true,
@@ -82,21 +117,30 @@ class DocumentController {
   // Delete document (Updated for Admin Only)
   static async deleteDocument(req, res) {
     try {
-      const { documentID } = req.params; // No need for userID in params for Admin
+      const { documentID, userID } = req.params; // Get userID from params to notify them
 
-      // Get document to find file path
+      // If userID is not in params (older route), we might need to fetch doc to find owner.
+      // But admin-doc.html sends: /api/documents/${docId}/user/${selectedUser.id}
+      // So checking routes...
+
       const document = await Document.getDocumentById(parseInt(documentID));
 
       if (!document) {
         return res.status(404).json({ success: false, error: "Document not found" });
       }
 
-      // Delete from DB
       await Document.deleteDocument(parseInt(documentID));
 
-      // Delete physical file
       if (fs.existsSync(document.FilePath)) {
         fs.unlinkSync(document.FilePath);
+      }
+
+      // Notify Client via SSE (Using the userID passed in params or from the document if available)
+      // Assuming route is /:documentID/user/:userID
+      if (userID) {
+        DocumentController.sendUpdateToUser(userID);
+      } else if (document.UserID) {
+        DocumentController.sendUpdateToUser(document.UserID);
       }
 
       res.status(200).json({ success: true, message: "Document deleted successfully" });

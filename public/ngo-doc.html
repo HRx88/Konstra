@@ -249,6 +249,16 @@
             // Using ID fallback
             CURRENT_USER_ID = user.memberID || user.adminID || user.id;
             loadUserDocuments();
+
+            // Dynamic Update: Real-time SSE listener
+            const eventSource = new EventSource(`/api/documents/events/${CURRENT_USER_ID}`);
+            eventSource.onmessage = function (event) {
+                console.log("New document update received");
+                loadUserDocuments();
+            };
+
+            // Cleanup on page unload (optional but good practice)
+            window.addEventListener('beforeunload', () => eventSource.close());
         }
 
         function logout() {
@@ -258,9 +268,15 @@
 
         async function loadUserDocuments() {
             try {
-                const response = await fetch(`/api/documents/user/${CURRENT_USER_ID}`);
+                console.log("Fetching documents...");
+                // Add timestamp to prevent caching
+                const response = await fetch(`/api/documents/user/${CURRENT_USER_ID}?t=${Date.now()}`);
                 const result = await response.json();
-                if (result.success) renderDocuments(result.documents);
+
+                if (result.success) {
+                    console.log(`Fetched ${result.documents.length} documents.`);
+                    renderDocuments(result.documents);
+                }
                 else renderError(result.message);
             } catch (error) {
                 console.error(error);
@@ -272,12 +288,32 @@
             document.getElementById('documentList').innerHTML = `<div class="col-12 text-center py-5 text-muted">${msg}</div>`;
         }
 
-        function getFileIcon(type) {
-            if (type === 'application/pdf') return { icon: 'fa-file-pdf', color: '#e53e3e', bg: '#fff5f5' };
-            if (type.includes('word') || type.includes('document')) return { icon: 'fa-file-word', color: '#3182ce', bg: '#ebf8ff' };
-            if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) return { icon: 'fa-file-excel', color: '#38a169', bg: '#f0fff4' };
-            if (type.startsWith('image/')) return { icon: 'fa-file-image', color: '#805ad5', bg: '#faf5ff' };
-            return { icon: 'fa-file-alt', color: '#718096', bg: '#f7fafc' };
+        function getFileIcon(type, name) {
+            // 1. Check MIME type first
+            if (type) {
+                type = type.toLowerCase();
+                if (type.includes('pdf')) return { icon: 'fa-file-pdf', color: '#e53e3e', bg: '#fff5f5' };
+                // Check Presentation and Spreadsheet BEFORE 'document' because office mimetypes often contain 'officedocument'
+                if (type.includes('presentation') || type.includes('powerpoint') || type.includes('slideshow') || type.includes('pps')) return { icon: 'fa-file-powerpoint', color: '#e05822', bg: '#fffaf0' };
+                if (type.includes('sheet') || type.includes('excel') || type.includes('csv') || type.includes('spreadsheet') || type.includes('xls')) return { icon: 'fa-file-excel', color: '#38a169', bg: '#f0fff4' };
+                if (type.includes('word') || type.includes('document') || type.includes('msword')) return { icon: 'fa-file-word', color: '#3182ce', bg: '#ebf8ff' };
+                if (type.includes('image')) return { icon: 'fa-file-image', color: '#805ad5', bg: '#faf5ff' };
+                if (type.includes('text') || type.includes('txt')) return { icon: 'fa-file-alt', color: '#718096', bg: '#f7fafc' };
+                if (type.includes('zip') || type.includes('compressed') || type.includes('rar') || type.includes('tar')) return { icon: 'fa-file-archive', color: '#d69e2e', bg: '#fffff0' };
+            }
+
+            // 2. Fallback to Filename Extension (for murky MIME types)
+            if (name) {
+                const ext = name.split('.').pop().toLowerCase();
+                if (['doc', 'docx'].includes(ext)) return { icon: 'fa-file-word', color: '#3182ce', bg: '#ebf8ff' };
+                if (['xls', 'xlsx', 'csv'].includes(ext)) return { icon: 'fa-file-excel', color: '#38a169', bg: '#f0fff4' };
+                if (['ppt', 'pptx', 'pps'].includes(ext)) return { icon: 'fa-file-powerpoint', color: '#e05822', bg: '#fffaf0' };
+                if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', color: '#e53e3e', bg: '#fff5f5' };
+                if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return { icon: 'fa-file-archive', color: '#d69e2e', bg: '#fffff0' };
+                if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return { icon: 'fa-file-image', color: '#805ad5', bg: '#faf5ff' };
+            }
+
+            return { icon: 'fa-file', color: '#718096', bg: '#edf2f7' };
         }
 
         function renderDocuments(documents) {
@@ -292,7 +328,7 @@
             }
 
             list.innerHTML = documents.map(doc => {
-                const iconData = getFileIcon(doc.FileType);
+                const iconData = getFileIcon(doc.FileType, doc.FileName);
                 return `
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="document-card">
