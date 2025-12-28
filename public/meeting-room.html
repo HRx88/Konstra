@@ -171,7 +171,7 @@
 <body>
 
     <nav class="dash-sidebar" id="dashSidebar">
-        <a href="#" class="brand-text"><i class="fas fa-print me-2"></i>Portal</a>
+        <a href="#" class="brand-text"><i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO</a>
 
         <div class="d-flex flex-column" id="dashLinks">
         </div>
@@ -240,7 +240,7 @@
             if (!user) { window.location.href = 'login.html'; return; }
 
             const userID = user.memberID || user.adminID;
-            const userType = user.memberID ? 'User' : 'Admin';
+            const userType = user.memberID ? 'NGO' : 'Admin';
 
             try {
                 const response = await fetch(`/api/meetings/join/${meetingID}?userID=${userID}&userType=${userType}`);
@@ -266,7 +266,7 @@
 
             // "Active" class is on 'Meetings' or 'Live Room'
             if (userType === 'Admin') {
-               dashLinks.innerHTML = `
+                dashLinks.innerHTML = `
             <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
             <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
             <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
@@ -278,10 +278,11 @@
         `;
             } else {
                 dashLinks.innerHTML = `
-                    <a href="user_dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
-                    <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Live Room</a>
-                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Messages</a>
-                    <a href="#" class="nav-link"><i class="fas fa-cog"></i> Profile</a>
+                    <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Partner Chat</a>
+                    <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book Consultation</a>
+                    <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> My Meetings</a>
+                    <a href="ngo-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
                 `;
             }
         }

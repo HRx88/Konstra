@@ -282,14 +282,14 @@ class User {
       let query = `UPDATE ${tableName} SET `;
       const inputs = {};
 
-      if (updateData.username) {
+      if (updateData.username && updateData.username.trim()) {
         query += `Username = @username, `;
-        inputs.username = updateData.username;
+        inputs.username = updateData.username.trim();
       }
 
-      if (updateData.email) {
+      if (updateData.email && updateData.email.trim()) {
         query += `Email = @email, `;
-        inputs.email = updateData.email;
+        inputs.email = updateData.email.trim();
       }
 
       if (updateData.profilePicture) {
@@ -416,9 +416,9 @@ class User {
       pool = await sql.connect(dbConfig);
       const result = await pool.request()
         .query(`
-          SELECT UserID as ID, Username, Email, Role, 'User' as UserType, CreatedAt FROM Users
+          SELECT UserID as ID, Username, Email, Role, ProfilePicture, 'User' as UserType, CreatedAt FROM Users
           UNION ALL
-          SELECT AdminID as ID, Username, Email, Role, 'Admin' as UserType, CreatedAt FROM Admins
+          SELECT AdminID as ID, Username, Email, Role, ProfilePicture, 'Admin' as UserType, CreatedAt FROM Admins
         `);
       return result.recordset;
     } catch (err) {

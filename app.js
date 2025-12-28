@@ -48,6 +48,12 @@ io.on("connection", (socket) => {
     // Store the user with their ID + Type to prevent conflicts
     onlineUsers.set(`${data.userID}-${data.userType}`, socket.id);
 
+    // Join admins to a special room for group visibility
+    if (data.userType === 'Admin') {
+      socket.join('admins');
+      console.log(`[WS] Admin ${data.userID} joined 'admins' room`);
+    }
+
     // Update user online status in database
     await Message.userOnline(data.userID, data.userType);
 
@@ -115,22 +121,25 @@ io.on("connection", (socket) => {
         senderName: isSenderParticipant1 ? conversation.Participant1Name : conversation.Participant2Name
       };
 
-      // Send message to recipient if online
+      // --- Broadcast logic for "One User to Many Admins" ---
+      const isAdminInvolved = msg.senderType === 'Admin' || recipientType === 'Admin';
+      const senderSocketID = onlineUsers.get(`${msg.senderID}-${msg.senderType}`);
       const recipientSocketID = onlineUsers.get(`${recipientID}-${recipientType}`);
-      if (recipientSocketID) {
-        console.log(`[WS] Sending message to recipient: ${recipientID} (${recipientType})`);
-        io.to(recipientSocketID).emit("receiveMessage", messageWithSender);
-      } else {
-        console.log(`[WS] Recipient ${recipientID} (${recipientType}) is offline.`);
+
+      // Broadcast to Admins
+      if (isAdminInvolved) {
+        io.to("admins").emit("receiveMessage", messageWithSender);
       }
 
-      // Send the message back to the sender to confirm delivery (with sender name)
-      const senderSocketID = onlineUsers.get(`${msg.senderID}-${msg.senderType}`);
-      if (senderSocketID) {
+      // Send to User Participant (if not already handled by admins room)
+      if (recipientType === 'User' && recipientSocketID) {
+        io.to(recipientSocketID).emit("receiveMessage", messageWithSender);
+      }
+      if (msg.senderType === 'User' && senderSocketID) {
         io.to(senderSocketID).emit("receiveMessage", messageWithSender);
       }
 
-      // Broadcast conversation update to both participants
+      // --- Conversation Updates ---
       const conversationUpdate = {
         conversationID: msg.conversationID,
         lastMessage: savedMessage.content,
@@ -143,11 +152,14 @@ io.on("connection", (socket) => {
         participant2Name: conversation.Participant2Name
       };
 
-      if (senderSocketID) {
-        io.to(senderSocketID).emit("conversationUpdated", conversationUpdate);
+      if (isAdminInvolved) {
+        io.to("admins").emit("conversationUpdated", conversationUpdate);
       }
-      if (recipientSocketID) {
+      if (recipientType === 'User' && recipientSocketID) {
         io.to(recipientSocketID).emit("conversationUpdated", conversationUpdate);
+      }
+      if (msg.senderType === 'User' && senderSocketID) {
+        io.to(senderSocketID).emit("conversationUpdated", conversationUpdate);
       }
 
     } catch (error) {
@@ -188,15 +200,23 @@ io.on("connection", (socket) => {
       const senderID = conversation.Participant1ID === userID ? conversation.Participant2ID : conversation.Participant1ID;
       const senderType = conversation.Participant1Type === userType ? conversation.Participant2Type : conversation.Participant1Type;
 
-      const senderSocketID = onlineUsers.get(`${senderID}-${senderType}`);
-      if (senderSocketID) {
-        console.log(`[WS] Notifying sender ${senderID} (${senderType}) that messages were read`);
-        io.to(senderSocketID).emit("updateReadReceipts", {
+      const isAdminInvolved = userType === 'Admin' || senderType === 'Admin';
+
+      if (isAdminInvolved) {
+        io.to("admins").emit("updateReadReceipts", {
           conversationID,
           senderID: userID,
         });
-      } else {
-        console.log(`[WS] Sender ${senderID} (${senderType}) is offline.`);
+      }
+
+      if (senderType === 'User') {
+        const senderSocketID = onlineUsers.get(`${senderID}-${senderType}`);
+        if (senderSocketID) {
+          io.to(senderSocketID).emit("updateReadReceipts", {
+            conversationID,
+            senderID: userID,
+          });
+        }
       }
     } catch (error) {
       console.error("[WS ERROR] Error updating read receipts:", error);
@@ -215,10 +235,16 @@ io.on("connection", (socket) => {
       const participant1Socket = onlineUsers.get(`${conversation.Participant1ID}-${conversation.Participant1Type}`);
       const participant2Socket = onlineUsers.get(`${conversation.Participant2ID}-${conversation.Participant2Type}`);
 
-      if (participant1Socket) {
+      // Broadcast to admins if involved
+      if (conversation.Participant1Type === 'Admin' || conversation.Participant2Type === 'Admin') {
+        io.to("admins").emit("newConversation", conversation);
+      }
+
+      // Specific notification for User participant (if not already handled)
+      if (conversation.Participant1Type === 'User' && participant1Socket) {
         io.to(participant1Socket).emit("newConversation", conversation);
       }
-      if (participant2Socket) {
+      if (conversation.Participant2Type === 'User' && participant2Socket) {
         io.to(participant2Socket).emit("newConversation", conversation);
       }
     } catch (error) {
@@ -234,8 +260,8 @@ io.on("connection", (socket) => {
 app.use(express.static(path.join(__dirname, "public")));
 
 // Body Parser Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // ========== Routes ==========
 

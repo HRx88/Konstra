@@ -16,10 +16,10 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const tableName = userType === 'Admin' ? 'Admins' : 'Users';
       const idField = userType === 'Admin' ? 'AdminID' : 'UserID';
-      
+
       const result = await pool.request()
         .input('userID', sql.Int, userID)
         .query(`
@@ -27,7 +27,7 @@ class Message {
           SET IsOnline = 1, LastSeen = GETDATE() 
           WHERE ${idField} = @userID
         `);
-      
+
       return result;
     } catch (err) {
       console.error('SQL Update Online Status Error:', err);
@@ -42,10 +42,10 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const tableName = userType === 'Admin' ? 'Admins' : 'Users';
       const idField = userType === 'Admin' ? 'AdminID' : 'UserID';
-      
+
       const result = await pool.request()
         .input('userID', sql.Int, userID)
         .query(`
@@ -53,7 +53,7 @@ class Message {
           SET IsOnline = 0, LastSeen = GETDATE() 
           WHERE ${idField} = @userID
         `);
-      
+
       return result;
     } catch (err) {
       console.error('SQL Update Offline Status Error:', err);
@@ -74,7 +74,7 @@ class Message {
       }
 
       pool = await sql.connect(dbConfig);
-      
+
       // Try to find existing conversation
       const findResult = await pool.request()
         .input('user1ID', sql.Int, user1ID)
@@ -116,11 +116,11 @@ class Message {
   }
 
   // Send message
- static async sendMessage(conversationID, senderID, senderType, content) {
+  static async sendMessage(conversationID, senderID, senderType, content) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('senderID', sql.Int, senderID)
         .input('senderType', sql.NVarChar, senderType)
@@ -185,7 +185,7 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .query(`
@@ -226,7 +226,7 @@ class Message {
           LEFT JOIN Admins a2 ON c.Participant2Type = 'Admin' AND c.Participant2ID = a2.AdminID
           WHERE c.ConversationID = @conversationID
         `);
-      
+
       return result.recordset[0] || null;
     } catch (err) {
       console.error('SQL Get Conversation Error:', err);
@@ -237,11 +237,11 @@ class Message {
   }
 
   // Mark messages as read - Only marks unread messages
- static async markMessagesAsRead(conversationID, userID, userType) {
+  static async markMessagesAsRead(conversationID, userID, userType) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const checkResult = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .input('userID', sql.Int, userID)
@@ -254,13 +254,13 @@ class Message {
             AND SenderType != @userType
             AND IsRead = 0
         `);
-      
+
       const unreadCount = checkResult.recordset[0].UnreadCount;
-      
+
       if (unreadCount === 0) {
         return { success: true, rowsAffected: 0, message: "No unread messages" };
       }
-      
+
       const result = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .input('userID', sql.Int, userID)
@@ -274,7 +274,7 @@ class Message {
             AND SenderType != @userType
             AND IsRead = 0
         `);
-      
+
       return {
         success: true,
         rowsAffected: result.rowsAffected[0],
@@ -289,11 +289,11 @@ class Message {
   }
 
   // Get messages for a conversation
- static async getMessagesByConversation(conversationID) {
+  static async getMessagesByConversation(conversationID) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .query(`
@@ -310,7 +310,7 @@ class Message {
           WHERE ConversationID = @conversationID 
           ORDER BY Timestamp ASC
         `);
-      
+
       return result.recordset.map(row => ({
         messageID: row.MessageID,
         senderID: row.SenderID,
@@ -334,7 +334,7 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('userID', sql.Int, userID)
         .input('userType', sql.NVarChar, userType)
@@ -389,6 +389,8 @@ class Message {
             (c.Participant1ID = @userID AND c.Participant1Type = @userType)
             OR 
             (c.Participant2ID = @userID AND c.Participant2Type = @userType)
+            OR
+            (@userType = 'Admin' AND (c.Participant1Type = 'Admin' OR c.Participant2Type = 'Admin'))
           ORDER BY c.LastMessageAt DESC
         `);
 
@@ -397,7 +399,7 @@ class Message {
         result.recordset.map(async (convo) => {
           const lastMessage = await this.getLastMessage(convo.ConversationID);
           const unreadCount = await this.getUnreadCount(convo.ConversationID, userID, userType);
-          
+
           return {
             ...convo,
             lastMessage: lastMessage?.Content,
@@ -416,12 +418,169 @@ class Message {
     }
   }
 
+  // Search all messages across user's conversations
+  static async searchMessages(userID, userType, searchTerm) {
+    let pool;
+    try {
+      pool = await sql.connect(dbConfig);
+
+      // Single Optimized Query: Matches conversation, snippets, and last message in one go
+      const result = await pool.request()
+        .input('userID', sql.Int, userID)
+        .input('userType', sql.NVarChar, userType)
+        .input('searchTerm', sql.NVarChar, `%${searchTerm}%`)
+        .query(`
+          SELECT 
+            c.ConversationID,
+            c.Participant1ID, c.Participant1Type,
+            c.Participant2ID, c.Participant2Type,
+            c.CreatedAt, 
+            c.LastMessageAt,
+            -- Participant Details
+            CASE 
+              WHEN c.Participant1Type = 'User' THEN u1.Username
+              WHEN c.Participant1Type = 'Admin' THEN a1.Username
+              ELSE 'Unknown'
+            END as Participant1Name,
+            CASE 
+              WHEN c.Participant2Type = 'User' THEN u2.Username
+              WHEN c.Participant2Type = 'Admin' THEN a2.Username
+              ELSE 'Unknown'
+            END as Participant2Name,
+            CASE 
+              WHEN c.Participant1Type = 'User' THEN u1.ProfilePicture
+              WHEN c.Participant1Type = 'Admin' THEN a1.ProfilePicture
+              ELSE NULL
+            END as Participant1ProfilePicture,
+            CASE 
+              WHEN c.Participant2Type = 'User' THEN u2.ProfilePicture
+              WHEN c.Participant2Type = 'Admin' THEN a2.ProfilePicture
+              ELSE NULL
+            END as Participant2ProfilePicture,
+            CASE 
+              WHEN c.Participant1Type = 'User' THEN u1.IsOnline
+              WHEN c.Participant1Type = 'Admin' THEN a1.IsOnline
+              ELSE 0
+            END as Participant1IsOnline,
+            CASE 
+              WHEN c.Participant2Type = 'User' THEN u2.IsOnline
+              WHEN c.Participant2Type = 'Admin' THEN a2.IsOnline
+              ELSE 0
+            END as Participant2IsOnline,
+            
+            -- Matched Message Info (Specific content match)
+            MatchedMsg.Content as MatchedContent,
+            MatchedMsg.Timestamp as MatchedTimestamp,
+
+            -- Last Message Info (Fallback if only username matched)
+            LastMsg.Content as LastContent,
+            LastMsg.Timestamp as LastTimestamp,
+
+            -- Unread Count
+            (SELECT COUNT(*) FROM Messages mUnread 
+             WHERE mUnread.ConversationID = c.ConversationID 
+               AND mUnread.IsRead = 0 
+               AND (mUnread.SenderID != @userID OR mUnread.SenderType != @userType)
+            ) as UnreadCount
+
+          FROM Conversations c
+          LEFT JOIN Users u1 ON c.Participant1Type = 'User' AND c.Participant1ID = u1.UserID
+          LEFT JOIN Admins a1 ON c.Participant1Type = 'Admin' AND c.Participant1ID = a1.AdminID
+          LEFT JOIN Users u2 ON c.Participant2Type = 'User' AND c.Participant2ID = u2.UserID
+          LEFT JOIN Admins a2 ON c.Participant2Type = 'Admin' AND c.Participant2ID = a2.AdminID
+          
+          -- 1. Find the specific message that matches the search term
+          OUTER APPLY (
+            SELECT TOP 1 Content, Timestamp
+            FROM Messages m
+            WHERE m.ConversationID = c.ConversationID 
+              AND m.Content LIKE @searchTerm
+            ORDER BY m.Timestamp DESC
+          ) as MatchedMsg
+
+          -- 2. Find the absolute last message of the conversation
+          OUTER APPLY (
+            SELECT TOP 1 Content, Timestamp
+            FROM Messages mLast
+            WHERE mLast.ConversationID = c.ConversationID
+            ORDER BY mLast.Timestamp DESC
+          ) as LastMsg
+
+          WHERE 
+            -- User must be a participant
+            ((c.Participant1ID = @userID AND c.Participant1Type = @userType)
+             OR (c.Participant2ID = @userID AND c.Participant2Type = @userType)
+             OR (@userType = 'Admin' AND (c.Participant1Type = 'Admin' OR c.Participant2Type = 'Admin')))
+            AND (
+              -- Search term must match something (Message OR Participant Name)
+              MatchedMsg.Content IS NOT NULL
+              OR u1.Username LIKE @searchTerm OR a1.Username LIKE @searchTerm 
+              OR u2.Username LIKE @searchTerm OR a2.Username LIKE @searchTerm
+            )
+          ORDER BY COALESCE(MatchedMsg.Timestamp, LastMsg.Timestamp) DESC
+        `);
+
+      // 2. Enhance results with last message, unread count, and matching snippet (In-Memory Processing)
+      const enhancedConversations = result.recordset.map(convo => {
+        let displayMessage = 'No messages';
+        let displayTimestamp = convo.LastTimestamp;
+        let isSearchResult = false;
+
+        // If we found a specific message match within content
+        if (convo.MatchedContent) {
+          displayTimestamp = convo.MatchedTimestamp;
+          isSearchResult = true;
+
+          // Smart Snippet Generation in Code
+          const content = convo.MatchedContent;
+          const index = content.toLowerCase().indexOf(searchTerm.toLowerCase());
+
+          if (index !== -1) {
+            const start = Math.max(0, index - 30);
+            const end = Math.min(content.length, index + searchTerm.length + 30);
+            displayMessage = (start > 0 ? '...' : '') + content.substring(start, end) + (end < content.length ? '...' : '');
+          } else {
+            displayMessage = content;
+          }
+        } else {
+          // Fallback: The search matched a participant name, so show the latest message
+          displayMessage = convo.LastContent || 'No messages';
+        }
+
+        return {
+          ConversationID: convo.ConversationID,
+          Participant1ID: convo.Participant1ID,
+          Participant1Type: convo.Participant1Type,
+          Participant2ID: convo.Participant2ID,
+          Participant2Type: convo.Participant2Type,
+          Participant1Name: convo.Participant1Name,
+          Participant2Name: convo.Participant2Name,
+          Participant1ProfilePicture: convo.Participant1ProfilePicture,
+          Participant2ProfilePicture: convo.Participant2ProfilePicture,
+          Participant1IsOnline: convo.Participant1IsOnline,
+          Participant2IsOnline: convo.Participant2IsOnline,
+          lastMessage: displayMessage,
+          lastMessageTimestamp: displayTimestamp,
+          unreadCount: convo.UnreadCount,
+          isSearchResult: isSearchResult
+        };
+      });
+
+      return enhancedConversations;
+    } catch (err) {
+      console.error('SQL Search Messages Error:', err);
+      return [];
+    } finally {
+      if (pool) pool.close();
+    }
+  }
+
   // Get last message in a conversation
   static async getLastMessage(conversationID) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .query(`
@@ -430,7 +589,7 @@ class Message {
           WHERE ConversationID = @conversationID 
           ORDER BY Timestamp DESC
         `);
-      
+
       return result.recordset[0] || null;
     } catch (err) {
       console.error('SQL Get Last Message Error:', err);
@@ -441,11 +600,11 @@ class Message {
   }
 
   // Get unread message count for a conversation
- static async getUnreadCount(conversationID, userID, userType) {
+  static async getUnreadCount(conversationID, userID, userType) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('conversationID', sql.Int, conversationID)
         .input('userID', sql.Int, userID)
@@ -458,7 +617,7 @@ class Message {
             AND SenderType != @userType
             AND IsRead = 0
         `);
-      
+
       return result.recordset[0].UnreadCount;
     } catch (err) {
       console.error('SQL Get Unread Count Error:', err);
@@ -473,10 +632,10 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const tableName = userType === 'Admin' ? 'Admins' : 'Users';
       const idField = userType === 'Admin' ? 'AdminID' : 'UserID';
-      
+
       const result = await pool.request()
         .query(`
           SELECT 
@@ -488,7 +647,7 @@ class Message {
           FROM ${tableName}
           ORDER BY Username
         `);
-      
+
       return result.recordset.map(user => ({
         [userType === 'Admin' ? 'AdminID' : 'UserID']: user.ID,
         Username: user.Username,
@@ -509,7 +668,7 @@ class Message {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const usersResult = await pool.request()
         .query(`
           SELECT 
@@ -530,7 +689,7 @@ class Message {
           FROM Admins 
           WHERE IsOnline = 1
         `);
-      
+
       return usersResult.recordset.map(user => ({
         userID: user.ID,
         userType: user.Type,

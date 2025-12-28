@@ -257,6 +257,52 @@
             opacity: 1;
             transform: scale(1.1);
         }
+
+        /* Avatar Picker */
+        .avatar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #dee2e6;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-upload-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-upload-btn input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -311,6 +357,17 @@
                                 <i class="fas fa-id-card text-primary fs-4"></i>
                                 <h5>Admin Credentials</h5>
                             </div>
+
+                            <div class="avatar-container">
+                                <div class="avatar-preview" id="avatarPreview">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <button class="btn btn-outline-secondary btn-sm avatar-upload-btn">
+                                    <i class="fas fa-camera me-1"></i> Change Photo
+                                    <input type="file" id="profilePictureInput" accept="image/*">
+                                </button>
+                            </div>
+
                             <form id="profileForm">
                                 <div class="mb-3">
                                     <label class="form-label">Username</label>
@@ -451,6 +508,49 @@
             fetchUsers();
         });
 
+        // Profile Picture Upload Handler
+        document.getElementById('profilePictureInput').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) {
+                    showStatus('Image must be less than 2MB', 'danger');
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const preview = document.getElementById('avatarPreview');
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Avatar">`;
+                    updateProfilePicture(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function updateProfilePicture(base64Image) {
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ profilePicture: base64Image })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    showStatus('Profile picture updated!', 'success');
+                    // Update LocalStorage
+                    const user = JSON.parse(localStorage.getItem('adminDetails') || '{}');
+                    user.ProfilePicture = base64Image;
+                    localStorage.setItem('adminDetails', JSON.stringify(user));
+                } else {
+                    showStatus(data.message, 'danger');
+                }
+            } catch (error) {
+                showStatus('Error updating profile picture', 'danger');
+            }
+        }
+
         // Fetch current admin profile
         async function fetchProfile() {
             try {
@@ -461,6 +561,10 @@
                 if (data.success) {
                     document.getElementById('adminUsername').value = data.user.Username;
                     document.getElementById('adminEmail').value = data.user.Email;
+
+                    if (data.user.ProfilePicture) {
+                        document.getElementById('avatarPreview').innerHTML = `<img src="${data.user.ProfilePicture}" alt="Avatar">`;
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching profile:', error);
@@ -495,12 +599,22 @@
             }
 
             users.forEach(user => {
+                const initialIcon = `<i class="fas ${user.Role === 'NGO' ? 'fa-building' : 'fa-user'} text-muted"></i>`;
+                let avatarHtml = initialIcon;
+
+                if (user.ProfilePicture) {
+                    avatarHtml = `<img src="${user.ProfilePicture}" alt="${user.Username}" 
+                        style="width: 100%; height: 100%; object-fit: cover;"
+                        onerror="this.style.display='none'; this.parentNode.innerHTML='${initialIcon.replace(/"/g, "&quot;")}';">`;
+                }
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="avatar-sm bg-light rounded-circle p-2 me-3">
-                                <i class="fas ${user.Role === 'NGO' ? 'fa-building' : 'fa-user'} text-muted"></i>
+                            <div class="avatar-sm bg-light rounded-circle p-2 me-3 d-flex align-items-center justify-content-center overflow-hidden" 
+                                 style="width: 40px; height: 40px;">
+                                ${avatarHtml}
                             </div>
                             <span class="fw-bold">${user.Username}</span>
                         </div>

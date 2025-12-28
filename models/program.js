@@ -2,7 +2,7 @@ const sql = require('mssql');
 const dbConfig = require('../dbConfig');
 
 class Program {
-    
+
     // Get all active programs (for the public page)
     static async getAllPrograms() {
         let pool;
@@ -62,7 +62,7 @@ class Program {
                     VALUES (@title, @type, @description, @imageURL, @price, @location, @duration, @maxParticipants, 0, 1);
                     SELECT SCOPE_IDENTITY() AS ProgramID;
                 `);
-            
+
             return result.recordset[0].ProgramID;
         } catch (err) {
             console.error('SQL Create Program Error:', err);
@@ -77,27 +77,63 @@ class Program {
         let pool;
         try {
             pool = await sql.connect(dbConfig);
-            await pool.request()
-                .input('id', sql.Int, id)
-                .input('title', sql.NVarChar, data.title)
-                .input('description', sql.NVarChar, data.description)
-                .input('price', sql.Decimal(10, 2), data.price)
-                .input('imageURL', sql.NVarChar, data.imageURL)
-                .input('location', sql.NVarChar, data.location)
-                .input('duration', sql.NVarChar, data.duration)
-                .input('maxParticipants', sql.Int, data.maxParticipants)
-                .query(`
-                    UPDATE Programs 
-                    SET 
-                        Title = @title, 
-                        Description = @description, 
-                        Price = @price,
-                        ImageURL = @imageURL,
-                        Location = @location,
-                        Duration = @duration,
-                        MaxParticipants = @maxParticipants
-                    WHERE ProgramID = @id
-                `);
+
+            let query = `UPDATE Programs SET `;
+            const inputs = {};
+            let hasUpdate = false;
+
+            if (data.title && data.title.trim()) {
+                query += `Title = @title, `;
+                inputs.title = data.title.trim();
+                hasUpdate = true;
+            }
+            if (data.description && data.description.trim()) {
+                query += `Description = @description, `;
+                inputs.description = data.description.trim();
+                hasUpdate = true;
+            }
+            if (data.price !== undefined && data.price !== null) {
+                query += `Price = @price, `;
+                inputs.price = data.price;
+                hasUpdate = true;
+            }
+            if (data.imageURL && data.imageURL.trim()) { // Allow updating image separately
+                query += `ImageURL = @imageURL, `;
+                inputs.imageURL = data.imageURL.trim();
+                hasUpdate = true;
+            }
+            if (data.location && data.location.trim()) {
+                query += `Location = @location, `;
+                inputs.location = data.location.trim();
+                hasUpdate = true;
+            }
+            if (data.duration && data.duration.trim()) {
+                query += `Duration = @duration, `;
+                inputs.duration = data.duration.trim();
+                hasUpdate = true;
+            }
+            if (data.maxParticipants) {
+                query += `MaxParticipants = @maxParticipants, `;
+                inputs.maxParticipants = data.maxParticipants;
+                hasUpdate = true;
+            }
+
+            if (!hasUpdate) return false; // Nothing to update
+
+            // Remove trailing comma and space
+            query = query.slice(0, -2);
+            query += ` WHERE ProgramID = @id`;
+
+            const request = pool.request().input('id', sql.Int, id);
+
+            // Bind dynamic inputs
+            for (const [key, value] of Object.entries(inputs)) {
+                if (key === 'price') request.input(key, sql.Decimal(10, 2), value);
+                else if (key === 'maxParticipants') request.input(key, sql.Int, value);
+                else request.input(key, sql.NVarChar, value);
+            }
+
+            await request.query(query);
             return true;
         } catch (err) {
             console.error('SQL Update Program Error:', err);
@@ -106,6 +142,7 @@ class Program {
             if (pool) pool.close();
         }
     }
+
 
     // Soft Delete a program (Set IsActive = 0)
     static async deleteProgram(id) {
