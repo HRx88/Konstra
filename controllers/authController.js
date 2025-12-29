@@ -131,6 +131,53 @@ class AuthController {
     }
   }
 
+  // Google Callback
+  static async googleCallback(req, res) {
+    try {
+      const user = req.user;
+
+      if (!user) {
+        return res.redirect('/login.html?error=auth_failed');
+      }
+
+      // Generate JWT token
+      const token = jwt.sign(
+        {
+          userId: user.ID || user.UserID,
+          userType: user.UserType || (user.Role === 'Admin' ? 'Admin' : 'User'),
+          username: user.Username,
+          email: user.Email
+        },
+        JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      // Redirect to login page with token in query params
+      // The frontend will parse this and save to localStorage
+      // encoding the user object might be too big for URL, but let's try mostly essential fields or just fetch profile later.
+      // Actually, frontend logic in login.html: "Store user details in localStorage".
+      // We can pass a flag or the data. 
+      // Safest is to pass token, and have frontend fetch profile using /api/auth/profile if needed, 
+      // OR pass base64 encoded JSON of user data.
+
+      const userData = JSON.stringify({
+        ID: user.ID || user.UserID,
+        Username: user.Username,
+        Email: user.Email,
+        ProfilePicture: user.ProfilePicture,
+        Role: user.Role,
+        UserType: user.UserType || 'User'
+      });
+
+      const userParam = encodeURIComponent(userData);
+
+      res.redirect(`/login.html?token=${token}&googleUserData=${userParam}`);
+    } catch (error) {
+      console.error('Google Callback Error:', error);
+      res.redirect('/login.html?error=server_error');
+    }
+  }
+
   // Get current user profile
   static async getProfile(req, res) {
     try {
