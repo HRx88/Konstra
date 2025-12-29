@@ -7,6 +7,13 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
 
+// Google Auth
+router.get('/google', require('passport').authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/callback',
+    require('passport').authenticate('google', { failureRedirect: '/login.html', session: false }),
+    AuthController.googleCallback
+);
+
 // Protected routes
 router.get('/profile', authMiddleware, AuthController.getProfile);
 router.put('/profile', authMiddleware, AuthController.updateProfile);
