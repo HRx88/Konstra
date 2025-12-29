@@ -219,14 +219,26 @@
         <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
     `;
             } else {
-                dashLinks.innerHTML = `
-                    <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
-                    <a href="ngo-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
-                    <a href="chat.html" class="nav-link active"><i class="fas fa-comments"></i> Partner Chat</a>
-                    <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book Consultation</a>
-                    <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> My Meetings</a>
-                    <a href="ngo-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
-                `;
+                // Check if NGO or Regular User
+                if (member && member.role === 'NGO') {
+                    dashLinks.innerHTML = `
+                        <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                        <a href="ngo-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
+                        <a href="chat.html" class="nav-link active"><i class="fas fa-comments"></i> Partner Chat</a>
+                        <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book Consultation</a>
+                        <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> My Meetings</a>
+                        <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+                    `;
+                } else {
+                    // Standard User
+                    dashLinks.innerHTML = `
+                        <a href="user-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a href="chat.html" class="nav-link active"><i class="fas fa-comments"></i> Chat</a>
+                        <a href="user-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Printadobe</a>
+                        <a href="user-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+                        <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+                    `;
+                }
             }
         });
         function logout() { localStorage.clear(); window.location.href = "index.html"; }
