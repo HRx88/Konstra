@@ -172,14 +172,8 @@
         <div class="sidebar-header">
             <a href="#" class="brand-text"><i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO</a>
         </div>
-        <div class="d-flex flex-column">
-            <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
-            <a href="ngo-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
-            <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Partner Chat</a>
-            <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book
-                Consultation</a>
-            <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> My Meetings</a>
-            <a href="ngo-profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+        <div class="d-flex flex-column" id="dashLinks">
+            <!-- Dynamically loaded -->
         </div>
         <div class="logout-btn">
             <button onclick="logout()" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
@@ -239,10 +233,7 @@
                                     required>
                             </div>
                         </div>
-                        <div class="info-badge mb-3">
-                            <i class="fas fa-info-circle"></i>
-                            <span>Changing your email will require re-verification.</span>
-                        </div>
+
                         <button type="submit" class="btn btn-primary-custom">
                             <i class="fas fa-save me-2"></i>Save Changes
                         </button>
@@ -286,7 +277,46 @@
             window.location.href = 'login.html';
         }
 
-        document.addEventListener('DOMContentLoaded', loadProfile);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfile();
+            loadSidebar();
+        });
+
+        function loadSidebar() {
+            const member = JSON.parse(localStorage.getItem("memberDetails"));
+            const admin = JSON.parse(localStorage.getItem("adminDetails"));
+
+            // Only proceed if not admin (Admin profile separate) or handle generally
+            const role = member ? (member.role === 'NGO' ? 'NGO' : 'User') : (admin ? 'Admin' : null);
+
+            const dashLinks = document.getElementById('dashLinks');
+
+            if (role === 'Admin') {
+                // Admin links (if shared profile page, otherwise ignore)
+                dashLinks.innerHTML = `
+                    <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="admin-profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+                `;
+            } else if (role === 'NGO') {
+                dashLinks.innerHTML = `
+                    <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
+                    <a href="ngo-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
+                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Partner Chat</a>
+                    <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book Consultation</a>
+                    <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> My Meetings</a>
+                    <a href="profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+                `;
+            } else {
+                // Standard User
+                dashLinks.innerHTML = `
+                    <a href="user-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
+                    <a href="user-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Printadobe</a>
+                    <a href="user-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+                    <a href="profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+                `;
+            }
+        }
 
         // Profile Picture Preview
         document.getElementById('profilePictureInput').addEventListener('change', function (e) {

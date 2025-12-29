@@ -7,6 +7,7 @@ const express = require("express");
 const path = require("path");
 // Body Parser
 const bodyParser = require("body-parser");
+const passport = require('./config/passport');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require("./routes/message.routes");
 const documentRoutes = require('./routes/document.routes');
@@ -14,6 +15,7 @@ const MeetingRoutes = require('./routes/meeting.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const programRoutes = require('./routes/program.routes');
 const credentialRoutes = require('./routes/credential.routes');
+const enrollmentRoutes = require('./routes/enrollment.routes');
 const ngoStatsRoutes = require('./routes/ngoStats.routes');
 // ========== WebSocket Server ==========
 const http = require("http");
@@ -262,6 +264,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(bodyParser.json({ limit: '50mb' }));
+app.use(passport.initialize());
 
 // ========== Routes ==========
 
@@ -272,6 +275,7 @@ app.use('/api/meetings', MeetingRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/credentials', credentialRoutes);
+app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/ngo-stats', ngoStatsRoutes);
 
 // ========== Initialise Server ==========
