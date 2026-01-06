@@ -38,7 +38,7 @@ class Enrollment {
     }
 
     // Create a new enrollment
-    static async createEnrollment(userId, programId) {
+    static async createEnrollment(userId, programId, data = {}) {
         let pool;
         try {
             pool = await sql.connect(dbConfig);
@@ -57,12 +57,20 @@ class Enrollment {
             await pool.request()
                 .input('userId', sql.Int, userId)
                 .input('programId', sql.Int, programId)
+                .input('details', sql.NVarChar, JSON.stringify(data.details || {})) // Store JSON details
+                .input('slotId', sql.Int, data.slotId || null) // Use SlotID (Int)
                 .query(`
-                    INSERT INTO Enrollments (UserID, ProgramID, EnrollmentDate, Status, Progress)
-                    VALUES (@userId, @programId, GETDATE(), 'Active', 0);
+                    INSERT INTO Enrollments (UserID, ProgramID, EnrollmentDate, Status, Progress, Details, SlotID)
+                    VALUES (@userId, @programId, GETDATE(), 'Active', 0, @details, @slotId);
                     
                     -- Update Program Enrolled Count
                     UPDATE Programs SET EnrolledCount = EnrolledCount + 1 WHERE ProgramID = @programId;
+                    
+                    -- Update Slot Booked Count (if slot selected)
+                    IF @slotId IS NOT NULL
+                    BEGIN
+                        UPDATE ProgramSlots SET BookedCount = BookedCount + 1 WHERE SlotID = @slotId;
+                    END
                 `);
 
             return { success: true };

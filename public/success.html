@@ -56,7 +56,7 @@
         <div class="icon-success"><i class="fas fa-check-circle"></i></div>
         <h1 class="fw-bold">Enrollment Confirmed!</h1>
         <p class="text-muted">Thank you. Your payment was successful and a confirmation email has been sent.</p>
-        <a href="printadobe_revamp.html" class="btn btn-dark mt-3">Back to Home</a>
+        <a href="user-dashboard.html" class="btn btn-dark mt-3">Go to Dashboard</a>
     </div>
 
     <!-- Error State -->
@@ -68,7 +68,7 @@
             Payment Ref: <span id="paymentId" class="fw-bold"></span>
         </div>
         <p class="small text-muted">Please contact support with the reference above.</p>
-        <a href="printadobe_revamp.html" class="btn btn-outline-dark mt-3">Go Home</a>
+        <a href="user-dashboard.html" class="btn btn-outline-dark mt-3">Go to Dashboard</a>
     </div>
 
     <script>
@@ -82,7 +82,7 @@
 
             if (!sessionId) {
                 // Direct access attempt
-                window.location.href = 'printadobe_revamp.html';
+                window.location.href = 'user-dashboard.html';
                 return;
             }
 

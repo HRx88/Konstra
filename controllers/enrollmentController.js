@@ -19,12 +19,12 @@ class EnrollmentController {
 
     static async createEnrollment(req, res) {
         try {
-            const { userId, programId } = req.body;
+            const { userId, programId, slot, details } = req.body;
             if (!userId || !programId) {
                 return res.status(400).json({ success: false, message: 'User ID and Program ID are required' });
             }
 
-            const result = await Enrollment.createEnrollment(userId, programId);
+            const result = await Enrollment.createEnrollment(userId, programId, { slot, details });
             if (result.success) {
                 res.json({ success: true, message: 'Enrollment successful' });
             } else {

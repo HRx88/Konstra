@@ -43,6 +43,28 @@ class Program {
         }
     }
 
+    // Get slots for a specific program
+    static async getSlotsByProgramId(programId) {
+        let pool;
+        try {
+            pool = await sql.connect(dbConfig);
+            const result = await pool.request()
+                .input('programId', sql.Int, programId)
+                .query(`
+                    SELECT SlotID, StartTime, EndTime, Capacity, BookedCount
+                    FROM ProgramSlots
+                    WHERE ProgramID = @programId AND IsActive = 1 AND BookedCount < Capacity
+                    ORDER BY StartTime ASC
+                `);
+            return result.recordset;
+        } catch (err) {
+            console.error('SQL Get Slots Error:', err);
+            throw err;
+        } finally {
+            if (pool) pool.close();
+        }
+    }
+
     // Create a new program (Admin only)
     static async createProgram(data) {
         let pool;
@@ -143,6 +165,64 @@ class Program {
         }
     }
 
+
+
+    // --- SLOTS MANAGEMENT ---
+
+    // Create a new slot
+    static async createSlot(programId, data) {
+        let pool;
+        try {
+            pool = await sql.connect(dbConfig);
+            const result = await pool.request()
+                .input('programId', sql.Int, programId)
+                .input('startTime', sql.DateTime, data.startTime)
+                .input('endTime', sql.DateTime, data.endTime)
+                .input('capacity', sql.Int, data.capacity)
+                .query(`
+                    INSERT INTO ProgramSlots (ProgramID, StartTime, EndTime, Capacity, BookedCount, IsActive)
+                    VALUES (@programId, @startTime, @endTime, @capacity, 0, 1);
+                    SELECT SCOPE_IDENTITY() AS SlotID;
+                `);
+            return result.recordset[0].SlotID;
+        } catch (err) {
+            console.error('SQL Create Slot Error:', err);
+            throw err;
+        } finally {
+            if (pool) pool.close();
+        }
+    }
+
+    // Delete a slot (Only if no bookings)
+    static async deleteSlot(slotId) {
+        let pool;
+        try {
+            pool = await sql.connect(dbConfig);
+
+            // Check for bookings first
+            const check = await pool.request()
+                .input('id', sql.Int, slotId)
+                .query('SELECT BookedCount FROM ProgramSlots WHERE SlotID = @id');
+
+            if (check.recordset.length === 0) return false; // Not found
+            if (check.recordset[0].BookedCount > 0) {
+                // Soft delete if booked
+                await pool.request().input('id', sql.Int, slotId).query('UPDATE ProgramSlots SET IsActive = 0 WHERE SlotID = @id');
+                return true;
+            }
+
+            // Hard delete if empty
+            await pool.request()
+                .input('id', sql.Int, slotId)
+                .query('DELETE FROM ProgramSlots WHERE SlotID = @id');
+            return true;
+        } catch (err) {
+            console.error('SQL Delete Slot Error:', err);
+            throw err;
+        } finally {
+            if (pool) pool.close();
+        }
+    }
 
     // Soft Delete a program (Set IsActive = 0)
     static async deleteProgram(id) {
