@@ -17,6 +17,8 @@ const programRoutes = require('./routes/program.routes');
 const credentialRoutes = require('./routes/credential.routes');
 const enrollmentRoutes = require('./routes/enrollment.routes');
 const ngoStatsRoutes = require('./routes/ngoStats.routes');
+const healthRoutes = require("./routes/dbTest.routes"); 
+
 // ========== WebSocket Server ==========
 const http = require("http");
 const { Server } = require("socket.io");
@@ -277,6 +279,8 @@ app.use('/api/programs', programRoutes);
 app.use('/api/credentials', credentialRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/ngo-stats', ngoStatsRoutes);
+app.use("/api/health", healthRoutes);
+
 
 // ========== Initialise Server ==========
 // Server Listening at port 8000
