@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrintAdobe - Education & Trips</title>
+    <meta charset="utf-8">
+    <meta name="Author" content="Codi Chew">
+    <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+    <meta name="Date created" content="6 December 2025">
+    <meta name="viewport" content="Width=device-width, initial scale=1.0">
+    <link rel="icon" href="/Media/Konstra Logo B.png">
+    <link rel="stylesheet" href="/css/Style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>PrintAdobe - Konstra</title>
     <style>
         :root {
             --brand-yellow: #FFD200;
@@ -17,18 +21,7 @@
             --light-bg: #ffffff;
         }
 
-        body {
-            background-color: var(--light-bg);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333;
-        }
-
         /* --- Navbar & Hero --- */
-        .navbar-custom {
-            background-color: white;
-            border-bottom: 3px solid var(--primary-red);
-        }
-
         .brand-text {
             color: var(--primary-red);
             font-weight: 800;
@@ -121,6 +114,7 @@
             font-weight: 700;
             color: #222;
             margin-bottom: 10px;
+            font-size: 1.25rem;
         }
 
         .card-text {
@@ -186,29 +180,49 @@
             display: flex;
             gap: 15px;
         }
+
+        /* Navbar Tweaks for Bootstrap compatibility */
+        a {
+            text-decoration: none;
+        }
     </style>
 </head>
 
 <body>
+    <!-- NavBar Group -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <!-- Navbar Logo -->
+            <a href="Index.html" class="navbar-logo">
+                <img src="/Media/Konstra Logo B.png">
+            </a>
 
-    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand brand-text" href="#"><i class="fas fa-print me-2"></i>PrintAdobe</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+            <!-- Hamburger dropdown links-->
+            <button class="navbar-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="#"
-                            style="color:var(--primary-red)">Programs</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                </ul>
-            </div>
+
+            <!-- Navbar Links -->
+            <ul class="navbar-menu">
+                <!-- 
+                        <li><a href="#" class="currentPage">HOME</a></li> 
+                        Note: Set the class currentPage when working on that specific page 
+                        to display the selected state of that link.
+                        -->
+                <li><a href="Index.html">HOME</a></li>
+                <li><a href="#">ABOUT US</a></li>
+                <li><a href="#">PRODUCT</a></li>
+                <li><a href="printadobe.html" class="currentPage">PRINTADOBE</a></li>
+                <li><a href="#">OUR PROJECTS</a></li>
+                <li><a href="#">CONTACT US</a></li>
+                <li class="account"><a href="login.html"><img src="/Media/Profile Alt.png"></a></li>
+            </ul>
         </div>
     </nav>
 
+    <!-- Insert page content from this point onwards -->
     <section class="hero-section">
         <div class="container">
             <h1 class="hero-title display-4">Build the Future</h1>
@@ -239,196 +253,153 @@
         <div class="tab-content" id="myTabContent">
 
             <div class="tab-pane fade show active" id="education" role="tabpanel">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-3">
-                        <div class="program-card">
-                            <img src="https://images.unsplash.com/photo-1581092921461-eab6245b0262?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                class="card-img-top" alt="Robotics">
-                            <div class="card-body">
-                                <h5 class="card-title">Engineering & Robotics</h5>
-
-                                <div class="mb-2">
-                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 15/20
-                                        Enrolled</span>
-                                </div>
-
-                                <p class="card-text">Master automation, coding, and robotic control for modern
-                                    construction environments.</p>
-                                <div class="price-tag">$499 <span class="price-sub">/ course</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Engineering & Robotics', 'Education', '499', 'https://images.unsplash.com/photo-1581092921461-eab6245b0262?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
-                                    Now</button>
-                            </div>
+                <div class="row g-4" id="education-list">
+                    <!-- Dynamic Loading -->
+                    <div class="text-center w-100 py-5">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="program-card">
-                            <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                class="card-img-top" alt="Architecture">
-                            <div class="card-body">
-                                <h5 class="card-title">Architecture & Design</h5>
-
-                                <div class="mb-2">
-                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 8/15
-                                        Enrolled</span>
-                                </div>
-
-                                <p class="card-text">Explore new forms, materials, and sustainable urban planning using
-                                    3D tech.</p>
-                                <div class="price-tag">$550 <span class="price-sub">/ course</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Architecture & Design', 'Education', '550', 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
-                                    Now</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="program-card">
-                            <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                class="card-img-top" alt="Business">
-                            <div class="card-body">
-                                <h5 class="card-title">Business & Innovation</h5>
-
-                                <div class="mb-2">
-                                    <span class="spots-badge full"><i class="fas fa-user-graduate me-1"></i> 18/20
-                                        Enrolled</span>
-                                </div>
-
-                                <p class="card-text">Develop strategies for integrating automation into global
-                                    industries and markets.</p>
-                                <div class="price-tag">$399 <span class="price-sub">/ workshop</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Business & Innovation', 'Education', '399', 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
-                                    Now</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-3">
-                        <div class="program-card">
-                            <img src="https://images.unsplash.com/photo-1625246333195-5848b44911f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                class="card-img-top" alt="Agriculture">
-                            <div class="card-body">
-                                <h5 class="card-title">Sustainable Living</h5>
-
-                                <div class="mb-2">
-                                    <span class="spots-badge"><i class="fas fa-user-graduate me-1"></i> 10/25
-                                        Enrolled</span>
-                                </div>
-
-                                <p class="card-text">Explore how 3D printing and design can enhance agricultural
-                                    sustainability.</p>
-                                <div class="price-tag">$450 <span class="price-sub">/ course</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Sustainable Living', 'Education', '450', 'https://images.unsplash.com/photo-1625246333195-5848b44911f5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Enroll
-                                    Now</button>
-                            </div>
-                        </div>
+                        <p class="mt-3 text-muted">Loading Education Programs...</p>
                     </div>
                 </div>
             </div>
 
             <div class="tab-pane fade" id="trip" role="tabpanel">
                 <h3 class="text-center mb-4" style="color: #555;">Join Our Upcoming Site Visits</h3>
-                <div class="row g-4 justify-content-center">
-
-                    <div class="col-md-4">
-                        <div class="program-card">
-                            <div style="position: relative;">
-                                <img src="https://images.unsplash.com/photo-1596236569720-33436d9337cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                    class="card-img-top" alt="Factory Tour">
-                                <span class="badge bg-danger position-absolute top-0 end-0 m-2">Popular</span>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title m-0">Automated Factory Tour</h5>
-                                </div>
-                                <div class="trip-meta">
-                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Berlin</span>
-                                    <span><i class="fas fa-clock text-danger"></i> 3 Days</span>
-                                </div>
-                                <div class="mb-2">
-                                    <span class="spots-badge"><i class="fas fa-users me-1"></i> 8/10 Spots Filled</span>
-                                </div>
-                                <p class="card-text">A immersive trip to our main robotics facility. See massive 3D
-                                    printers in action.</p>
-                                <div class="price-tag">$1,200 <span class="price-sub">/ person</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Automated Factory Tour', 'Trip', '1200', 'https://images.unsplash.com/photo-1596236569720-33436d9337cc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
-                                    Trip</button>
-                            </div>
+                <div class="row g-4 justify-content-center" id="trip-list">
+                    <!-- Dynamic Loading -->
+                    <div class="text-center w-100 py-5">
+                        <div class="spinner-border text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
+                        <p class="mt-3 text-muted">Loading Trips...</p>
                     </div>
-
-                    <div class="col-md-4">
-                        <div class="program-card">
-                            <img src="https://images.unsplash.com/photo-1470058869958-2a77ade41c02?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                class="card-img-top" alt="Nature Site">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title m-0">Sustainable Eco-Village</h5>
-                                </div>
-                                <div class="trip-meta">
-                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Austin</span>
-                                    <span><i class="fas fa-clock text-danger"></i> 4 Days</span>
-                                </div>
-                                <div class="mb-2">
-                                    <span class="spots-badge"><i class="fas fa-users me-1"></i> 5/12 Spots Filled</span>
-                                </div>
-                                <p class="card-text">Visit the world's first fully 3D-printed eco-village. Learn about
-                                    off-grid living systems.</p>
-                                <div class="price-tag">$1,500 <span class="price-sub">/ person</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Sustainable Eco-Village', 'Trip', '1500', 'https://images.unsplash.com/photo-1470058869958-2a77ade41c02?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
-                                    Trip</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="program-card">
-                            <div style="position: relative;">
-                                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
-                                    class="card-img-top" alt="Construction Site">
-                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2">Filling
-                                    Fast</span>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h5 class="card-title m-0">Mega-Structure Site</h5>
-                                </div>
-                                <div class="trip-meta">
-                                    <span><i class="fas fa-map-marker-alt text-danger"></i> Dubai</span>
-                                    <span><i class="fas fa-clock text-danger"></i> 2 Days</span>
-                                </div>
-                                <div class="mb-2">
-                                    <span class="spots-badge full"><i class="fas fa-users me-1"></i> 19/20 Spots
-                                        Filled</span>
-                                </div>
-                                <p class="card-text">Witness the construction of the world's largest printed commercial
-                                    complex.</p>
-                                <div class="price-tag">$950 <span class="price-sub">/ person</span></div>
-                                <button class="btn btn-custom"
-                                    onclick="goToEnrollment('Mega-Structure Site', 'Trip', '950', 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60')">Book
-                                    Trip</button>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
         </div>
     </div>
 
+
+    <!-- Footer Group -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                <p>Privacy Policy</p>
+                <p>Cookie Policy</p>
+            </div>
+
+            <div class="footer-right">
+                <p>FOLLOW US</p>
+                <ul class="Socials">
+                    <li>
+                        <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img
+                                src="/Media/Instagram_White.png"></a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img
+                                src="/Media/LinkedIn_White.png"></a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img
+                                src="/Media/Facebook_White.png"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </div>
+    </footer>
+
+    <!-- All Javascript components here -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
 
     <script>
-        // FIX: Added 'imageUrl' as the 4th argument
         function goToEnrollment(item, type, price, imageUrl) {
             // Encode parameters to be URL safe
             const url = `enrollment.html?item=${encodeURIComponent(item)}&type=${encodeURIComponent(type)}&price=${price}&image=${encodeURIComponent(imageUrl)}`;
             window.location.href = url;
         }
+
+        async function loadPrograms() {
+            try {
+                const response = await fetch('/api/programs');
+                if (!response.ok) throw new Error('Failed to load programs');
+
+                const programs = await response.json();
+
+                const eduContainer = document.getElementById('education-list');
+                const tripContainer = document.getElementById('trip-list');
+
+                // Clear Loaders
+                eduContainer.innerHTML = '';
+                tripContainer.innerHTML = '';
+
+                if (programs.length === 0) {
+                    eduContainer.innerHTML = '<p class="text-center">No active programs found.</p>';
+                }
+
+                programs.forEach(program => {
+                    const isTrip = program.Type === 'Trip';
+                    const container = isTrip ? tripContainer : eduContainer;
+
+                    const enrolled = program.EnrolledCount || 0;
+                    const max = program.MaxParticipants || 20;
+
+                    // Logic for badges
+                    let badge = '';
+                    if (enrolled >= max) {
+                        badge = `<span class="spots-badge full"><i class="fas fa-ban me-1"></i> Full</span>`;
+                    } else if (enrolled >= max * 0.8) {
+                        badge = `<span class="spots-badge full"><i class="fas fa-fire me-1"></i> ${enrolled}/${max} Filling Fast</span>`;
+                    } else {
+                        badge = `<span class="spots-badge"><i class="fas fa-user-check me-1"></i> ${enrolled}/${max} Enrolled</span>`;
+                    }
+
+                    // Fallback Image
+                    const image = program.ImageURL || 'https://images.unsplash.com/photo-1581092921461-eab6245b0262';
+
+                    const html = `
+                    <div class="${isTrip ? 'col-md-4' : 'col-md-6 col-lg-3'}">
+                        <div class="program-card">
+                            <div style="position: relative;">
+                                <img src="${image}" class="card-img-top" alt="${program.Title}" style="height: 200px; object-fit: cover;">
+                                <div style="position:absolute; top:10px; right:10px;">${badge}</div>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">${program.Title}</h5>
+
+                                ${isTrip ? `
+                                <div class="trip-meta">
+                                    <span><i class="fas fa-map-marker-alt text-danger"></i> ${program.Location || 'TBA'}</span>
+                                    <span><i class="fas fa-clock text-danger"></i> ${program.Duration || 'TBA'}</span>
+                                </div>
+                                ` : ''}
+
+                                <p class="card-text">${program.Description ? program.Description.substring(0, 80) + '...' : 'Create the future with us.'}</p>
+                                <div class="price-tag">$${program.Price} <span class="price-sub">/ ${isTrip ? 'person' : 'course'}</span></div>
+                                <button class="btn btn-custom"
+                                    onclick="goToEnrollment(${program.ProgramID}, '${program.Title.replace(/'/g, "\\'")}', '${program.Type}', '${program.Price}', '${image}')">
+                                    ${isTrip ? 'Book Trip' : 'Enroll Now'}
+                                </button>
+                                
+                                ${!isTrip ? `<a href="printadobe-details.html?id=${program.ProgramID}" class="btn btn-link w-100 text-decoration-none mt-2" style="color:#555;">View Details</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    `;
+
+                    container.innerHTML += html;
+                });
+
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                document.getElementById('education-list').innerHTML = '<p class="text-danger text-center">Failed to load programs. Please try again later.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadPrograms);
     </script>
 </body>
 

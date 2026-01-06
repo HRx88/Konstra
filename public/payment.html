@@ -121,10 +121,21 @@
                 const { publishableKey } = await configResponse.json();
                 const stripe = Stripe(publishableKey);
 
+                const programId = params.get('id'); // Get Program ID
+                const slot = params.get('slot');
+                const details = params.get('details'); // JSON string from URL
+
                 const response = await fetch('/api/payment/create-checkout-session', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ amount: price, item: item, image: image })
+                    body: JSON.stringify({
+                        programId, // Pass ID
+                        amount: price,
+                        item: item,
+                        image: image,
+                        slot,
+                        details
+                    })
                 });
 
                 const { sessionId, error } = await response.json();
