@@ -134,7 +134,8 @@
                         item: item,
                         image: image,
                         slot,
-                        details
+                        details,
+                        userId: JSON.parse(localStorage.getItem('memberDetails')).ID // Pass User ID
                     })
                 });
 

@@ -331,9 +331,13 @@
                                 <button class="btn btn-outline-dark btn-sm flex-grow-1" onclick="editProgram(${p.ProgramID})">
                                     <i class="fas fa-edit"></i> Edit
                                 </button>
+                                <button class="btn btn-outline-danger btn-sm" onclick="deleteProgram(${p.ProgramID})">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
+                            <button class="btn btn-outline-secondary w-100 mt-2 btn-sm" onclick="window.location.href='admin-program-modules.html?programId=${p.ProgramID}'">
+                                <i class="fas fa-book me-1"></i> Manage Modules
+                            </button>
                             ${p.Type === 'Education' ? `
                             <button class="btn btn-outline-primary w-100 mt-2 btn-sm" onclick="manageSlots(${p.ProgramID}, '${p.Title.replace(/'/g, "\\'")}')">
                                 <i class="fas fa-calendar-alt me-1"></i> Manage Sessions

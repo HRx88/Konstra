@@ -126,7 +126,32 @@
                     return 'bg-primary';
                 };
 
-                grid.innerHTML = enrollments.map(e => `
+                grid.innerHTML = '';
+
+                // Load each enrollment with dynamic progress
+                for (const e of enrollments) {
+                    // Fetch actual module progress
+                    let completedCount = 0;
+                    let totalCount = 0;
+                    let dynamicProgress = e.Progress || 0;
+
+                    try {
+                        const [modulesRes, progressRes] = await Promise.all([
+                            fetch(`/api/programs/${e.ProgramID}/modules`),
+                            fetch(`/api/enrollments/${e.EnrollmentID}/progress`)
+                        ]);
+
+                        const modules = await modulesRes.json();
+                        const progress = await progressRes.json();
+
+                        totalCount = modules.length;
+                        completedCount = progress.length;
+                        dynamicProgress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+                    } catch (err) {
+                        console.error('Error fetching progress:', err);
+                    }
+
+                    const cardHTML = `
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100 shadow-sm border-0">
                             <div class="position-relative">
@@ -143,28 +168,33 @@
                                 </p>
                                 
                                 <div class="mb-3">
-                                    <small class="text-muted d-block mb-1">Items Progress</small>
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small class="text-muted">Module Progress</small>
+                                        <small class="fw-bold text-dark">${completedCount}/${totalCount} completed</small>
+                                    </div>
                                     <div class="progress" style="height: 8px;">
                                         <div class="progress-bar bg-danger" role="progressbar" 
-                                             style="width: ${e.Progress || 0}%" 
-                                             aria-valuenow="${e.Progress || 0}" aria-valuemin="0" aria-valuemax="100"></div>
+                                             style="width: ${dynamicProgress}%" 
+                                             aria-valuenow="${dynamicProgress}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                     <div class="d-flex justify-content-between mt-1">
-                                        <small class="text-muted fw-bold">${e.Progress || 0}%</small> 
-                                        <small class="text-${e.Status === 'Completed' ? 'success' : 'warning'} fw-bold">
-                                            ${e.Status}
+                                        <small class="text-muted fw-bold">${dynamicProgress}%</small> 
+                                        <small class="text-${dynamicProgress >= 100 ? 'success' : 'warning'} fw-bold">
+                                            ${dynamicProgress >= 100 ? 'Completed' : 'In Progress'}
                                         </small>
                                     </div>
                                 </div>
 
                                 <div class="mt-auto d-flex justify-content-between align-items-center">
                                     <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> ${new Date(e.EnrollmentDate).toLocaleDateString()}</small>
-                                    <a href="#" class="btn btn-sm btn-outline-dark">Access Content</a>
+                                    <a href="program-content.html?enrollmentId=${e.EnrollmentID}&programId=${e.ProgramID}" class="btn btn-sm btn-outline-dark">Access Content</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                `).join('');
+                    `;
+                    grid.innerHTML += cardHTML;
+                }
 
             } catch (error) {
                 console.error("Error loading enrollments:", error);

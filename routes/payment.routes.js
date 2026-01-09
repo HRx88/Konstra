@@ -10,4 +10,7 @@ router.get('/config', (req, res) => {
 // Create Checkout Session
 router.post('/create-checkout-session', PaymentController.createCheckoutSession);
 
+// Success Handler (Redirected from Stripe)
+router.get('/success', PaymentController.handleSuccess);
+
 module.exports = router;

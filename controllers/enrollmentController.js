@@ -19,20 +19,27 @@ class EnrollmentController {
 
     static async createEnrollment(req, res) {
         try {
-            const { userId, programId, slot, details } = req.body;
-            if (!userId || !programId) {
-                return res.status(400).json({ success: false, message: 'User ID and Program ID are required' });
-            }
+            const { userId, programId, details, slotId } = req.body;
+            const result = await Enrollment.createEnrollment(userId, programId, { details, slotId });
 
-            const result = await Enrollment.createEnrollment(userId, programId, { slot, details });
-            if (result.success) {
-                res.json({ success: true, message: 'Enrollment successful' });
-            } else {
-                res.status(400).json(result);
+            if (!result.success) {
+                return res.status(400).json(result);
             }
-        } catch (error) {
-            console.error('Controller Create Error:', error);
-            res.status(500).json({ success: false, message: 'Server error creating enrollment' });
+            res.status(201).json(result);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    // Get Enrollments for a specific user
+    static async getUserEnrollments(req, res) {
+        try {
+            const userId = req.params.userId;
+            const enrollments = await Enrollment.getEnrollmentsByUserId(userId);
+            res.json(enrollments);
+        } catch (err) {
+            console.error('Get User Enrollments Error:', err);
+            res.status(500).json({ error: err.message });
         }
     }
 }
