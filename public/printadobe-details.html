@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="Author" content="Codi Chew">
+    <meta name="Description" content="Detailed overview of the PrintAdobe program by Konstra">
+    <meta name="Date created" content="6 December 2025">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/Media/Konstra Logo B.png">
+    <link rel="stylesheet" href="/css/Style.css">
+
+    <!-- External Fonts & Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Import the component -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    <title>Program Details | Konstra</title>
+
+    <style>
+        :root {
+            --brand-yellow: #FFD200;
+            --brand-dark: #1a1a1a;
+            --primary-red: #d32f2f;
+            --hover-red: #b71c1c;
+            --light-bg: #ffffff;
+            --text-gray: #666666;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--brand-dark);
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            background: #FFFFFF;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background-color: var(--brand-yellow);
+            padding: 80px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+        }
+
+        .hero h1 {
+            color: var(--brand-dark);
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            color: #2c2c2c;
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            font-weight: 500;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(211, 47, 47, 0.3);
+            cursor: pointer;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--hover-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* --- Stats Bar --- */
+        .stats-bar {
+            background: #fff;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 60px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-red);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* --- Content Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-header {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--brand-dark);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- Features Grid --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 80px;
+        }
+
+        .feature-card {
+            background: white;
+            border: 1px solid #eee;
+            padding: 40px;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-color: var(--brand-yellow);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-red);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--brand-dark);
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
+        }
+
+        /* --- Syllabus Section --- */
+        .syllabus-section {
+            background-color: #f9f9f9;
+            padding: 80px 0;
+            border-radius: 20px;
+            margin-bottom: 80px;
+        }
+
+        .syllabus-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .syllabus-content {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .syllabus-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .syllabus-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .module-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .module-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .module-item:last-child {
+            border-bottom: none;
+        }
+
+        .module-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--brand-yellow);
+            margin-right: 20px;
+            line-height: 1;
+            min-width: 40px;
+        }
+
+        .module-text h4 {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--brand-dark);
+        }
+
+        .module-text p {
+            margin: 0;
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* --- Footer (Matches template) --- */
+        footer {
+            background-color: #000000;
+            padding: 49px 40px;
+            color: white;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-left {
+            display: flex;
+            gap: 30px;
+        }
+
+        .footer-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .Socials {
+            display: flex;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NavBar Group -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="Index.html" class="navbar-logo">
+                <img src="/Media/Konstra Logo B.png" alt="Konstra Logo">
+            </a>
+            <button class="navbar-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <ul class="navbar-menu">
+                <li><a href="Index.html">HOME</a></li>
+                <li><a href="#">ABOUT US</a></li>
+                <li><a href="#">PRODUCT</a></li>
+                <li><a href="printadobe.html" class="currentPage">PRINTADOBE</a></li>
+                <li><a href="#">OUR PROJECTS</a></li>
+                <li><a href="#">CONTACT US</a></li>
+                <li class="account"><a href="#"><img src="/Media/Profile Alt.png"></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <!-- Dynamic Content IDs -->
+            <h1 id="program-title">Loading Program...</h1>
+            <p id="program-description">Please wait while we load the latest content.</p>
+            <button id="enroll-btn" class="btn-custom" onclick="alert('Loading...')">Enroll Now</button>
+        </div>
+    </header>
+
+    <!-- Key Stats -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <span class="stat-number" id="program-duration">-</span>
+            <span class="stat-label">Duration</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="program-location">-</span>
+            <span class="stat-label">Location</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number" id="program-spots">-</span>
+            <span class="stat-label">Class Size</span>
+        </div>
+    </div>
+
+    <!-- Overview Section -->
+    <section id="details" class="container">
+        <div class="section-header">
+            <h2>The Future of Building</h2>
+            <p>We blend traditional architectural principles with cutting-edge 3D printing technology.</p>
+        </div>
+        <!-- Use it like any other HTML element -->
+        <model-viewer
+            alt="Neil Armstrong's Spacesuit from the Smithsonian Digitization Programs Office and National Air and Space Museum"
+            src="shared-assets/models/NeilArmstrong.glb" ar environment-image="shared-assets/environments/moon_1k.hdr"
+            poster="shared-assets/models/NeilArmstrong.webp" shadow-intensity="1" camera-controls
+            touch-action="pan-y"></model-viewer>
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-cube feature-icon"></i>
+                <h3>3D Modeling Mastery</h3>
+                <p>Deep dive into Rhino, Revit, and Fusion 360. Learn to design complex geometries specifically for
+                    large-scale additive manufacturing.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3>Robotic Control</h3>
+                <p>Hands-on experience with 6-axis robotic arms. Understand G-code generation, materials handling, and
+                    safety protocols.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-leaf feature-icon"></i>
+                <h3>Sustainable Materials</h3>
+                <p>Experiment with eco-friendly concrete mixtures and recycled polymers. Build for a greener tomorrow.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Curriculum Section -->
+    <div class="container">
+        <section class="syllabus-section">
+            <div class="container syllabus-container">
+                <div class="syllabus-content">
+                    <div class="section-header" style="text-align: left; margin-bottom: 30px;">
+                        <h2>Program Syllabus</h2>
+                        <p style="margin: 0;">A structured 12-week intensive course designed to take you from novice to
+                            expert.</p>
+                    </div>
+                    <ul class="module-list">
+                        <li class="module-item">
+                            <span class="module-number">01</span>
+                            <div class="module-text">
+                                <h4>Design Fundamentals</h4>
+                                <p>Introduction to parametric design and digital fabrication logic.</p>
+                            </div>
+                        </li>
+                        <li class="module-item">
+                            <span class="module-number">02</span>
+                            <div class="module-text">
+                                <h4>Material Science</h4>
+                                <p>Understanding viscosity, setting times, and layer adhesion.</p>
+                            </div>
+                        </li>
+                        <li class="module-item">
+                            <span class="module-number">03</span>
+                            <div class="module-text">
+                                <h4>Machine Operations</h4>
+                                <p>Calibration, maintenance, and live printing execution.</p>
+                            </div>
+                        </li>
+                        <li class="module-item">
+                            <span class="module-number">04</span>
+                            <div class="module-text">
+                                <h4>Project Capstone</h4>
+                                <p>Design and print a 1:1 scale architectural component.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="syllabus-image">
+                    <!-- Using Unsplash image for visual interest -->
+                    <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                        alt="Robotics Lab">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer Group -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                <p>Privacy Policy</p>
+                <p>Cookie Policy</p>
+            </div>
+
+            <div class="footer-right">
+                <p>FOLLOW US</p>
+                <ul class="Socials">
+                    <li>
+                        <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img
+                                src="/Media/Instagram_White.png"></a>
+                    </li>
+                    <li>
+                        <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img
+                                src="/Media/LinkedIn_White.png"></a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img
+                                src="/Media/Facebook_White.png"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!-- All Javascript components here -->
+    <script src="/js/NavBarHamburger.js"></script>
+
+    <script>
+        function goToEnrollment(item, type, price, imageUrl) {
+            const url = `enrollment.html?item=${encodeURIComponent(item)}&type=${encodeURIComponent(type)}&price=${price}&image=${encodeURIComponent(imageUrl)}`;
+            window.location.href = url;
+        }
+
+        async function fetchProgramDetails() {
+            try {
+                // Get ID from URL query params, default to 1
+                const urlParams = new URLSearchParams(window.location.search);
+                const programId = urlParams.get('id') || 1;
+
+                const response = await fetch(`/api/programs/${programId}`);
+                if (!response.ok) throw new Error('Program not found');
+
+                const data = await response.json();
+
+                // Hydrate DOM
+                const getVal = (key) => data[key] || data[key.toLowerCase()] || data[key.charAt(0).toUpperCase() + key.slice(1)];
+
+                const title = getVal('Title') || "Unavailable";
+                const desc = getVal('Description') || "No description available.";
+                const duration = getVal('Duration') || "TBA";
+                const location = getVal('Location') || "Online";
+                const maxParts = getVal('MaxParticipants') || 0;
+                const price = getVal('Price') || 0;
+                const image = getVal('ImageURL') || 'https://images.unsplash.com/photo-1581092921461-eab6245b0262';
+                const type = getVal('Type') || 'Program';
+
+                document.getElementById('program-title').textContent = title;
+                document.getElementById('program-description').textContent = desc;
+                document.getElementById('program-duration').textContent = duration;
+                document.getElementById('program-location').textContent = location;
+                document.getElementById('program-spots').textContent = `${maxParts} Spots`;
+
+                // Update Button
+                const btn = document.getElementById('enroll-btn');
+                btn.textContent = `Enroll Now - $${price}`;
+                btn.onclick = () => goToEnrollment(title, type, price, image);
+
+                document.title = `${title} | Konstra`;
+
+            } catch (error) {
+                console.error("Error fetching program:", error);
+                document.getElementById('program-title').textContent = "Program Not Found";
+                document.getElementById('program-description').textContent = "We couldn't load the program details. Please try again later or check your connection.";
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchProgramDetails();
+        });
+    </script>
+</body>
+
+</html>

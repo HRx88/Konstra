@@ -4,5 +4,6 @@ const EnrollmentController = require('../controllers/enrollmentController');
 
 router.get('/my-enrollments', EnrollmentController.getMyEnrollments);
 router.post('/create', EnrollmentController.createEnrollment);
+router.get('/user/:userId', EnrollmentController.getUserEnrollments);
 
 module.exports = router;

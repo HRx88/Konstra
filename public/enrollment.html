@@ -279,7 +279,6 @@
                 <div class="progress-indicator">
                     <div class="dot active" id="dot1"></div>
                     <div class="dot" id="dot2"></div>
-                    <div class="dot" id="dot3"></div>
                 </div>
 
                 <form id="enrollForm">
@@ -291,7 +290,7 @@
                             <p>Select your preferences below.</p>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="mb-4" id="participantContainer">
                             <label class="form-label">Number of Participants</label>
                             <select class="form-select" id="participantCount" onchange="updateSummary()">
                                 <option value="1">1 Person</option>
@@ -313,8 +312,10 @@
                                 session.</div>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="button" class="btn-next" onclick="nextStep(2)">Continue</button>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="button" class="btn-back" onclick="history.back()">Back</button>
+                            <button type="button" class="btn-next" style="width: auto;"
+                                onclick="nextStep(2)">Continue</button>
                         </div>
                     </div>
 
@@ -350,31 +351,6 @@
 
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <button type="button" class="btn-back" onclick="prevStep(1)">Back</button>
-                            <button type="button" class="btn-next" style="width: auto;"
-                                onclick="nextStep(3)">Review</button>
-                        </div>
-                    </div>
-
-                    <!-- STEP 3: Review -->
-                    <div class="step-card" id="step3">
-                        <div class="step-header">
-                            <h2>Review & Payment</h2>
-                            <p>One final look before we secure your spot.</p>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <i class="fas fa-shield-alt me-2"></i> Your payment is processed securely.
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-check-label">
-                                <input type="checkbox" required id="termsCheck"> I agree to the <a href="#"
-                                    class="text-danger">Terms and Conditions</a>.
-                            </label>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
                             <button type="button" class="btn-next" style="width: auto;"
                                 onclick="submitEnrollment()">Proceed to Payment</button>
                         </div>
@@ -442,6 +418,11 @@
                 document.getElementById('firstName').value = names[0] || '';
                 document.getElementById('lastName').value = names.slice(1).join(' ') || '';
                 document.getElementById('email').value = member.email || '';
+            }
+
+            // Logic: If NOT 'Trip', hide participant count (Default 1)
+            if (type !== 'Trip') {
+                document.getElementById('participantContainer').style.display = 'none';
             }
 
             // Generate Slots (Real Data)
@@ -595,10 +576,13 @@
         }
 
         function submitEnrollment() {
-            if (!document.getElementById('termsCheck').checked) {
-                alert("Please accept the terms and conditions.");
+            // Validation (Moved from nextStep)
+            if (!document.getElementById('firstName').value || !document.getElementById('lastName').value || !document.getElementById('email').value) {
+                alert("Please fill in all contact details.");
                 return;
             }
+
+            // Remove T&C check as step is removed
 
             // COLLECT DATA
             const count = document.getElementById('participantCount').value;
@@ -623,8 +607,32 @@
             // ENCODE AND REDIRECT
             const detailsStr = encodeURIComponent(JSON.stringify(details));
             const slotStr = encodeURIComponent(slot || ''); // Pass ID
-            const itemStr = encodeURIComponent(`${item} (${count} pax)`);
+
+            // Get formatted date for display
+            const dateDisplay = document.getElementById('summaryDate').innerText;
+            const dateAppend = (slot && dateDisplay !== '-') ? ` - ${dateDisplay}` : '';
+
+            const itemStr = encodeURIComponent(`${item} (${count} pax)${dateAppend}`);
             const imgStr = encodeURIComponent(image);
+
+            // SAVE TO SESSION STORAGE (For Success Page)
+            const member = JSON.parse(localStorage.getItem('memberDetails'));
+            const userId = member ? member.id : null; // Ensure member object has 'id' or 'UserID'
+
+            if (!userId) {
+                alert("Please log in to enroll.");
+                // Alternatively redirect to login with return URL
+                return;
+            }
+
+            const pendingData = {
+                userId: userId,
+                programId: parseInt(programId),
+                slotId: slot ? parseInt(slot) : null,
+                details: details,
+                amount: total
+            };
+            sessionStorage.setItem('pendingEnrollment', JSON.stringify(pendingData));
 
             // Redirect to payment
             window.location.href = `payment.html?id=${programId}&price=${total}&item=${itemStr}&image=${imgStr}&slot=${slotStr}&details=${detailsStr}`;

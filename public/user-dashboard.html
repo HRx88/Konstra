@@ -93,7 +93,7 @@
                 <div class="stat-card" style="border-left-color: #0d6efd;">
                     <div>
                         <h6 class="text-muted mb-1">Active Enrollments</h6>
-                        <h3 class="fw-bold mb-0">-</h3>
+                        <h3 class="fw-bold mb-0" id="activeEnrollments">-</h3>
                     </div>
                     <div class="stat-icon" style="background: #e7f1ff; color: #0d6efd;">
                         <i class="fas fa-graduation-cap"></i>
@@ -104,7 +104,7 @@
                 <div class="stat-card" style="border-left-color: #198754;">
                     <div>
                         <h6 class="text-muted mb-1">Course Progress</h6>
-                        <h3 class="fw-bold mb-0">75%</h3>
+                        <h3 class="fw-bold mb-0" id="courseProgress">-</h3>
                     </div>
                     <div class="stat-icon" style="background: #e8f5e9; color: #198754;">
                         <i class="fas fa-chart-line"></i>
@@ -162,7 +162,42 @@
 
             document.getElementById('welcomeMsg').innerText = `Welcome back, ${member.username}`;
             document.getElementById('dateDisplay').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Fetch Stats
+            fetchEnrollmentStats(member.memberID);
         });
+
+        async function fetchEnrollmentStats(userId) {
+            try {
+                if (!userId) return;
+
+                // Loading State
+                document.getElementById('activeEnrollments').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                document.getElementById('courseProgress').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                const response = await fetch(`/api/enrollments/user/${userId}`);
+                if (!response.ok) throw new Error('Failed to fetch enrollments');
+                const enrollments = await response.json();
+
+                // 1. Active Enrollments
+                const activeCount = enrollments.length;
+                document.getElementById('activeEnrollments').textContent = activeCount;
+
+                // 2. Average Progress
+                if (activeCount > 0) {
+                    const totalProgress = enrollments.reduce((sum, e) => sum + (e.Progress || 0), 0);
+                    const avg = Math.round(totalProgress / activeCount);
+                    document.getElementById('courseProgress').textContent = `${avg}%`;
+                } else {
+                    document.getElementById('courseProgress').textContent = '0%';
+                }
+
+            } catch (err) {
+                console.error("Stats Error:", err);
+                document.getElementById('activeEnrollments').textContent = '0';
+                document.getElementById('courseProgress').textContent = '0%';
+            }
+        }
 
         function logout() {
             localStorage.clear();

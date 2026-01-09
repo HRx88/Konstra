@@ -16,8 +16,9 @@ const paymentRoutes = require('./routes/payment.routes');
 const programRoutes = require('./routes/program.routes');
 const credentialRoutes = require('./routes/credential.routes');
 const enrollmentRoutes = require('./routes/enrollment.routes');
+const programModuleRoutes = require('./routes/programModule.routes');
 const ngoStatsRoutes = require('./routes/ngoStats.routes');
-const healthRoutes = require("./routes/dbTest.routes"); 
+const healthRoutes = require("./routes/dbTest.routes");
 
 // ========== WebSocket Server ==========
 const http = require("http");
@@ -278,6 +279,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/programs', programRoutes);
 app.use('/api/credentials', credentialRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api', programModuleRoutes);
 app.use('/api/ngo-stats', ngoStatsRoutes);
 app.use("/api/health", healthRoutes);
 
