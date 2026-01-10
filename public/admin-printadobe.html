@@ -10,84 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="css/admin-sidebar.css">
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* --- PAGE SPECIFIC STYLES --- */
-        .program-card {
-            background: white;
-            border: none;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .program-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .card-img-top {
-            height: 180px;
-            object-fit: cover;
-            background-color: #eee;
-        }
-
-        .card-body {
-            padding: 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .badge-type {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .badge-edu {
-            background-color: #e3f2fd;
-            color: #0d47a1;
-        }
-
-        .badge-trip {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-
-        .price-tag {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #d32f2f;
-            margin-top: auto;
-        }
-
-        .nav-pills .nav-link {
-            color: #555;
-            background: white;
-            border: 1px solid #dee2e6;
-            margin-right: 10px;
-            border-radius: 20px;
-        }
-
-        .nav-pills .nav-link.active {
-            background-color: #d32f2f;
-            color: white;
-            border-color: #d32f2f;
-        }
-    </style>
+    <link rel="stylesheet" href="css/admin-printadobe.css">
 </head>
 
 <body>
@@ -107,14 +30,13 @@
             <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
         </div>
         <div class="logout-btn-container">
-            <button onclick="logout()" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+            <button id="logoutBtn" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
                 Logout</button>
         </div>
     </nav>
 
     <main class="main-content">
-        <button class="btn btn-dark d-md-none mb-4"
-            onclick="document.getElementById('sidebar').classList.toggle('active')">
+        <button class="btn btn-dark d-md-none mb-4" id="mobileDashToggle">
             <i class="fas fa-bars"></i>
         </button>
 
@@ -123,24 +45,24 @@
                 <h2 class="fw-bold">PrintAdobe Programs</h2>
                 <p class="text-muted">Manage courses, workshops, and immersive trips.</p>
             </div>
-            <button class="btn btn-dark" onclick="openModal()">
+            <button class="btn btn-dark" id="btnAddProgram">
                 <i class="fas fa-plus me-2"></i> Add New Program
             </button>
         </div>
 
         <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
             <li class="nav-item">
-                <button class="nav-link active" onclick="filterPrograms('all')">
+                <button class="nav-link active filter-btn" data-filter="all">
                     <i class="fas fa-th-large me-2"></i>All
                 </button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" onclick="filterPrograms('Education')">
+                <button class="nav-link filter-btn" data-filter="Education">
                     <i class="fas fa-graduation-cap me-2"></i>Education & Workshops
                 </button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" onclick="filterPrograms('Trip')">
+                <button class="nav-link filter-btn" data-filter="Trip">
                     <i class="fas fa-plane-departure me-2"></i>Immersive Trips
                 </button>
             </li>
@@ -215,7 +137,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-dark" onclick="saveProgram()">Save Program</button>
+                    <button type="button" class="btn btn-dark" id="btnSaveProgram">Save Program</button>
                 </div>
             </div>
         </div>
@@ -244,7 +166,7 @@
                             <input type="number" class="form-control" id="newSlotCapacity" value="20">
                         </div>
                         <div class="col-md-2 d-flex align-items-end">
-                            <button class="btn btn-dark w-100" onclick="addSlot()">Add</button>
+                            <button class="btn btn-dark w-100" id="btnAddSlot">Add</button>
                         </div>
                     </div>
 
@@ -259,278 +181,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        let allPrograms = [];
-        let currentFilter = 'all';
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check Admin Auth
-            const admin = JSON.parse(localStorage.getItem('adminDetails'));
-            if (!admin) { window.location.href = 'login.html'; return; }
-
-            loadPrograms();
-        });
-
-        function logout() { localStorage.clear(); window.location.href = "index.html"; }
-
-        // --- 1. READ (Fetch) ---
-        async function loadPrograms() {
-            try {
-                // Ensure you added this route in app.js: app.use('/api/programs', programRoutes);
-                const response = await fetch('/api/programs');
-                const data = await response.json();
-
-                if (Array.isArray(data)) {
-                    allPrograms = data;
-                    renderPrograms();
-                }
-            } catch (error) {
-                console.error(error);
-                document.getElementById('programsGrid').innerHTML = '<p class="text-danger text-center">Failed to load programs.</p>';
-            }
-        }
-
-        // --- 2. RENDER (With Filter) ---
-        function filterPrograms(type) {
-            currentFilter = type;
-
-            // Update active tab UI
-            document.querySelectorAll('.nav-pills .nav-link').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-
-            renderPrograms();
-        }
-
-        function renderPrograms() {
-            const grid = document.getElementById('programsGrid');
-            const filtered = currentFilter === 'all'
-                ? allPrograms
-                : allPrograms.filter(p => p.Type === currentFilter);
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="col-12 text-center text-muted py-5">No programs found in this category.</div>';
-                return;
-            }
-
-            grid.innerHTML = filtered.map(p => `
-                <div class="col-md-4 col-lg-3">
-                    <div class="program-card position-relative">
-                        <span class="badge badge-type ${p.Type === 'Education' ? 'badge-edu' : 'badge-trip'}">
-                            ${p.Type}
-                        </span>
-                        <img src="${p.ImageURL || 'https://via.placeholder.com/300'}" class="card-img-top" alt="Program">
-                        <div class="card-body">
-                            <h5 class="fw-bold mb-2 text-truncate">${p.Title}</h5>
-                            <div class="small text-muted mb-2">
-                                <i class="fas fa-clock me-1"></i> ${p.Duration} &bull; 
-                                <i class="fas fa-map-marker-alt ms-1"></i> ${p.Location || 'Online'}
-                            </div>
-                            <div class="price-tag">$${p.Price}</div>
-                            
-                            <div class="mt-3 pt-3 border-top d-flex gap-2">
-                                <button class="btn btn-outline-dark btn-sm flex-grow-1" onclick="editProgram(${p.ProgramID})">
-                                    <i class="fas fa-edit"></i> Edit
-                                </button>
-                                <button class="btn btn-outline-danger btn-sm" onclick="deleteProgram(${p.ProgramID})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                            <button class="btn btn-outline-secondary w-100 mt-2 btn-sm" onclick="window.location.href='admin-program-modules.html?programId=${p.ProgramID}'">
-                                <i class="fas fa-book me-1"></i> Manage Modules
-                            </button>
-                            ${p.Type === 'Education' ? `
-                            <button class="btn btn-outline-primary w-100 mt-2 btn-sm" onclick="manageSlots(${p.ProgramID}, '${p.Title.replace(/'/g, "\\'")}')">
-                                <i class="fas fa-calendar-alt me-1"></i> Manage Sessions
-                            </button>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // --- 3. CREATE / EDIT SETUP ---
-        const modal = new bootstrap.Modal(document.getElementById('programModal'));
-
-        function openModal() {
-            document.getElementById('programForm').reset();
-            document.getElementById('programId').value = '';
-            document.getElementById('modalTitle').innerText = 'Add New Program';
-            modal.show();
-        }
-
-        function editProgram(id) {
-            const p = allPrograms.find(x => x.ProgramID === id);
-            if (!p) return;
-
-            document.getElementById('programId').value = p.ProgramID;
-            document.getElementById('title').value = p.Title;
-            document.getElementById('type').value = p.Type;
-            document.getElementById('description').value = p.Description;
-            document.getElementById('price').value = p.Price;
-            document.getElementById('duration').value = p.Duration;
-            document.getElementById('maxParticipants').value = p.MaxParticipants;
-            document.getElementById('location').value = p.Location;
-            document.getElementById('imageURL').value = p.ImageURL;
-
-            document.getElementById('modalTitle').innerText = 'Edit Program';
-            modal.show();
-        }
-
-        // --- 4. CREATE / UPDATE ACTION ---
-        async function saveProgram() {
-            const id = document.getElementById('programId').value;
-            const data = {
-                title: document.getElementById('title').value,
-                type: document.getElementById('type').value,
-                description: document.getElementById('description').value,
-                price: document.getElementById('price').value,
-                duration: document.getElementById('duration').value,
-                maxParticipants: document.getElementById('maxParticipants').value,
-                location: document.getElementById('location').value,
-                imageURL: document.getElementById('imageURL').value
-            };
-
-            const method = id ? 'PUT' : 'POST';
-            const url = id ? `/api/programs/${id}` : '/api/programs/create';
-
-            try {
-                const res = await fetch(url, {
-                    method: method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (res.ok) {
-                    modal.hide();
-                    Swal.fire('Success', `Program ${id ? 'Updated' : 'Created'}!`, 'success');
-                    loadPrograms();
-                } else {
-                    Swal.fire('Error', 'Failed to save program', 'error');
-                }
-            } catch (err) {
-                console.error(err);
-                Swal.fire('Error', 'Network Error', 'error');
-            }
-        }
-
-        // --- 5. DELETE ACTION ---
-        async function deleteProgram(id) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This will deactivate the program.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d32f2f',
-                confirmButtonText: 'Yes, delete it!'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const res = await fetch(`/api/programs/${id}`, { method: 'DELETE' });
-                        if (res.ok) {
-                            Swal.fire('Deleted!', 'Program has been deleted.', 'success');
-                            loadPrograms();
-                        } else {
-                            Swal.fire('Error', 'Could not delete.', 'error');
-                        }
-                    } catch (err) {
-                        Swal.fire('Error', 'Network error.', 'error');
-                    }
-                }
-            })
-        }
-
-        // --- 6. SLOT MANAGEMENT ---
-        const slotModal = new bootstrap.Modal(document.getElementById('slotsModal'));
-        let currentProgramIdArgs = null;
-
-        function manageSlots(pid, title) {
-            currentProgramIdArgs = pid;
-            document.getElementById('slotProgramTitle').innerText = title;
-            document.getElementById('newSlotStart').value = '';
-            document.getElementById('newSlotEnd').value = '';
-            loadSlots(pid);
-            slotModal.show();
-        }
-
-        async function loadSlots(pid) {
-            const container = document.getElementById('slotsList');
-            container.innerHTML = '<div class="text-center"><div class="spinner-border text-secondary"></div></div>';
-
-            try {
-                const res = await fetch(`/api/programs/${pid}/slots`);
-                const slots = await res.json();
-
-                if (slots.length === 0) {
-                    container.innerHTML = '<p class="text-muted text-center">No active sessions.</p>';
-                    return;
-                }
-
-                container.innerHTML = `<table class="table table-sm">
-                    <thead><tr><th>Start</th><th>End</th><th>Booked/Cap</th><th>Action</th></tr></thead>
-                    <tbody>
-                        ${slots.map(s => {
-                    const start = new Date(s.StartTime).toLocaleString();
-                    const end = new Date(s.EndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    return `
-                            <tr>
-                                <td>${start}</td>
-                                <td>${end}</td>
-                                <td>${s.BookedCount} / ${s.Capacity}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSlot(${s.SlotID})"><i class="fas fa-trash"></i></button>
-                                </td>
-                            </tr>`;
-                }).join('')}
-                    </tbody>
-                </table>`;
-
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p class="text-danger">Failed to load slots.</p>';
-            }
-        }
-
-        async function addSlot() {
-            const start = document.getElementById('newSlotStart').value;
-            const end = document.getElementById('newSlotEnd').value;
-            const cap = document.getElementById('newSlotCapacity').value;
-
-            if (!start || !end || !currentProgramIdArgs) {
-                Swal.fire('Error', 'Please verify times.', 'error');
-                return;
-            }
-
-            try {
-                const res = await fetch(`/api/programs/${currentProgramIdArgs}/slots`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ startTime: start, endTime: end, capacity: cap })
-                });
-
-                if (res.ok) {
-                    loadSlots(currentProgramIdArgs); // Reload list
-                    // Clear inputs
-                    document.getElementById('newSlotStart').value = '';
-                    document.getElementById('newSlotEnd').value = '';
-                } else {
-                    Swal.fire('Error', 'Failed to add slot', 'error');
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        async function deleteSlot(slotId) {
-            if (!confirm("Delete this session?")) return;
-
-            try {
-                const res = await fetch(`/api/programs/slots/${slotId}`, { method: 'DELETE' });
-                if (res.ok) {
-                    loadSlots(currentProgramIdArgs);
-                } else {
-                    Swal.fire('Error', 'Cannot delete (probably booked)', 'error');
-                }
-            } catch (e) { console.error(e); }
-        }
-    </script>
+    <script src="js/admin-printadobe.js"></script>
 </body>
 
 </html>

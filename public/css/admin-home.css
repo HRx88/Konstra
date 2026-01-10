@@ -1,0 +1,19 @@
+/* Insert the "Universal Admin Sidebar" CSS here */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Highlight the active page */
+
+
+.stat-card {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 5px solid #d32f2f;
+}

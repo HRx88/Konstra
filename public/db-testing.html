@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
-<head><meta charset="utf-8"><title>RDS Test</title></head>
+
+<head>
+  <meta charset="utf-8">
+  <title>RDS Test</title>
+</head>
+
 <body>
   <h1>Users from RDS</h1>
   <pre id="out">Loading...</pre>
 
-  <script>
-    fetch("/api/health/db")
-      .then(r => r.json())
-      .then(data => document.getElementById("out").textContent = JSON.stringify(data, null, 2))
-      .catch(err => document.getElementById("out").textContent = err.toString());
-  </script>
+  <script src="js/db-testing.js"></script>
 </body>
+
 </html>
