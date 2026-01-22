@@ -2,14 +2,35 @@ const Program = require('../models/program');
 
 class ProgramController {
 
-    // 1. Get all active programs
+    // 1. Get all active programs (Top-level only by default unless query param specifies otherwise)
     static async getAll(req, res) {
         try {
             const programs = await Program.getAllPrograms();
+
+            // If ?hierarchy=true, nesting is handled by frontend or separate call. 
+            // For now, getAllPrograms fetches everything. 
+            // We might want to filter out children in the main list or categorize them.
+            // Let's filter to only return Parents (ParentProgramID IS NULL) for the main catalog 
+            // if specifically requested, or let frontend filtering handle it.
+            // For backward compatibility, we return all. 
+
             res.status(200).json(programs);
         } catch (error) {
             console.error('Controller Error - getAll:', error);
             res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // 1a. Get Child Programs
+    static async getChildren(req, res) {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid Program ID' });
+        try {
+            const children = await Program.getChildPrograms(id);
+            res.status(200).json(children);
+        } catch (error) {
+            console.error('Controller Error - getChildren:', error);
+            res.status(500).json({ error: 'Failed to fetch child programs' });
         }
     }
 

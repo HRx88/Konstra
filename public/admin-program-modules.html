@@ -52,6 +52,9 @@
                 <a href="admin-printadobe.html" class="btn btn-outline-secondary me-2">
                     <i class="fas fa-arrow-left me-1"></i> Back to Programs
                 </a>
+                <button class="btn btn-outline-primary me-2" id="btnManageTracks">
+                    <i class="fas fa-layer-group me-1"></i> Manage Levels
+                </button>
                 <button class="btn btn-primary" id="btnAddModule">
                     <i class="fas fa-plus me-1"></i> Add Module
                 </button>
@@ -96,6 +99,7 @@
                             <label for="moduleTitle" class="form-label">Title <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="moduleTitle" required>
                         </div>
+                        <!-- Track selection removed: Modules belong directly to this Program -->
                         <div class="mb-3">
                             <label for="moduleDescription" class="form-label">Description</label>
                             <textarea class="form-control" id="moduleDescription" rows="3"></textarea>
@@ -199,6 +203,34 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancel</button>
                     <button type="button" class="btn btn-primary" id="btnSaveModule">Save Module</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Tracks Modal -->
+    <div class="modal fade" id="tracksModal" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manage Tracks / Levels</h5>
+                    <button type="button" class="btn-close" id="btnCloseTracksModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add Track Form -->
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="newLevelTitle"
+                            placeholder="Level Name (e.g. Beginner)">
+                        <input type="number" class="form-control" id="newLevelPrice" placeholder="Price ($)" step="0.01"
+                            min="0" style="max-width: 100px;">
+                        <button class="btn btn-primary" type="button" id="btnAddLevel">Create</button>
+                    </div>
+                    <small class="text-muted d-block mb-3">Creating a level creates a separate Sub-Program.</small>
+
+                    <!-- Levels List -->
+                    <div id="levelsList" class="list-group">
+                        <div class="text-center text-muted py-3">Loading levels...</div>
+                    </div>
                 </div>
             </div>
         </div>

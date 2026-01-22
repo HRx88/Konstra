@@ -4,6 +4,8 @@ const enrollmentId = params.get('enrollmentId');
 const programId = params.get('programId');
 
 let modules = [];
+let levels = []; // Child Programs
+let userEnrollments = []; // To check access
 let completedModules = [];
 let currentModule = null;
 
@@ -14,15 +16,43 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    await loadModules();
-    await loadProgress();
+    await Promise.all([loadLevels(), loadModules(), loadProgress(), loadUserEnrollments()]);
 
     // Start automatic refresh via SSE
     setupSSE();
 
     // Static Listeners
     document.getElementById('logoutBtn')?.addEventListener('click', logout);
+    document.getElementById('mobileDashToggle')?.addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('active');
+    });
 });
+
+async function loadLevels() {
+    try {
+        const response = await fetch(`/api/programs/${programId}/children`);
+        if (response.ok) {
+            levels = await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading levels:', error);
+        levels = [];
+    }
+}
+
+async function loadUserEnrollments() {
+    try {
+        const memberDetails = JSON.parse(localStorage.getItem('memberDetails'));
+        if (!memberDetails) return;
+
+        const response = await fetch(`/api/enrollments/my-enrollments?userID=${memberDetails.memberID}`);
+        if (response.ok) {
+            userEnrollments = await response.json();
+        }
+    } catch (error) {
+        console.error('Error loading enrollments:', error);
+    }
+}
 
 async function loadModules(silent = false) {
     try {
@@ -73,12 +103,12 @@ async function loadModules(silent = false) {
                 const enrollments = await enrollRes.json();
                 const currentEnroll = enrollments.find(e => e.EnrollmentID == enrollmentId);
                 if (currentEnroll) {
-                    document.getElementById('programTitle').textContent = currentEnroll.ProgramTitle;
+                    document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>${currentEnroll.ProgramTitle}`;
                 } else {
-                    document.getElementById('programTitle').textContent = 'Course Content';
+                    document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
                 }
             } catch (e) {
-                document.getElementById('programTitle').textContent = 'Course Content';
+                document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
             }
         }
 
@@ -178,30 +208,249 @@ function updateModuleList() {
 
     moduleList.innerHTML = '';
 
+    // Create a Section Wrapper for Main Modules
+    const mainSection = document.createElement('div');
+    mainSection.className = 'level-section mt-0'; // No top margin for the first one
+
+    // Header
+    const mainHeader = document.createElement('div');
+    mainHeader.className = 'level-header';
+    mainHeader.innerHTML = `<div class="d-flex align-items-center"><i class="fas fa-folder-open me-2 text-warning"></i><span>Core Curriculum</span></div>`;
+
+    // Body (Modules List)
+    const mainBody = document.createElement('div');
+    mainBody.className = 'level-body p-2';
+
     modules.forEach(module => {
         const isCompleted = completedModules.some(c => c.ModuleID === module.ModuleID);
         const isActive = activeModuleId === module.ModuleID;
 
-        const item = document.createElement('div');
-        item.className = `module-item ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}`;
-        item.dataset.moduleId = module.ModuleID;
-        item.onclick = (e) => selectModule(module, e);
+        const item = createModuleItem(module);
+        if (isActive) item.classList.add('active');
+        mainBody.appendChild(item);
+    });
 
-        item.innerHTML = `
-            <div class="module-checkbox">
-                ${isCompleted ? '<i class="fas fa-check"></i>' : ''}
-            </div>
-            <div class="module-info">
-                <div class="module-title">${module.OrderIndex}. ${module.Title}</div>
-                <div class="module-type">${module.ContentType || 'video'}</div>
+    mainSection.appendChild(mainHeader);
+    mainSection.appendChild(mainBody);
+    moduleList.appendChild(mainSection);
+
+    // Render Levels (Child Programs)
+    const levelsContainer = document.getElementById('levelsListContainer');
+    if (levelsContainer) {
+        levelsContainer.innerHTML = '';
+        levels.forEach(level => {
+            renderLevelSection(level, levelsContainer);
+        });
+    }
+}
+
+// Helper for creating module item (Global Scope) - uses global completedModules
+function createModuleItem(module) {
+    return createModuleItemWithProgress(module, completedModules);
+}
+
+// Helper for creating module item with a specific progress array
+function createModuleItemWithProgress(module, progressArray) {
+    const isCompleted = progressArray.some(c => c.ModuleID === module.ModuleID);
+    const item = document.createElement('div');
+    item.className = `module-item ${isCompleted ? 'completed' : ''}`;
+    // Note: 'active' class is handled by the caller if needed, or we can check global currentModule
+
+    // Check if this module is the currently active one (if currentModule is set)
+    if (currentModule && currentModule.ModuleID === module.ModuleID) {
+        item.classList.add('active');
+    }
+
+    item.dataset.moduleId = module.ModuleID;
+    item.addEventListener('click', (e) => selectModule(module, e));
+
+    const iconMap = {
+        'video': 'fa-play-circle',
+        'quiz': 'fa-question-circle',
+        'article': 'fa-file-alt',
+        'pdf': 'fa-file-pdf'
+    };
+    const colorMap = {
+        'video': 'text-danger',
+        'quiz': 'text-primary',
+        'article': 'text-info',
+        'pdf': 'text-danger'
+    };
+    const type = module.ContentType || 'video';
+    const iconClass = iconMap[type] || 'fa-circle';
+    const colorClass = colorMap[type] || 'text-secondary';
+
+    item.innerHTML = `
+        <div class="module-checkbox">
+            ${isCompleted ? '<i class="fas fa-check"></i>' : ''}
+        </div>
+        <div class="me-3 fs-5 ${colorClass}">
+            <i class="fas ${iconClass}"></i>
+        </div>
+        <div class="module-info">
+            <div class="module-title">${module.OrderIndex}. ${module.Title}</div>
+            <div class="module-type">${type}</div>
+        </div>
+    `;
+    return item;
+}
+
+
+
+// Render a Level (Child Program) section
+async function renderLevelSection(level, container) {
+    const isEnrolled = userEnrollments.some(e => e.ProgramID === level.ProgramID);
+
+    const section = document.createElement('div');
+    section.className = 'level-section mt-0';
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'level-header';
+
+    let statusBadge = '';
+    if (isEnrolled) {
+        statusBadge = `<span class="badge bg-success"><i class="fas fa-check me-1"></i>Unlocked</span>`;
+    } else if (level.Price > 0) {
+        statusBadge = `<span class="badge bg-warning text-dark"><i class="fas fa-lock me-1"></i>$${level.Price}</span>`;
+    } else {
+        // Free but not enrolled? Should auto-enroll or show "Start"?
+        statusBadge = `<span class="badge bg-info text-dark">Free</span>`;
+    }
+
+    header.innerHTML = `<div class="d-flex align-items-center"><i class="fas fa-folder-open me-2 text-warning"></i><span>${level.Title}</span></div>${statusBadge}`;
+    section.appendChild(header);
+
+    // Body
+    const body = document.createElement('div');
+    body.className = 'level-body p-2';
+
+    if (isEnrolled) {
+        // If enrolled, show modules (Need to fetch them!)
+        body.innerHTML = `<div class="text-center text-muted small"><i class="fas fa-spinner fa-spin"></i> Loading content...</div>`;
+        section.appendChild(body);
+
+        // Fetch modules AND progress for this level
+        try {
+            const childEnrollment = userEnrollments.find(e => e.ProgramID === level.ProgramID);
+            console.log(`[DEBUG] Fetching modules for level ${level.ProgramID}`, level);
+
+            const [modulesRes, progressRes] = await Promise.all([
+                fetch(`/api/programs/${level.ProgramID}/modules`),
+                childEnrollment ? fetch(`/api/enrollments/${childEnrollment.EnrollmentID}/progress`) : Promise.resolve({ json: () => [] })
+            ]);
+
+            if (!modulesRes.ok) throw new Error(`HTTP error! status: ${modulesRes.status}`);
+            const levelModules = await modulesRes.json();
+            const levelProgress = childEnrollment ? await progressRes.json() : [];
+
+            body.innerHTML = '';
+
+            if (levelModules.length === 0) {
+                body.innerHTML = `<div class="text-muted small ps-3">No modules yet.</div>`;
+            } else {
+                levelModules.forEach(mod => {
+                    // Use child's progress array instead of global completedModules
+                    const item = createModuleItemWithProgress(mod, levelProgress);
+                    body.appendChild(item);
+                });
+            }
+        } catch (e) {
+            console.error('[DEBUG] Failed to load level modules:', e);
+            body.innerHTML = `<div class="text-danger small">Failed to load content: ${e.message}</div>`;
+        }
+    } else {
+        // Locked / Not Enrolled
+        body.innerHTML = `
+            <div class="text-center p-3">
+                <p class="small text-muted mb-2">${level.Description || 'Unlock this level to access content.'}</p>
+                 <button class="btn btn-sm btn-warning w-100 unlock-level-btn" 
+                    data-level-id="${level.ProgramID}" 
+                    data-price="${level.Price}"
+                    data-title="${level.Title}">
+                    ${level.Price > 0 ? `Unlock for $${level.Price}` : 'Start for Free'}
+                </button>
             </div>
         `;
+        section.appendChild(body);
+    }
 
-        moduleList.appendChild(item);
+    container.appendChild(section);
+}
+
+// Handle Unlocking a Level (Program)
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('unlock-level-btn')) {
+        handleUnlockLevel(e.target);
+    }
+});
+
+async function handleUnlockLevel(btn) {
+    const levelId = btn.dataset.levelId;
+    const price = btn.dataset.price;
+    const title = btn.dataset.title;
+    const memberDetails = JSON.parse(localStorage.getItem('memberDetails'));
+
+    if (!memberDetails) {
+        alert('Please log in.');
+        return;
+    }
+
+    // Use SweetAlert for confirmation
+    const result = await Swal.fire({
+        title: `Unlock "${title}"?`,
+        text: price > 0 ? `This will cost $${price}.` : 'This program is free to start.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: price > 0 ? `Yes, unlock for $${price}` : 'Yes, start now!'
     });
+
+    if (!result.isConfirmed) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+
+    try {
+        const response = await fetch('/api/enrollments/create', { // FIXED: Added /create
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: memberDetails.memberID,
+                programId: levelId,
+                details: 'Unlocked via Parent Program',
+            })
+        });
+
+        const resData = await response.json();
+
+        if (response.ok && (resData.success || resData.EnrollmentID)) {
+            await Swal.fire({
+                title: 'Unlocked!',
+                text: 'You now have access to this program.',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+            // Refresh to show content
+            await Promise.all([loadUserEnrollments(), loadLevels()]);
+            updateModuleList();
+        } else {
+            Swal.fire('Error', resData.message || 'Failed to unlock.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = price > 0 ? `Unlock for $${price}` : 'Start for Free';
+        }
+    } catch (e) {
+        console.error(e);
+        Swal.fire('Error', 'An unexpected error occurred.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = price > 0 ? `Unlock for $${price}` : 'Start for Free';
+    }
 }
 
 function selectModule(module, event) {
+    console.log('[DEBUG selectModule] Selected module:', module.Title, 'ModuleID:', module.ModuleID, 'ProgramID:', module.ProgramID);
     currentModule = module;
 
     // Update active state
@@ -211,8 +460,27 @@ function selectModule(module, event) {
     event.currentTarget.classList.add('active');
 
     // Update header
-    document.getElementById('currentModuleTitle').textContent = module.Title;
-    document.getElementById('currentModuleType').textContent = (module.ContentType || 'video').toUpperCase();
+    const typeIcon = {
+        'video': 'fa-play-circle',
+        'quiz': 'fa-question-circle',
+        'article': 'fa-file-alt',
+        'pdf': 'fa-file-pdf'
+    }[module.ContentType || 'video'];
+
+    const typeColor = {
+        'video': 'text-danger',
+        'quiz': 'text-primary',
+        'article': 'text-info',
+        'pdf': 'text-danger'
+    }[module.ContentType || 'video'];
+
+    document.getElementById('currentModuleTitle').innerHTML = module.Title;
+    document.getElementById('currentModuleTitle').className = 'mb-1 fw-bold text-dark h4';
+
+    document.getElementById('currentModuleType').innerHTML = `
+        <i class="fas ${typeIcon} ${typeColor} me-1"></i> 
+        <span class="text-uppercase fw-bold" style="letter-spacing:1px; font-size: 0.75rem;">${module.ContentType || 'video'}</span>
+    `;
 
     // Render content based on type
     const contentMain = document.getElementById('contentMain');
@@ -435,9 +703,9 @@ function selectModule(module, event) {
 
     contentMain.innerHTML = `
         ${contentHTML}
-        <div class="module-description">
-            <h5>About this lesson</h5>
-            <p class="text-muted mt-2" id="lessonDescription">${module.Description || 'No description available for this module.'}</p>
+        <div class="module-description p-3 bg-light rounded-3 border-start border-4 border-danger shadow-sm" style="max-width: 1000px;">
+            <h5 class="mb-2 fw-bold text-dark"><i class="fas fa-info-circle me-2 text-danger"></i>About this lesson</h5>
+            <p class="text-secondary mb-0" id="lessonDescription" style="line-height: 1.6;">${module.Description || 'No description available for this module.'}</p>
         </div>
         `;
 
@@ -692,8 +960,34 @@ async function completeModule() {
         completeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Completing...';
     }
 
+    // Determine valid enrollment ID for this module
+    // Convert to integers for consistent comparison
+    const parentProgramId = parseInt(programId);
+    const moduleProgramId = parseInt(currentModule.ProgramID);
+
+    let targetEnrollmentId = enrollmentId; // Default to parent
+
+    console.log('[DEBUG completeModule] parentProgramId:', parentProgramId, 'moduleProgramId:', moduleProgramId);
+
+    if (moduleProgramId !== parentProgramId) {
+        // It's a child program module - find the child's enrollment
+        const childEnrollment = userEnrollments.find(e => parseInt(e.ProgramID) === moduleProgramId);
+        console.log('[DEBUG completeModule] Child enrollment found:', childEnrollment);
+        if (childEnrollment) {
+            targetEnrollmentId = childEnrollment.EnrollmentID;
+        } else {
+            console.error('No enrollment found for this child program module');
+            showToast('Error: You are not enrolled in this level.', 'error');
+            if (completeBtn) {
+                completeBtn.disabled = false;
+                completeBtn.innerHTML = '<i class="fas fa-check me-2"></i>Mark as Complete';
+            }
+            return;
+        }
+    }
+
     try {
-        const response = await fetch(`/api/enrollments/${enrollmentId}/modules/${currentModule.ModuleID}/complete`, {
+        const response = await fetch(`/api/enrollments/${targetEnrollmentId}/modules/${currentModule.ModuleID}/complete`, {
             method: 'POST'
         });
 
@@ -707,8 +1001,8 @@ async function completeModule() {
                 celebration.classList.remove('show');
             }, 2000);
 
-            // Reload progress
-            await loadProgress();
+            // Reload progress (Parent + Children)
+            await Promise.all([loadProgress(), updateProgress()]);
 
             // Hide button
             if (completeBtn) completeBtn.style.display = 'none';
@@ -783,13 +1077,58 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-function updateProgress() {
-    const total = modules.length;
-    const completed = completedModules.length;
-    const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+// Update progress bar (Global: Parent + Unlocked Children)
+async function updateProgress() {
+    // Get parent module IDs for accurate counting
+    const parentModuleIds = new Set(modules.map(m => m.ModuleID));
 
-    document.getElementById('progressText').textContent = `${completed}/${total} completed`;
-    document.getElementById('progressBar').style.width = `${percentage}%`;
+    // Only count completions that match actual parent modules
+    // (Fixes issue where child module completions were historically recorded against parent)
+    const parentCompletedCount = completedModules.filter(c => parentModuleIds.has(c.ModuleID)).length;
+
+    let globalTotal = modules.length;
+    let globalCompleted = parentCompletedCount;
+
+    // Aggregate progress from unlocked levels
+    if (levels.length > 0 && userEnrollments.length > 0) {
+        const statsPromises = levels.map(async (level) => {
+            const enrollment = userEnrollments.find(e => e.ProgramID === level.ProgramID);
+            if (enrollment) {
+                try {
+                    // Fetch modules count for this level
+                    const modRes = await fetch(`/api/programs/${level.ProgramID}/modules`);
+                    const mods = await modRes.json();
+
+                    // Fetch progress count for this level's enrollment
+                    const progRes = await fetch(`/api/enrollments/${enrollment.EnrollmentID}/progress`);
+                    const prog = await progRes.json();
+
+                    return {
+                        total: mods.length,
+                        completed: prog.length
+                    };
+                } catch (e) {
+                    console.error(`Error fetching stats for level ${level.ProgramID}:`, e);
+                    return { total: 0, completed: 0 };
+                }
+            }
+            return { total: 0, completed: 0 };
+        });
+
+        const results = await Promise.all(statsPromises);
+        results.forEach(stat => {
+            globalTotal += stat.total;
+            globalCompleted += stat.completed;
+        });
+    }
+
+    const percentage = globalTotal > 0 ? Math.round((globalCompleted / globalTotal) * 100) : 0;
+
+    const progressText = document.getElementById('progressText');
+    const progressBar = document.getElementById('progressBar');
+
+    if (progressText) progressText.textContent = `${globalCompleted}/${globalTotal} (${percentage}%)`;
+    if (progressBar) progressBar.style.width = `${percentage}%`;
 }
 
 function logout() {

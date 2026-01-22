@@ -10,11 +10,22 @@
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="css/sidebar.css">
     <link rel="stylesheet" href="css/program-content.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
 
-    <div class="learning-container">
+    <div class="learning-container pt-5 pt-md-0">
+        <!-- Mobile Header Toggle (Visible only on mobile) -->
+        <div class="d-md-none w-100 position-fixed top-0 start-0 bg-white shadow-sm p-3 d-flex justify-content-between align-items-center"
+            style="z-index: 1100; height: 60px;">
+            <button class="btn btn-outline-dark" id="mobileDashToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="fw-bold">MyPortal</span>
+            <div style="width: 38px;"></div> <!-- Spacer -->
+        </div>
+
         <!-- Navigation Sidebar -->
         <nav class="dashboard-sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -36,26 +47,37 @@
 
         <!-- Module Sidebar -->
         <div class="module-sidebar">
-            <div class="sidebar-header"
-                style="background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); color: white;">
-                <h4 id="programTitle" class="text-white mb-2">Loading...</h4>
-                <a href="user-printadobe.html" class="btn btn-sm btn-outline-light">
-                    <i class="fas fa-arrow-left me-1"></i> Back to My Programs
-                </a>
+            <div class="sidebar-header-main">
+                <div class="header-top">
+                    <a href="user-dashboard.html" class="dashboard-link">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="program-info">
+                    <h5 id="programTitle" class="program-title">
+                        <i class="fas fa-graduation-cap me-2 text-warning"></i>Loading...
+                    </h5>
+
+                    <div class="progress-section">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="progress-label">YOUR PROGRESS</span>
+                            <span class="progress-value" id="progressText">0/0</span>
+                        </div>
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="progress-overview">
-                <div class="d-flex justify-content-between mb-2">
-                    <small class="text-muted">Your Progress</small>
-                    <small class="fw-bold" id="progressText">0/0 completed</small>
+            <div class="module-list-container flex-grow-1 overflow-auto">
+                <div id="moduleList" class="module-list">
+                    <!-- Parent/General Modules injected here -->
                 </div>
-                <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 0%" id="progressBar"></div>
-                </div>
-            </div>
 
-            <div class="module-list" id="moduleList">
-                <!-- Modules loaded here -->
+                <!-- Child Programs (Levels) -->
+                <div id="levelsListContainer" class="mt-0"></div>
             </div>
         </div>
 
