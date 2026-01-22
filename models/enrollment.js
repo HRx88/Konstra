@@ -22,7 +22,9 @@ class Enrollment {
                         p.Description AS ProgramDescription,
                         p.ImageURL AS ProgramImage,
                         p.Duration,
-                        p.Location
+                        p.Location,
+                        p.ParentProgramID,
+                        p.IsActive
                     FROM Enrollments e
                     INNER JOIN Programs p ON e.ProgramID = p.ProgramID
                     WHERE e.UserID = @userId

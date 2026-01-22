@@ -1,8 +1,10 @@
 const params = new URLSearchParams(window.location.search);
 const programId = params.get('programId');
 let modules = [];
+// tracks variable removed - using levels (Child Programs)
 let modal;
 let deleteModal;
+let tracksModal;
 let moduleToDeleteId = null;
 let uploadedFileUrl = null; // Store uploaded file URL
 
@@ -18,9 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modal = new bootstrap.Modal(document.getElementById('moduleModal'));
     deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    tracksModal = new bootstrap.Modal(document.getElementById('tracksModal'));
 
     setupEventListeners();
     fetchProgramTitle();
+    // loadTracks removed - we load levels only when modal opens or if we want to show breadcrumbs
     loadModules();
     setupFileUpload();
 });
@@ -29,6 +33,7 @@ function setupEventListeners() {
     // Static Buttons
     document.getElementById('logoutBtn')?.addEventListener('click', logout);
     document.getElementById('btnAddModule')?.addEventListener('click', openAddModal);
+    document.getElementById('btnManageTracks')?.addEventListener('click', openTracksModal);
 
     document.getElementById('mobileDashToggle')?.addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('active');
@@ -38,6 +43,10 @@ function setupEventListeners() {
     document.getElementById('btnCloseModalHeader')?.addEventListener('click', () => safeHideModal(modal));
     document.getElementById('btnCancelModal')?.addEventListener('click', () => safeHideModal(modal));
     document.getElementById('btnSaveModule')?.addEventListener('click', saveModule);
+
+    // Track Modal Buttons
+    document.getElementById('btnCloseTracksModal')?.addEventListener('click', () => safeHideModal(tracksModal));
+    document.getElementById('btnAddLevel')?.addEventListener('click', saveLevel);
 
     // Delete Modal Buttons
     document.getElementById('btnCloseDeleteModalHeader')?.addEventListener('click', () => safeHideModal(deleteModal));
@@ -75,6 +84,18 @@ function setupEventListeners() {
             removeQuestion(btn.dataset.id);
         }
     });
+
+    // Event Delegation: Levels List
+    document.getElementById('levelsList')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        if (btn.classList.contains('btn-delete-level')) {
+            deleteLevel(btn.dataset.id);
+        } else if (btn.classList.contains('btn-manage-level')) {
+            window.location.href = `admin-program-modules.html?programId=${btn.dataset.id}`;
+        }
+    });
 }
 
 async function fetchProgramTitle() {
@@ -89,6 +110,123 @@ async function fetchProgramTitle() {
     } catch (error) {
         console.error('Error fetching program title:', error);
         document.getElementById('programInfo').textContent = 'Error loading program details';
+    }
+}
+
+// ========== Levels (Child Programs) Management ==========
+let levels = [];
+async function loadLevels() {
+    try {
+        // Use the new getChildren endpoint
+        const response = await fetch(`/api/programs/${programId}/children`);
+        levels = await response.json();
+        renderLevelsList();
+    } catch (error) {
+        console.error('Error loading levels:', error);
+        levels = [];
+    }
+}
+
+function openTracksModal() {
+    loadLevels();
+    tracksModal.show();
+}
+
+function renderLevelsList() {
+    const list = document.getElementById('levelsList');
+    if (levels.length === 0) {
+        list.innerHTML = `<div class="text-center text-muted py-3">No levels created yet.</div>`;
+        return;
+    }
+
+    list.innerHTML = levels.map(level => `
+        <div class="level-item">
+            <div>
+                <span class="level-title">${level.Title}</span>
+                ${level.Price > 0 ? `<span class="badge bg-success ms-2">$${level.Price}</span>` : '<span class="badge bg-secondary ms-2">Free</span>'}
+            </div>
+            <div>
+                <button class="btn btn-sm btn-outline-primary btn-manage-level me-1" data-id="${level.ProgramID}" title="Manage Content">
+                    <i class="fas fa-edit"></i> Content
+                </button>
+                <button class="btn btn-sm btn-outline-danger btn-delete-level" data-id="${level.ProgramID}" title="Delete Program">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function saveLevel() {
+    const titleInput = document.getElementById('newLevelTitle');
+    const title = titleInput.value.trim();
+    if (!title) {
+        showToast('Please enter a level name.', 'warning');
+        return;
+    }
+
+    const priceInput = document.getElementById('newLevelPrice');
+    const price = parseFloat(priceInput.value) || 0.00;
+
+    // We need to fetch current program details to inherit some defaults if needed, 
+    // or just send minimal data required for a program
+    // The create API requires: title, type, price, duration, maxParticipants
+    // We'll use defaults for now or ask user? For quick "Add Level", defaults are better.
+
+    // Fetch parent to get some defaults
+    let parentProgram = {};
+    try {
+        const res = await fetch(`/api/programs/${programId}`);
+        parentProgram = await res.json();
+    } catch (e) { }
+
+    const payload = {
+        title: title,
+        type: parentProgram.Type || 'Education',
+        description: `Level for ${parentProgram.Title || 'Program'}`,
+        price: price,
+        duration: parentProgram.Duration || 'Self-paced',
+        maxParticipants: parentProgram.MaxParticipants || 9999,
+        parentProgramId: parseInt(programId) // LINK TO PARENT
+    };
+
+    try {
+        const response = await fetch(`/api/programs`, { // standard create program endpoint
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+            titleInput.value = '';
+            priceInput.value = '';
+            showToast('Level created successfully!', 'success');
+            await loadLevels();
+        } else {
+            showToast(result.error || 'Failed to add level', 'error');
+        }
+    } catch (error) {
+        console.error('Save level error:', error);
+        showToast('Error saving level', 'error');
+    }
+}
+
+async function deleteLevel(levelId) {
+    if (!confirm('Are you sure? This will delete the entire sub-program and its modules.')) return;
+
+    try {
+        const response = await fetch(`/api/programs/${levelId}`, { method: 'DELETE' });
+
+        if (response.ok) {
+            showToast('Level deleted successfully', 'success');
+            await loadLevels();
+        } else {
+            showToast('Failed to delete level', 'error');
+        }
+    } catch (error) {
+        console.error('Delete level error:', error);
+        showToast('Error deleting level', 'error');
     }
 }
 
@@ -228,24 +366,29 @@ async function loadModules() {
             return;
         }
 
-        tbody.innerHTML = modules.map(m => `
-            <tr>
-                <td><strong>${m.OrderIndex}</strong></td>
-                <td>${m.Title}</td>
-                <td><span class="badge bg-secondary">${m.ContentType}</span></td>
-                <td><small class="text-muted">${truncate(m.ContentURL, 40)}</small></td>
-                <td>
-                    <button class="btn btn-sm btn-outline-primary btn-action btn-edit me-1" 
-                            data-id="${m.ModuleID}" title="Edit">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger btn-action btn-delete" 
-                            data-id="${m.ModuleID}" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
+        // Render Rows (Flat List)
+        const renderRows = (mods) => {
+            return mods.map(m => `
+                <tr>
+                    <td><strong>${m.OrderIndex}</strong></td>
+                    <td>${m.Title}</td>
+                    <td><span class="badge bg-secondary">${m.ContentType}</span></td>
+                    <td><small class="text-muted">${truncate(m.ContentURL, 40)}</small></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary btn-action btn-edit me-1" 
+                                data-id="${m.ModuleID}" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger btn-action btn-delete" 
+                                data-id="${m.ModuleID}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        };
+
+        tbody.innerHTML = renderRows(modules);
 
     } catch (error) {
         console.error('Error loading modules:', error);
@@ -278,11 +421,10 @@ function openAddModal() {
         No questions yet. Click "Add Question" to create one.
     </p>`;
     questionCounter = 0;
-    questionCounter = 0;
     document.getElementById('requiredCorrectInput').value = 1;
     updatePassingScore();
 
-    // Set next order index
+    // Set next order index (simple approximation)
     const nextOrder = modules.length > 0 ? Math.max(...modules.map(m => m.OrderIndex)) + 1 : 1;
     document.getElementById('moduleOrderIndex').value = nextOrder;
 
@@ -300,6 +442,8 @@ function openEditModal(moduleId) {
     document.getElementById('moduleContentType').value = module.ContentType;
     document.getElementById('moduleOrderIndex').value = module.OrderIndex;
 
+    // Track Set removed - modules are flattened under program
+
     // Reset states
     uploadedFileUrl = null;
     document.getElementById('uploadedFileInfo').style.display = 'none';
@@ -310,7 +454,6 @@ function openEditModal(moduleId) {
         document.getElementById('urlInputSection').style.display = 'none';
         document.getElementById('fileInputSection').style.display = 'none';
         document.getElementById('quizEditorSection').style.display = 'block';
-        document.getElementById('moduleContentURL').value = '';
         document.getElementById('moduleContentURL').value = '';
         // Load quiz questions from JSON
         loadQuizData(module.ContentURL);
@@ -324,7 +467,6 @@ function openEditModal(moduleId) {
         document.getElementById('quizQuestions').innerHTML = `<p class="text-muted text-center py-3 mb-0" id="noQuestionsMsg">
             No questions yet. Click "Add Question" to create one.
         </p>`;
-        questionCounter = 0;
         questionCounter = 0;
         document.getElementById('requiredCorrectInput').value = 1;
     }
@@ -342,7 +484,6 @@ async function saveModule() {
     let passingPercentage = null;
 
     if (contentType === 'quiz') {
-        // Collect quiz questions from DOM
         // Collect quiz questions from DOM
         const quizData = [];
         const questionCards = document.querySelectorAll('#quizQuestions .card');
@@ -420,6 +561,7 @@ async function saveModule() {
     }
 
     const moduleId = document.getElementById('moduleId').value;
+    // const trackIdVal = document.getElementById('moduleTrack').value;
     const data = {
         title: document.getElementById('moduleTitle').value,
         description: document.getElementById('moduleDescription').value,

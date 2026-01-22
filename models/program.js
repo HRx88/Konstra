@@ -65,6 +65,27 @@ class Program {
         }
     }
 
+    // Get child programs (levels)
+    static async getChildPrograms(programId) {
+        let pool;
+        try {
+            pool = await sql.connect(dbConfig);
+            const result = await pool.request()
+                .input('programId', sql.Int, programId)
+                .query(`
+                    SELECT * FROM Programs 
+                    WHERE ParentProgramID = @programId AND IsActive = 1 
+                    ORDER BY ProgramID ASC
+                `);
+            return result.recordset;
+        } catch (err) {
+            console.error('SQL Get Child Programs Error:', err);
+            throw err;
+        } finally {
+            if (pool) pool.close();
+        }
+    }
+
     // Create a new program (Admin only)
     static async createProgram(data) {
         let pool;
@@ -79,9 +100,10 @@ class Program {
                 .input('location', sql.NVarChar, data.location || null) // Nullable for online courses
                 .input('duration', sql.NVarChar, data.duration)
                 .input('maxParticipants', sql.Int, data.maxParticipants)
+                .input('parentProgramId', sql.Int, data.parentProgramId || null)
                 .query(`
-                    INSERT INTO Programs (Title, Type, Description, ImageURL, Price, Location, Duration, MaxParticipants, EnrolledCount, IsActive)
-                    VALUES (@title, @type, @description, @imageURL, @price, @location, @duration, @maxParticipants, 0, 1);
+                    INSERT INTO Programs (Title, Type, Description, ImageURL, Price, Location, Duration, MaxParticipants, EnrolledCount, IsActive, ParentProgramID)
+                    VALUES (@title, @type, @description, @imageURL, @price, @location, @duration, @maxParticipants, 0, 1, @parentProgramId);
                     SELECT SCOPE_IDENTITY() AS ProgramID;
                 `);
 
