@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Header Group */
+                .Header-Container{
+                    position: relative;
+                    overflow: hidden;
+                    min-height: 400px;
+                    margin-bottom: 59px;
+                }
+
+                .Header-Thumbnail{
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* fills viewport, crops excess */
+                    z-index: 0;
+                }
+
+                .Header-Title h1{
+                        /* Set the position so it can be placed above the thumbnail + Overlay */
+                            position: relative;
+                            z-index: 2;
+                        
+                        /* Define the color, font size, and weight */
+                            color: #ffffff;
+                            font-size: 47px;
+                            font-weight: bold;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
+                }
+
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
+
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
+
+                    text-align: center; /* Centralize the text */
+
+                }
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
+                    font-size: 40px;
+                    font-weight: 400;
+                    margin-bottom: 17px;
+                }
+
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
+                    font-size: 18px;
+                    font-weight: normal;
+                    margin-left: 32px;
+                }
+
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
+                }
+                
+            /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                /* Dropdown box styling */
+                    .Topics-Drop{
+
+                        /* Style the accordion box design */
+                            max-width: 1075px;
+                            margin: 20px auto;
+                            border: 1px solid #dddddd;
+                            border-radius: 10px;
+
+                        /* Shadow Styling */
+                            box-shadow:
+                            inset 0 5px 2px rgba(0,0,0,0.04), /* inner */
+                            0 12px 28px rgba(0,0,0,0.1);     /* outer */
+                    }
+
+                    .Topics-Drophead{
+                        cursor: pointer;
+                        padding: 16px 18px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        list-style: none;
+                    }
+
+                    .Topics-Level h4{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 20px;
+                        font-weight: normal;
+                        margin-left: 10px;
+                    }
+
+                    .Topics-Description p{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 18px;
+                        font-weight: normal;
+                        margin-left: 50px;
+                        margin-top: 15px;
+                    }
+
+                    .Topics-Drophead::-webkit-details-marker{ display: none; }
+
+                    .Topics-Drophead span{ opacity: 0.7; }
+
+                    .Topics-Icon::before{ content: "+"; font-size: 22px; }
+                    .Topics-Drop[open] .Topics-Icon::before{ content: "-"; }
+
+                    .Topics-Dropbody{
+                    padding: 0 18px 18px;
+                    line-height: 1.6;
+                    }
+
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .Topics-ModContent {
+                        margin-left: 20px;
+                    }
+
+                    .Topics-ModContent li{
+                        margin-left: 40px;
+                    }
+
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
+                    }
+
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
+
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
+
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
+                            display: flex;
+                            flex-direction: column;
+
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
+
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
+                    }
+
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
+
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
+                    }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
+                    }
+
+                /* Show and hide the title */
+                    .Highlight-TitleMod-Main{
+                        display: block;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: none;
+                    }
+
+
+            /* Responsiveness modifications */
+                @media (max-width: 1129px){
+                    .Highlights-Box{
+                        max-width: 900px;
+                        margin: 0 auto 50px;
+                        flex-direction: row;
+                        align-items: stretch;
+                    }
+
+                    .Highlights-Box img{
+                        /* max-width: 350px; */
+                        flex: 0 0 350px;
+                        width: 350px;
+                        height: 350px;
+                        max-height: 400px;
+                        object-fit: cover;
+                        margin-bottom: 40px;
+                    }
+
+                    .Highlights-Box p{
+                        flex: 1;
+                        margin: 60px 20px;
+                    }
+
+                    .Highlight-TitleMod-Main{
+                        display: none;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: block;
+                        margin-top: 40px;
+                    }
+                }
+            
+    </style>
+    <body>
+
+        <!-- Return to Top Button (Top) -->
+        <div id="top"></div>
+        
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        
+        <!-- Header Group -->
+        <section class="Header-Container">
+
+            <!-- Header Thumbnail -->
+            <img class="Header-Thumbnail" src="Media/Curriculum 5.jpg">
+
+            <!-- Overlay -->
+            <div class="bg-overlay"></div>
+
+            <!-- Title -->
+            <div class="Header-Title">
+                <h1>BUSINESS, INNOVATION & <span class="color_conversion">AUTOMATION </span> STRATEGY</h1>
+
+                <p>Making Automation Viable, Scalable, and Ethical/p>
+            </div>
+        </section>
+
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        This course is for learners who want to understand what makes automation succeed in 
+                        the real world. You will learn how to judge costs and returns, choose the right 
+                        business model, plan market entry, and handle risks like regulation and adoption. 
+                        It also covers ethics and workforce impact so decisions are responsible, not just 
+                        profitable.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        You will learn the strategy side of robotics and automation, from basic economics to 
+                        global scaling, then full deployment planning. The learning moves from understanding 
+                        cost structures and business models, to building go to market plans and financial 
+                        models, then to leadership topics like organisational change, funding pathways, 
+                        governance, and execution roadmaps. By the end, you can propose a realistic automation 
+                        strategy and defend it to stakeholders.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Business analyst for automation or digital transformation</li>
+                            <li>Strategy and operations associate</li>
+                            <li>Innovation and partnerships executive</li>
+                            <li>Product or program coordinator for robotics solutions</li>
+                            <li>Market development associate for emerging technologies</li>
+                            <li>Business development executive for automation services</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 18 - 35, younger participants (13 - 15) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if interested.
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        <span class="Bold-Conversion">No prior experience</span> in business, construction, or robotics 
+                        is required.
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
+                    
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of Automation Economics</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-35 <br>
+                            <span class="Bold-Conversion">Total Duration:</span> 18 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Business model & automation logic test<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Explain why automation is adopted and how it changes operations and business models</li>
+                                <li>Understand basic automation economics including CapEx, OpEx, and cost structures</li>
+                                <li>Discuss ethics and workforce impact clearly and apply simple go or no go decision logic</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Explainer videos</li>
+                                <li>Case studies</li>
+                                <li>Short analysis exercises</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why Automation Changes Business <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain how automation affects cost, speed, quality, and capacity</li>
+                                        <li>Students can compare automation adoption across industries using simple examples</li>
+                                        <li>Students can identify common drivers behind automation investment decisions</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Automation impact examples</li>
+                                        <li>Industry comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Automation Cost Structures <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can distinguish CapEx and OpEx in automation projects</li>
+                                        <li>Students can identify key cost components such as equipment, integration, maintenance, and training</li>
+                                        <li>Students can build a simple cost logic view of an automation option</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>CapEx vs OpEx breakdowns</li>
+                                        <li>Cost modeling basics</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Business Models in Robotics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can compare service, leasing, and licensing style models</li>
+                                        <li>Students can explain how revenue, risk, and ownership change by model</li>
+                                        <li>Students can choose a suitable model for a basic scenario and justify it</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Printer-as-a-service</li>
+                                        <li>Licensing & leasing models</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Market Readiness & Adoption <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can assess customer readiness using simple criteria</li>
+                                        <li>Students can identify barriers such as trust, integration effort, and change resistance</li>
+                                        <li>Students can propose actions that increase adoption likelihood</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Customer readiness frameworks</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Ethics, Workforce & Society <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain workforce impacts such as displacement versus upskilling</li>
+                                        <li>Students can identify ethical risks such as bias, safety, and unequal benefit</li>
+                                        <li>Students can propose responsible practices that protect people and communities</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Job displacement vs upskilling</li>
+                                        <li>Responsible automation</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Automation Case Studies <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can analyse what made an automation project succeed or fail</li>
+                                        <li>Students can identify lessons related to ROI, operations, and adoption</li>
+                                        <li>Students can summarise best practices that transfer across sectors</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Construction, logistics, manufacturing</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Strategic Decision-Making Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can apply a go or no go framework to a simple case</li>
+                                        <li>Students can identify assumptions and what evidence is needed</li>
+                                        <li>Students can explain the decision and trade offs clearly</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Go / no-go decision frameworks</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span> Business logic quiz & Short case analysis<br>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Scaling Robotics in Global Markets</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-35 <br>
+                            <span class="Bold-Conversion">Total Duration:</span> 30 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Market entry & scaling analysis<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Build realistic market entry and scaling strategies for robotics and automation</li>
+                                <li>Evaluate risks, regulation, compliance, and partnership structures in different markets</li>
+                                <li>Create basic financial models including ROI and payback and define KPIs to measure performance</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Increased technical depth</li>
+                                <li>Stronger step-up from Level 1</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Strategy lessons</li>
+                                <li>Case studies</li>
+                                <li>Applied planning</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Market Selection & Segmentation <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can compare developed and emerging markets using practical criteria</li>
+                                        <li>Students can identify segments with strongest problem fit and willingness to pay</li>
+                                        <li>Students can justify a market choice using evidence and constraints</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Emerging vs developed markets analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Go-To-Market Strategies <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can build a go to market plan using pilots, pricing, and partnerships</li>
+                                        <li>Students can choose an entry approach that matches risk and resources</li>
+                                        <li>Students can define what success looks like for early rollout</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Pricing, partnerships, pilots</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Risk, Regulation & Compliance <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify legal, policy, and compliance risks in automation deployment</li>
+                                        <li>Students can map stakeholders and approval paths</li>
+                                        <li>Students can propose mitigation steps to reduce regulatory and operational risk</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Legal & policy environments</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Partnerships & Ecosystems <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain roles of government, NGOs, vendors, and customers in scaling</li>
+                                        <li>Students can choose partnership types based on goals and constraints</li>
+                                        <li>Students can draft a simple ecosystem plan that supports deployment</li>
+
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>NGO, government, private sector roles</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Financial Modeling for Automation<br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can calculate ROI and payback using basic assumptions</li>
+                                        <li>Students can identify sensitivity drivers such as volume, uptime, and labour savings</li>
+                                        <li>Students can explain financial results in a decision friendly way</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>ROI and payback models</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Measuring Business Impact <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can define KPIs across adoption, performance, cost, and customer outcomes</li>
+                                        <li>Students can build a simple measurement plan for a pilot and scale phase</li>
+                                        <li>Students can explain how metrics guide iteration and accountability</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>KPIs and performance tracking</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Strategy Review Workshop <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                       <li>Students can critique a strategy using clear criteria</li>
+                                        <li>Students can improve a plan based on peer feedback and evidence</li>
+                                        <li>Students can communicate recommendations professionally</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Peer review & critique</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span>
+                                    <br>
+                                    Group Project for Market entry & scaling analysis
+                                    <ul>
+                                        <li>Produce a short market entry plan for a chosen country</li>
+                                        <li>Justify how the solution scales from a pilot to a wider rollout, covering target customers, pricing, partners, risks, and basic unit economics.</li>
+                                    </ul>
+                                    <br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Automation Strategy & Deployment</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-30 & Advanced students & professionals<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 38 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Automation strategy capstone<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Design a full automation strategy from vision to execution roadmap</li>
+                                <li>Communicate and align with stakeholders including leadership, partners, and public sector bodies</li>
+                                <li>Lead responsible deployment with governance, ethics, funding options, and change management</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced guided lessons with instruction</li>
+                                <li>Project development</li>
+                                <li>Presentation & defence</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Enterprise Automation Strategy <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can define strategic goals and where automation fits in the enterprise</li>
+                                        <li>Students can prioritise use cases based on value, feasibility, and risk</li>
+                                        <li>Students can build a high level portfolio view of initiatives</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Select one organisation type and one automation use case</li>
+                                        <li>Define the goal, scope, and success KPIs</li>
+                                        <li>Prioritise what to automate first and justify why</li>
+                                        <li>Outline required people, process, and tech changes</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Automation in Emerging Markets <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify constraints that affect viability in low resource contexts</li>
+                                        <li>Students can adapt business and deployment models to local realities</li>
+                                        <li>Students can explain trade offs among cost, impact, and maintainability</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Choose one emerging market context and document key constraints</li>
+                                        <li>Adapt the solution design to fit power, water, labour, and supply chain realities</li>
+                                        <li>Identify the minimum viable pilot setup and assumptions</li>
+                                        <li>List the top risks unique to that context and mitigations</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Organizational Change & Adoption <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain why automation fails without change management</li>
+                                        <li>Students can plan adoption steps including training, roles, and incentives</li>
+                                        <li>Students can identify resistance points and how to address them</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Map stakeholders and define their concerns and incentives</li>
+                                        <li>Create a training plan with timelines and learning checks</li>
+                                        <li>Draft a simple comms plan for rollout phases</li>
+                                        <li>Define adoption metrics and how you will track them</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Funding, Grants & Public/Private Models <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can compare funding sources such as grants, blended finance, and partnerships</li>
+                                        <li>Students can match funding approach to project type and stakeholder needs</li>
+                                        <li>Students can outline a simple funding plan for a deployment</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Identify at least 2 funding sources and why they fit</li>
+                                        <li>Draft a basic stakeholder value exchange for each party</li>
+                                        <li>Outline a simple budget split and funding timeline</li>
+                                        <li>Define what evidence you need to unlock funding tranches</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Ethics, Governance & Long-Term Impact <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can define governance controls for safety, accountability, and transparency</li>
+                                        <li>Students can identify long term ethical risks and mitigation measures</li>
+                                        <li>Students can build guardrails that support responsible scaling</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Create an ethics checklist for safety, jobs, and community impact</li>
+                                        <li>Define governance roles and decision rights</li>
+                                        <li>Set long term impact metrics and reporting cadence</li>
+                                        <li>Write a short risk escalation process for ethical issues</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Execution Roadmaps <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can create an execution roadmap with phases, timelines, and dependencies</li>
+                                        <li>Students can define roles, milestones, and decision checkpoints</li>
+                                        <li>Students can explain how to manage risk during rollout</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Build a phased roadmap from pilot to scale</li>
+                                        <li>Assign roles, owners, and dependencies per phase</li>
+                                        <li>Create a risk register with likelihood, impact, mitigations</li>
+                                        <li>Define go no go gates between phases</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone - Automation Strategy Proposal <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <br>
+                                    Capstone Project
+                                    <ul>
+                                        <li>Compile a complete proposal pack across strategy, market entry, finance, governance, and roadmap</li>
+                                        <li>Prepare a stakeholder pitch deck and executive summary</li>
+                                        <li>Present and defend decisions in a panel style Q and A</li>
+                                        <li>Capture feedback and revise the plan to improve feasibility</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4 class="Highlight-TitleMod-Main">Strategy Roundtable and Stakeholder Dialogue</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 5_H1.jpeg">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Strategy Roundtable and Stakeholder Dialogue</h4></div>
+                            <p>
+                                Learners practise communicating automation ideas clearly by running a guided 
+                                roundtable discussion. Each group presents a short proposal, answers tough 
+                                questions, and refines their plan based on stakeholder feedback.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h4 class="Highlight-TitleMod-Main">Capstone Strategy Presentation Day</h4>
+
+                    <div class="Highlights-Box">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Capstone Strategy Presentation Day</h4></div>
+                            <p>
+                                This is the capstone presentation by one of our teams, where they pitch their full 
+                                automation strategy proposal. They walk through the problem, target market, 
+                                business model, risks, ethics, and execution roadmap, then defend their decisions 
+                                during Q and A.
+                            </p>
+                        </div>
+                        <img src="Media/Curriculum 5_H2.jpeg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Return to Top Button -->
+        <div class="Return-Btn" id="backToTop">
+            <a href="#top">
+                <img src="Media/Return_Btn.png" alt="Return to top">
+            </a>
+        </div>
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
+</html>

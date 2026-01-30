@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Header Group */
+                .Header-Container{
+                    position: relative;
+                    overflow: hidden;
+                    /* min-height: 43svh;  */
+                    min-height: 360px;
+                    margin-bottom: 59px;
+                }
+
+                .Header-Thumbnail{
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* fills viewport, crops excess */
+                    z-index: 0;
+                }
+
+                .Header-Title h1{
+                        /* Set the position so it can be placed above the thumbnail + Overlay */
+                            position: relative;
+                            z-index: 2;
+                        
+                        /* Define the color, font size, and weight */
+                            color: #ffffff;
+                            font-size: 47px;
+                            font-weight: bold;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
+                }
+
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
+
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
+
+                    text-align: center; /* Centralize the text */
+
+                }
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
+                    font-size: 40px;
+                    font-weight: 200;
+                    margin-bottom: 17px;
+
+                    /* Inner and Outer Shadow */
+                        /* outer shadow (soft blur) */
+                        text-shadow:
+                            0 10px 18px rgba(0,0,0,0.4),
+
+                        /* inner-ish highlight (fake inner shadow) */
+                        0 -1px 0 rgba(255,255,255,0.9);
+                }
+
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
+                    font-size: 18px;
+                    font-weight: normal;
+                    margin-left: 32px;
+                }
+
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
+                }
+                
+            /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                /* Dropdown box styling */
+                    .Topics-Drop{
+
+                        /* Style the accordion box design */
+                            max-width: 1075px;
+                            margin: 20px auto;
+                            border: 1px solid #dddddd;
+                            border-radius: 10px;
+
+                        /* Shadow Styling */
+                            box-shadow:
+                            inset 0 5px 2px rgba(0,0,0,0.2), /* inner */
+                            0 12px 28px rgba(0,0,0,0.3);     /* outer */
+                    }
+
+                    .Topics-Drophead{
+                        cursor: pointer;
+                        padding: 16px 18px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        list-style: none;
+                    }
+
+                    .Topics-Level h4{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 20px;
+                        font-weight: normal;
+                        margin-left: 10px;
+                    }
+
+                    .Topics-Description p{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 18px;
+                        font-weight: normal;
+                        margin-left: 50px;
+                        margin-top: 15px;
+                    }
+
+                    .Topics-Drophead::-webkit-details-marker{ display: none; }
+
+                    .Topics-Drophead span{ opacity: 0.7; }
+
+                    .Topics-Icon::before{ content: "+"; font-size: 22px; }
+                    .Topics-Drop[open] .Topics-Icon::before{ content: "-"; }
+
+                    .Topics-Dropbody{
+                    padding: 0 18px 18px;
+                    line-height: 1.6;
+                    }
+
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .Topics-ModContent {
+                        margin-left: 20px;
+                    }
+
+                    .Topics-ModContent li{
+                        margin-left: 40px;
+                    }
+
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
+                    }
+
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
+
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
+
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
+                            display: flex;
+                            flex-direction: column;
+
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
+
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
+                    }
+
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
+
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
+                    }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
+                    }
+
+            /* Responsiveness modifications */
+            
+            
+    </style>
+    <body>
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        
+        <!-- Header Group -->
+        <section class="Header-Container">
+
+            <!-- Header Thumbnail -->
+            <img class="Header-Thumbnail" src="Media/Curriculum 1.jpeg">
+
+            <!-- Overlay -->
+            <div class="bg-overlay"></div>
+
+            <!-- Title -->
+            <div class="Header-Title">
+                <h1><span class="color_conversion">3D PRINTING</span> IN CONSTRUCTION</h1>
+
+                <p>Explore the world of 3D Construction with Konstra</p>
+            </div>
+        </section>
+
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Learn how buildings can be printed, not assembled. This track gives 
+                        you a clear, step-by-step progression from understanding how 
+                        construction 3D printing works, to planning prints reliably, to 
+                        learning what it takes to deploy the technology in real-world 
+                        sites—especially in emerging markets where cost, speed, and 
+                        sustainability matter.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        This is a 3-level pathway that takes you from fundamentals → workflows → real deployment.
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>
+                                <span class="Bold-Conversion">Level 1:</span> Level 1: Core concepts (printers, materials, process, safety) so you understand the full pipeline.
+                            </li>
+                            <li>
+                                <span class="Bold-Conversion">Level 2:</span> Print-ready thinking (design rules, toolpaths, QC, calibration, monitoring) so prints work consistently.
+                            </li>
+                            <li>
+                                <span class="Bold-Conversion">Level 3:</span> Site execution (logistics, local materials, regulations, partnerships, community, risk) so projects can run in real conditions.
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Construction 3D Printing Technician (Trainee)</li>
+                            <li>Digital Fabrication Assistant / Technician</li>
+                            <li>Robotic Construction Site Support</li>
+                            <li>Materials & QA Assistant (Printable Mix / QC)</li>
+                            <li>Deployment / Project Planning Assistant (Emerging Markets)</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 16 - 25, younger participants (13 - 15) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if interested.
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        Prior experience on construction or 3D printing is <span class="Bold-Conversion">not required</span>
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
+                    
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of 3D Construction Printing</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 22 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Concept & scenario based quiz + group project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This course aims to give learners a solid mental model of how construction 3D printing 
+                            works — without overwhelming them. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How does a robot actually print a building?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Explain end-to-end how a construction printer turns a digital model into a physical structure.</li>
+                                <li>Describe key hardware, materials, workflows, and use cases using correct terminology. </li>
+                                <li>Be eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 1</span> priced at SGD $600</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Pre-recorded video lessons</li>
+                                <li>Short readings and diagrams</li>
+                                <li>Simple case examples from Konstra projects</li>
+                                <li>Lightweight quizzes after each module</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why 3D Printing in Construction? <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Summarize benefits and limitations vs conventional construction (cost, speed, labor, sustainability).</li>
+                                        <li>Recognize major global pilots and emerging markets using the tech.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Short lecture + case mini-debate; news-article critique (what's hype vs reality?)<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Reflection note or short quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Core Concepts & Vocabulary <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Define key terms (gantry, robotic arm, toolpath, rheology, buildability, layer height, G-code).</li>
+                                        <li>Sketch the “digital-to-built” pipeline at a high level.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Concept-mapping exercise; vocabulary card sort.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Concept map submission + short MCQ.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online + worksheet.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Printers, Motion & Control <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Compare different construction printer types and where each is used.</li>
+                                        <li>Identify main subsystems (motion system, pump, nozzle, control, safety).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Virtual or on-site printer walk-through; subsystem identification task.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Labelled diagram + oral/written explanation.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Ideally on Konstra hardware; fallback: video/simulation.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Materials 101 - Printable Concrete & Beyond <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Describe what makes a mix pumpable and buildable.</li>
+                                        <li>List common admixtures and their roles (accelerators, superplasticizers, fibers).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Lab demo with mortar consistency comparisons; mix “cards” exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short lab worksheet.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab-based (Konstra or partner lab).
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: The Printing Process & Quality Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Trace a simple wall print sequence (start, perimeters, layers, stops).</li>
+                                        <li>Identify common defects (sagging, cold joints, misalignment) from photos/videos.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Watch annotated print run; group diagnosis of “what went wrong” scenarios.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Scenario-based quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Video from Konstra projects + guided discussion.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Use Cases, Safety & Ethics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Match typical applications (housing, infrastructure, emergency shelters) to contexts.</li>
+                                        <li>Describe core safety considerations and ethical issues (jobs, community impact, code compliance).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Safety checklist game; mini case on housing in an emerging market.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Group poster / slide or short written response.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Test Format:</span> 30-40 item online test (concepts + scenario questions) plus a short group presentation explaining “How our robot prints a basic house wall.”​<br>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Robotic Printing Workflows & Materials</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 33 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Capstone mini-project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This course aims to move from “understanding” to operational thinking. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How do we print walls, openings, and structures reliably?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Convert a simple design into a print-ready concept respecting design rules.</li>
+                                <li>Adjust key process and material parameters to maintain print quality.</li>
+                                <li>Be eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 2</span> priced at SGD $900</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Serious technical depth</li>
+                                <li>Strong step-up from Level 1</li>
+                                <li>Higher value → justifies higher price</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Deeper technical videos</li>
+                                <li>Workflow diagrams and simulations</li>
+                                <li>Material behaviour scenarios</li>
+                                <li>Group-based case analysis (remote-friendly)</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Design for Printability <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Apply geometric rules (minimum thickness, radius, overhang limits) to a simple layout.</li>
+                                        <li>Identify features that are hard or impossible to print.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> CAD-based exercise modifying a conventional wall layout into a printable one.​<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Before/after design submission with brief justification.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> CAD lab or online CAD.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Slicing & Toolpath Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Explain layer height, print speed, infill/voids, and path continuity in concrete printing.</li>
+                                        <li>Interpret a simple toolpath visualization.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Use slicing software to generate and inspect toolpaths for a small wall segment.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short practical quiz (identify parameters, predict outcome).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Computer lab / simulation.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Mix Design & Quality Control <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Outline a basic printable mix design and key QC tests (slump flow/flow table, penetration, early strength).</li>
+                                        <li>Relate changes in water or admixture dosage to print behavior.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Lab mixing demo or virtual lab; analyze QC data from real print trials.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Lab report or data-analysis worksheet.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab or remote data set from Konstra.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Printer Setup, Calibration & Operation <br>
+                                </h5>
+
+                                <!-- Content -->
+                               <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Perform or describe coordinate setup, zeroing, and path verification steps.</li>
+                                        <li>Run through a safe start-up and shutdown sequence.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span>  On-printer or simulator practice; checklist run-through.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Practical competency checklist + short oral/written test.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Konstra hardware or high-fidelity simulator.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Process Window & Environmental Effects <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Explain the relationship between speed, extrusion, and layer stability.</li>
+                                        <li>Propose parameter tweaks for hot, cold, windy, or rainy conditions.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Parameter “what-if” simulation; case study of a failed hot-climate print.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Scenario-based assignment.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Automation, Sensing & Monitoring <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Describe how sensors (flow, pressure, position) and scanning (LiDAR, cameras) support quality.</li>
+                                        <li>Distinguish open-loop vs closed-loop control in simple terms.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Video/visualization of monitored print; interpret basic sensor plots.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short written responses or mini-quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Finishing, Testing & Documentation <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>List typical post-processing and integration steps (grouting, reinforcement tie-ins, finishes).</li>
+                                        <li>Explain basic mechanical testing and documentation requirements.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Site or lab photos walk-through; documentation template exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Sample QA/inspection report for a printed test element.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Test Format:</span> Capstone mini-project: teams take a simple house wall from concept → print-aware design → sliced toolpaths → process parameter plan + QC checklist (graded against a rubric).<br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Site Deployment & Emerging Market Builds</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 45 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Capstone Project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This is where PrintAdobe becomes non-generic. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How do we deploy this technology in real, imperfect environments?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Plan a full deployment of a construction 3D printer in a constrained/emerging-market context.</li>
+                                <li>Address logistics, regulation, community, and risk—not just technology.</li>
+                                <li>eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 3 (Industry Ready)</span> priced at SGD $1,500</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                                <li>Professional-grade certification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced case studies</li>
+                                <li>Site deployment simulations</li>
+                                <li>Real constraints (terrain, climate, logistics)</li>
+                                <li>Mentor or instructor feedback</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Site Selection & Ground Conditions <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Define criteria for a viable print site in low-resource contexts.</li>
+                                        <li>Identify key tolerances and preparation steps for foundations and printer setup.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Analyze 2-3 candidate sites (photos, basic data); choose the best and justify.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short site selection report.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Logistics, Power & Water <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Map transport routes, staging areas, and storage for a remote project.</li>
+                                        <li>Propose power and water solutions under constrained infrastructure.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Logistics mapping on a simple site plan; utility planning exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> One-page logistics & utilities plan.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Local Materials & Market Realities <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Assess how local cement, sand, and aggregates might affect mix design.</li>
+                                        <li>Strategize around supply-chain reliability for materials and spare parts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> “Local materials dossier” review; adaptation brainstorming.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short memo on mix and supply-chain strategy.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Regulations, Financing & Partnerships <br>
+                                </h5>
+
+                                <!-- Content -->
+                               <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Identify key regulators, approvals, and code questions for a pilot project.</li>
+                                        <li>Sketch basic funding/partnership models with NGOs, governments, or developers.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span>  Stakeholder-mapping workshop; simple business-case canvas.<br>
+                                    <span class="Bold-Conversion">Assessment:</span>  2-3 page concept note (problem, partners, approvals, budget sketch).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Community-Centred Design & Workforce <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Integrate cultural, climatic, and social factors into printed housing layouts.</li>
+                                        <li>Outline a local training and jobs plan around the printer.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Co-design exercise using a fictional community brief; role-play with “community stakeholders.”<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Revised layout + 1-page community engagement and training plan.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Deployment Playbook & Risk Management <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Draft a phased deployment plan (pilot → cluster → scale-up).</li>
+                                        <li>Build a basic risk register with mitigations for technical and non-technical risks.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Group “playbook” drafting; risk-identification workshop.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Deployment playbook (timeline, roles, risks, mitigations).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone - Emerging Market Build Plan <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Integrate all previous modules into a coherent, realistic project proposal.</li>
+                                        <li>Communicate technical and social aspects clearly to non-experts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Team project on a chosen country/site using Konstra as technology partner.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> 
+                                    <ul>
+                                        <li>Integrate all previous modules into a coherent, realistic project proposal.</li>
+                                        <li>Communicate technical and social aspects clearly to non-experts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4>PrintAdobe Students prototyping</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H1.jpeg">
+                        <p>
+                            PrintAdobe Students at Konstra Labs learning how digital designs turn into 
+                            real objects in minutes. Here, they learn the fundamentals of slicing, 
+                            print settings, and quality checks.
+                        </p>
+                    </div>
+
+                    <h4>Capstone Group Project</h4>
+
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H2.jpeg">
+                        <p>
+                            Our capstone projects resides in guided sessions with our industry partners. 
+                            Allowing students to build confidence through step-by-step tasks, troubleshooting, 
+                            and mini challenges.
+                        </p>
+                    </div>
+
+                    <h4>Introducing Prototyping To Young Learners </h4>
+
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H3.jpeg">
+                        <p>
+                            In PrintAdobe, we encourage students of all ages who are keen to join our exciting 
+                            courses. Younger students will get hands-on with 3D printing—learning setup, 
+                            basic calibration, and how to turn ideas into physical prototypes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+</html>

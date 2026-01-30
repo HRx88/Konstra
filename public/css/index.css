@@ -1,1 +1,454 @@
-﻿
+﻿                                    /* General Page styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* background: url() -> Add the background video here for the home page.*/
+}
+
+
+
+
+                                        /* NavBar Styling */
+/* Styling for the entire Navigation Bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 164px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background: #FFFFFF;
+    /* box-shadow: ; */
+    z-index: 999;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Styling for the items inside the navbar */
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 calc(3rem + 3px);
+    max-width: auto;
+}
+
+/* Styling for the Logo in the navbar */
+.navbar-logo img{
+    cursor: pointer;
+    max-height: 104px;
+    width: auto;
+    object-fit: contain;
+}
+
+#navbar-logo-alt img{
+    max-height: 114px !important;
+}
+
+/* Display the standard logo when the screen is at initial position */
+.Logo-light{ display: inline-block; }
+.Logo-dark { display: none; }
+
+/* Style the Konstra logo so it is hidden when the hamburger menu is open */
+.Menu_Logo{
+    display: none;
+}
+
+/* Styling the navbar link alignment*/
+.navbar-container .navbar-menu {
+    display: flex;
+    text-align: center;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+/* Styling the navbar links */
+.navbar-container .navbar-menu li a {
+    text-decoration: none; /* This removes the underline*/
+    color:#000000 !important;
+    font-size: 20px;
+    font-weight: normal;
+    white-space: nowrap; /* {Prevents wrapping onto a new line*/
+}
+
+/* Styling the navbar links hover animation */
+.navbar-container .navbar-menu li a:hover {
+    color: #FF0000 !important;
+}
+
+/* Styling the account image */
+.account img {
+    cursor: pointer;
+    max-height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Display the standard logo when the screen is  */
+.account .icon-dark { display: none; }
+.account .icon-light{ display: inline-block; }
+
+/* Styling the account image hover animation */
+.account img:hover {
+    content: url("../Media/Profile when hovering.png");
+}
+
+/* Styling the Navbar toggle button (Hamburger menu) */
+.navbar-toggle {
+    display: none;
+    background: transparent;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Styling the lines on the hamburger menu */
+.bar {
+    display : block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background: #ff0000;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Adding the underline effect for NavBar */
+.navbar-menu li:not(.account) > a {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* Styling the design and position of the line */
+.navbar-menu li:not(.account) > a::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background-color: #ff0000;
+    transition: all 0.5s ;
+}
+
+/* Setting the lines behavior when the mouse hovers over it */
+.navbar-menu li:not(.account) > a:hover::before {
+    width: 100%;
+}
+
+/* Setting the behavior of the navbar link that is selected */
+.currentPage {
+    color: #FF0000 !important;
+}
+
+/* Keep underline visible for the current page */
+.navbar-menu li:not(.account) > a.currentPage::before{
+  width: 100%;
+}
+
+
+
+
+
+                                /* Making the Navbar responsive */
+
+
+/* Hamburger Icon + Footer behavior when screen shrinks */
+@media (max-width: 1029px) {
+    .navbar {
+        backdrop-filter: none;
+    }
+
+    /* Hamburger vertical navbar */
+    .navbar-container .navbar-menu {
+        display: none;
+        flex-direction: column; /* This enables the items to be stacked vertically*/
+        align-items: flex-start; /* Align items to the left of the container */
+        gap: 1.7rem !important; /* This gives 1.7 rems of space between each item in the navbar*/
+        position: absolute;
+        height: 100vh; /* Cover the whole screen */
+        /* width: 250px; */
+        width: 100vw;
+        top: 0;
+        right: 0;
+        /* padding: 5rem 1.5rem; */
+        padding-top: calc(1rem + 5px);
+        background: #ffffff;
+        backdrop-filter: blur(10px);
+        padding-left: calc(3rem + 15px); /* Create some stand off from the side of the screen*/
+    }
+
+    /* Style the text color to be black in the hamburger menu */
+    .navbar-container .navbar-menu.active li a{
+        color:#000000 !important;
+    }
+
+    /* Make the Konstra logo appear in the hamburger menu */
+    .navbar-menu.active .Menu_Logo{
+        display: block;
+        margin-bottom: 7px; /* Add some standoff distance between the logo and menu items*/
+    }
+
+    .navbar-menu.active .Burger_Logo img{
+        max-height: 114px;
+        margin-left: 3px;
+        margin-top: 2px;
+    }
+
+
+    /* when hamburger menu opens, have the account icon be black */
+    .navbar-menu.active .account .icon-light { display: none; }
+    .navbar-menu.active .account .icon-dark  { display: inline-block; }
+
+    /* Styling the hamburger icon to make it appear in this config */
+    .navbar-toggle {
+        display: block;
+        z-index: 1000;
+    }
+
+    /* Make the hamburger icon visible when page shrinks to the specified size. */
+    .navbar-container .navbar-menu.active {
+        display: flex;
+    }
+
+    /* Hamburger menu icon to 'X' when toggled */
+    /*Note each number represents 1 of the 3 bars in the icon */
+    .navbar-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .navbar-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    footer{
+    height: auto !important;
+    padding: 24px 0;
+  }
+
+  .footer-container{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  .footer-left,
+  .footer-right{
+    width: 100%;              /* same width so centering is consistent */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    padding-bottom: 20px;
+    padding-right: 0 !important;
+  }
+
+  .Socials{
+    justify-content: center;  /* center icons row */
+  }
+}
+/* HERE */
+/* Adjustment of the Navbar sizing when screen is smaller */
+@media (max-width: 1436px) or (max-height: 800px) {  
+    /* Navbar */
+
+        .navbar {
+            /* height: 164px; */
+            height: 124px;
+        }
+        /* Make the navbar fonts smaller on smaller screens */
+        .navbar-container .navbar-menu li a {
+            font-size: 15px;
+        }
+
+        /* Styling the account image */
+        .account img {
+            max-height: 25px;
+        }
+
+        .navbar-logo img{
+            /* max-height: 104px; */
+            max-height: 94px;
+        }
+
+        #navbar-logo-alt img{
+            /* max-height: 114px !important; */
+            max-height: 104px !important;
+        }
+}
+
+
+
+
+
+                                    /* Body content styling */
+
+/* Universal Text to Red converter */
+.color_conversion{
+    color: #ff0000;
+}
+
+.Bold-Conversion{
+    font-weight: bold;
+}
+
+
+/* Background video overlay styling */
+.bg-overlay{
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6); /* 60% black */
+    z-index: 1;
+    pointer-events: none;           /* don't block clicks */
+}
+
+/* CTA Button Design */
+.cta-btn{
+    /* Button Design */
+    display: inline-flex;
+    white-space: nowrap;
+    padding: 8px 50px; /* Button box size */
+    margin-top: 44px;
+    background: #FF0000;
+    border-radius: 8px;
+    position: relative; /* Set position to relative so that the z-index may take effect*/
+    z-index: 2;
+    box-shadow: inset 0 6px 4px rgba(0,0,0,0.25); /* Inner shadow */
+    background-image: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.12),
+    rgba(255,255,255,0)
+  );
+
+    /* Text Design */
+    color: #fff;
+    font-size: 25px;
+    font-weight: 200;
+    text-decoration: none;
+
+}
+
+.cta-btn:hover{
+  background: #ee6767;
+}
+
+/* Button state when clicked, active makes the looks like it is being pressed in */
+.cta-btn:active{
+  transform: translateY(1px);
+  box-shadow: 0 7px 14px rgba(0,0,0,0.4);
+}
+
+/* Return To Top Button */
+html{
+    scroll-behavior: smooth;
+}
+.Return-Btn{
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 999;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.Return-Btn.show{
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.Return-Btn img{
+  width: 55px;     /* adjust to your image */
+  height: 55px;    /* keep consistent */
+  display: block;
+  cursor: pointer;
+}
+
+.Return-Btn img:hover{
+  transform: translateY(-2px);
+}
+
+
+
+                                    /* Footer styling */
+/* Overall Footer Design */
+footer {
+    background-color:#000000;
+    padding: 49px 40px;  
+    height: 120px;
+    align-items: center;
+    display: flex;
+}
+
+/* Footer Container Styling to organize the different footer contents into their respective category*/
+.footer-container {
+    width: 100%;
+    /* width: min(1100px, 100%); */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* This allows the rest of the components to center in between the Follow Us and Icons part*/
+    flex-wrap: nowrap;
+}
+
+.footer-container p{
+  margin:0;
+  color:#FFFFFF;
+  font-family: Inter, sans-serif;
+  font-size:15px;
+  font-weight:300;
+  line-height: 1;;
+  white-space:nowrap;
+  opacity:0.9;
+}
+
+/* Styling for the text in the footer (Left)*/
+.footer-left {
+    display:flex;
+    align-items:center;
+    gap: 35px;  /* controls spacing between the 3 texts */
+    padding-right: 86px;
+}
+
+/* Styling for the text in the footer (Right) */
+.footer-right{
+  display:flex;
+  flex-direction: column; /* This enables the Follow Us and Icons to be stacked*/
+  align-items:center;
+  gap: 14px;
+  white-space: nowrap; 
+}
+
+/* Set the social media icons to sit beside each other */
+.Socials {
+    display: flex;
+    align-items: center;
+    gap:10px;
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.Socials img{
+  height:23px;
+  width:auto;
+  display:block;
+}

@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Header Group */
+                .Header-Container{
+                    position: relative;
+                    overflow: hidden;
+                    min-height: 400px;
+                    margin-bottom: 59px;
+                }
+
+                .Header-Thumbnail{
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* fills viewport, crops excess */
+                    z-index: 0;
+                }
+
+                .Header-Title h1{
+                        /* Set the position so it can be placed above the thumbnail + Overlay */
+                            position: relative;
+                            z-index: 2;
+                        
+                        /* Define the color, font size, and weight */
+                            color: #ffffff;
+                            font-size: 47px;
+                            font-weight: bold;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
+                }
+
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
+
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
+
+                    text-align: center; /* Centralize the text */
+
+                }
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
+                    font-size: 40px;
+                    font-weight: 400;
+                    margin-bottom: 17px;
+                }
+
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
+                    font-size: 18px;
+                    font-weight: normal;
+                    margin-left: 32px;
+                }
+
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
+                }
+                
+            /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                /* Dropdown box styling */
+                    .Topics-Drop{
+
+                        /* Style the accordion box design */
+                            max-width: 1075px;
+                            margin: 20px auto;
+                            border: 1px solid #dddddd;
+                            border-radius: 10px;
+
+                        /* Shadow Styling */
+                            box-shadow:
+                            inset 0 5px 2px rgba(0,0,0,0.04), /* inner */
+                            0 12px 28px rgba(0,0,0,0.1);     /* outer */
+                    }
+
+                    .Topics-Drophead{
+                        cursor: pointer;
+                        padding: 16px 18px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        list-style: none;
+                    }
+
+                    .Topics-Level h4{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 20px;
+                        font-weight: normal;
+                        margin-left: 10px;
+                    }
+
+                    .Topics-Description p{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 18px;
+                        font-weight: normal;
+                        margin-left: 50px;
+                        margin-top: 15px;
+                    }
+
+                    .Topics-Drophead::-webkit-details-marker{ display: none; }
+
+                    .Topics-Drophead span{ opacity: 0.7; }
+
+                    .Topics-Icon::before{ content: "+"; font-size: 22px; }
+                    .Topics-Drop[open] .Topics-Icon::before{ content: "-"; }
+
+                    .Topics-Dropbody{
+                    padding: 0 18px 18px;
+                    line-height: 1.6;
+                    }
+
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .Topics-ModContent {
+                        margin-left: 20px;
+                    }
+
+                    .Topics-ModContent li{
+                        margin-left: 40px;
+                    }
+
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
+                    }
+
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
+
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
+
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
+                            display: flex;
+                            flex-direction: column;
+
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
+
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
+                    }
+
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
+
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
+                    }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
+                    }
+
+                /* Show and hide the title */
+                    .Highlight-TitleMod-Main{
+                        display: block;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: none;
+                    }
+
+            /* Responsiveness modifications */
+                @media (max-width: 1129px){
+                    .Highlights-Box{
+                        max-width: 900px;
+                        margin: 0 auto 50px;
+                        flex-direction: row;
+                        align-items: stretch;
+                    }
+
+                    .Highlights-Box img{
+                        /* max-width: 350px; */
+                        flex: 0 0 350px;
+                        width: 350px;
+                        height: 350px;
+                        max-height: 400px;
+                        object-fit: cover;
+                        margin-bottom: 40px;
+                    }
+
+                    .Highlights-Box p{
+                        flex: 1;
+                        margin: 60px 20px;
+                    }
+
+                    .Highlight-TitleMod-Main{
+                        display: none;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: block;
+                        margin-top: 40px;
+                    }
+                }
+            
+    </style>
+    <body>
+
+        <!-- Return to Top Button (Top) -->
+        <div id="top"></div>
+        
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        
+        <!-- Header Group -->
+        <section class="Header-Container">
+
+            <!-- Header Thumbnail -->
+            <img class="Header-Thumbnail" src="Media/Curriculum 3.jpg">
+
+            <!-- Overlay -->
+            <div class="bg-overlay"></div>
+
+            <!-- Title -->
+            <div class="Header-Title">
+                <h1>ARCHITECTURE & <span class="color_conversion">DIGITAL </span> FABRICATION</h1>
+
+                <p>Learn how automation plays a role in the industry</p>
+            </div>
+        </section>
+
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        This track trains you to design architecture that can actually be built by robots, 
+                        and not just drawn beautifully on screen. You'll learn how geometry, materials, print 
+                        paths, and construction constraints shape what is truly buildable, so your designs can 
+                        be printed efficiently, safely, and at scale, especially in resource-limited and 
+                        emerging-market environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Architecture & Digital Fabrication is a 3-level pathway that bridges design 
+                        intent with machine execution. 
+                        <br>
+                        <ul class="Course-List">
+                            <li>
+                                <span class="Bold-Conversion">Level 1:</span> builds your foundation in print constraints, materials behaviour, and reading simulations.
+                            </li>
+
+                            <li>
+                                <span class="Bold-Conversion">Level 2:</span> teaches print-ready design rules, parametric workflows, and operator handoff documentation.
+                            </li>
+
+                            <li>
+                                <span class="Bold-Conversion">Level 3:</span> focuses on scalable housing systems—optimising for cost, climate, speed, and community fit—so you can deliver production-ready solutions beyond one-off prototypes.
+                            </li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Digital Fabrication Designer (assistant/junior)</li>
+                            <li>Computational / Parametric Design Assistant (print-aware modelling)</li>
+                            <li>Robotic Construction Design Coordinator (design-to-fabrication handoff support)</li>
+                            <li>Architectural Technologist (digital fabrication workflows)</li>
+                            <li>Fabrication Lab / Prototyping Specialist (construction-scale fabrication exposure)</li>
+                            <li>Design-for-Manufacturing (DfMA) Assistant for Construction</li>
+                            <li>Junior Project Designer for Affordable / Emerging-Market Housing (with further experience)</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 16 - 25, younger participants (13 - 15) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if they can keep up with the pace and 
+                        design exercises
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        <span class="Bold-Conversion">No prior experience</span> in architecture, CAD, or 3D printing is 
+                        required for Level 1. The track begins with visual rules and guided examples.
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
+                    
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of Digital Fabrication Design</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-30 <br>
+                            <span class="Bold-Conversion">Total Duration:</span> 22 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Concept & design rules test<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Identify unbuildable designs using basic print rules</li>
+                                <li>Explain core geometry and material constraints for robotic construction</li>
+                                <li>Critique architectural models for machine feasibility using simple simulations</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Visual explainer videos</li>
+                                <li>Diagrams, sketches, and simulations</li>
+                                <li>Short design critique exercises</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why Design for Machines, Not Just Looks <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain why visually attractive designs can fail when translated into robotic/print construction.</li>
+                                        <li>Students can identify common “machine-level” constraints that affect buildability (overhangs, thickness, stability).</li>
+                                        <li>Students can compare buildable vs unbuildable designs using simple before/after examples.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Explainer videos</li>
+                                        <li>Before/after design comparisons</li>
+                                        <li>Failure case visuals</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: From Sketch to Machine Instructions <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe the workflow from concept → 3D model → slicing → toolpaths.</li>
+                                        <li>Students can explain what slicing and toolpaths represent in practical terms (how the machine “reads” geometry).</li>
+                                        <li>Students can recognise how scale changes feasibility (what works in small 3D prints may fail at building scale).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Workflow diagrams</li>
+                                        <li>Simple slicing demonstrations</li>
+                                        <li>Scale comparison examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Geometry Robots Can Actually Build <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can apply basic printability rules (minimum wall thickness, overhang limits, smooth geometry).</li>
+                                        <li>Students can identify geometry that increases risk of failure or excessive supports/extra steps.</li>
+                                        <li>Students can critique simple building forms for robotic feasibility using visual checks.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Printable vs non-printable sketches</li>
+                                        <li>Overhang and wall-thickness visual rules</li>
+                                        <li>Interactive shape comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Materials That Machines Can Use <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain what makes a construction material printable (flow + stability + bonding).</li>
+                                        <li>Students can identify common failure modes (sagging, cracking, poor bonding) and their likely causes.</li>
+                                        <li>Students can relate material behaviour to design decisions (why some shapes demand stronger material performance).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Material flow animations</li>
+                                        <li>Layer bonding visuals</li>
+                                        <li>Failure-mode examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Reading Print Simulations <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can interpret a sliced model and identify key parameters (layer height, path pattern, print time).</li>
+                                        <li>Students can predict how design edits can change print time, material use, and risk of defects.</li>
+                                        <li>Students can use simple simulation outputs to spot potential issues before printing.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Sliced-model walkthroughs</li>
+                                        <li>Print time estimation exercises</li>
+                                        <li>Parameter-change demonstrations</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Real Buildings That Were Actually Printed <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can summarise real printed building examples and what made them successful or risky.</li>
+                                        <li>Students can identify “design decisions that mattered” (geometry choices, print sequencing, simplifications).</li>
+                                        <li>Students can extract practical lessons that can be applied to future buildable design work.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Case study walkthroughs</li>
+                                        <li>Design decision breakdowns</li>
+                                        <li>Lessons-learned summaries</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Cost, Time, and Waste Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can estimate basic cost drivers using simple rules (volume, print hours, labour, waste).</li>
+                                        <li>Students can compare designs based on efficiency (time/material) rather than aesthetics alone.</li>
+                                        <li>Students can explain why some elegant designs are expensive or inefficient to print at scale.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Cost logic diagrams</li>
+                                        <li>Simple volume & cost exercises</li>
+                                        <li>Design efficiency comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span>
+                                    <br>
+                                    Individual Project
+                                    <ul>
+                                        <li>Conceptual test on print rules</li>
+                                        <li>Critique of a sample 3D model for print feasibility</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Design Rules for Robotic Construction</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-30 <br>
+                            <span class="Bold-Conversion">Total Duration:</span> 34 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Print-ready redesign project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Convert designs into print ready systems using design rules and parametric workflows</li>
+                                <li>Simulate prints and optimise geometry for quality, speed, and material efficiency</li>
+                                <li>Produce operator handoff packages with clear instructions and QC documentation</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Increased technical depth</li>
+                                <li>Stronger step-up from Level 1</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Guided tutorials</li>
+                                <li>Applied design work</li>
+                                <li>Simulations & case analysis</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Parametric Design for Printing <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can use parametric controls (sliders) to keep designs within printable ranges (thickness, radius, opening size).</li>
+                                        <li>Students can generate controlled design variations while maintaining buildability constraints.</li>
+                                        <li>Students can explain how parametric rules reduce printing failures and rework.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Rhino/Grasshopper demos</li>
+                                        <li>Slider-based parametric exercises</li>
+                                        <li>Constraint-driven modeling tasks</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Walls, Openings, and Connections <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can design openings (doors/windows) that remain structurally stable and printable.</li>
+                                        <li>Students can plan connections to foundations, slabs, and conventional elements with clear interface logic.</li>
+                                        <li>Students can identify weak junctions and propose adjustments to improve buildability and durability.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Structural opening examples</li>
+                                        <li>Joint-detail diagrams</li>
+                                        <li>Interface design walkthroughs</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Structural Logic in Printed Forms <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain basic load paths in printed structures and why reinforcement may be needed.</li>
+                                        <li>Students can identify where printed-only forms struggle (bending/tension) and propose hybrid solutions.</li>
+                                        <li>Students can apply reinforcement strategies at a concept level (ribs, fibers, embedded elements).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Load path diagrams</li>
+                                        <li>Reinforcement strategy visuals</li>
+                                        <li>Hybrid structure examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Layer-by-Layer Thinking <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain how path direction, sequencing, and layer stacking affect strength and print quality.</li>
+                                        <li>Students can identify causes of cold joints and propose design/sequence changes to reduce them.</li>
+                                        <li>Students can balance print speed vs quality using practical trade-off reasoning.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Path-direction simulations</li>
+                                        <li>Cold-joint case examples</li>
+                                        <li>Print-speed vs quality comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Material Efficiency and Waste <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can apply basic infill/section strategies to reduce material while maintaining performance.</li>
+                                        <li>Students can evaluate design options based on strength-to-material efficiency.</li>
+                                        <li>Students can identify waste sources (supports, over-thick sections, failed prints) and reduce them through design.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Infill strategy demos</li>
+                                        <li>Section studies</li>
+                                        <li>Density mapping exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Environmental Design for Printing <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe how sun, wind, rain, and site access can affect printing outcomes.</li>
+                                        <li>Students can propose design and site adaptations that support print success in real conditions.</li>
+                                        <li>Students can integrate basic climate/site constraints into printable layout and sequencing decisions.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Climate-impact visuals</li>
+                                        <li>Wind/sun interaction simulations</li>
+                                        <li>Site access diagrams</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: From Design to Shop Drawings <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can produce a clear print package (model, slices, parameters, QC checklist) for operators.</li>
+                                        <li>Students can communicate design intent with minimal ambiguity to robotic construction teams.</li>
+                                        <li>Students can identify missing information in handoffs and correct it using standard templates/checklists.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Print package templates</li>
+                                        <li>Operator handoff checklists</li>
+                                        <li>QC documentation examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1.5 hours (plus project work)<br>
+                                    <span class="Bold-Conversion">Test Format:</span>
+                                    <br>
+                                    Group Project
+                                    <ul>
+                                        <li>Redesign an existing building to be print-ready</li>
+                                        <li>Deliverables: sliced model, design rationale, operator instructions</li>
+                                    </ul>
+                                    <br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Architecture for Emerging Markets & Scale</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-25 & Advanced students & professionals<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 44 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Full housing deployment design<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Design scalable printed housing systems for emerging market contexts</li>
+                                <li>Optimise designs for cost, climate performance, and fast deployment</li>
+                                <li>Deliver production ready proposals at multi unit or neighbourhood scale</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced instruction</li>
+                                <li>Design & planning work</li>
+                                <li>Critique & presentation</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Housing That Prints Fast and Cheap <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can design housing layouts optimised for speed, cost, and density (including shared walls).</li>
+                                        <li>Students can apply incremental housing logic (core now, expand later) to support real household needs.</li>
+                                        <li>Students can justify layout choices using material/time efficiency and usability constraints.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Dense housing case studies</li>
+                                        <li>Incremental housing models</li>
+                                        <li>Cost-driven layout exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Climate-Responsive Printed Forms <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can propose design strategies for different climates (ventilation, shading, drainage, thermal performance).</li>
+                                        <li>Students can use parametric testing to evaluate design variations across climate conditions.</li>
+                                        <li>Students can explain how climate constraints shape geometry, sequencing, and detailing for printed builds.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Parametric climate testing</li>
+                                        <li>Ventilation and shading simulations</li>
+                                        <li>Roof and drainage studies</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Community and Cultural Fit <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                       <li>Students can integrate cultural and household needs into printable housing layouts (privacy, cooking, family size).</li>
+                                        <li>Students can plan for future expansion without breaking printability or structural logic.</li>
+                                        <li>Students can apply a basic co-design approach to gather input and revise designs responsibly.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Cultural layout examples</li>
+                                        <li>Co-design workshop simulations</li>
+                                        <li>Expansion planning exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Scaling From One House to Neighborhoods <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can plan multi-unit sequencing and optimise print schedules across several homes.</li>
+                                        <li>Students can identify opportunities for shared elements and infrastructure integration (utilities, walls, circulation).</li>
+                                        <li>Students can explain how neighbourhood-scale constraints change design and deployment strategy.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Multi-unit print sequencing</li>
+                                        <li>Shared wall optimization</li>
+                                        <li>Infrastructure integration diagrams</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Hybrid Construction Systems <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can design interfaces between printed components and conventional systems (roof, MEP, finishes).</li>
+                                        <li>Students can propose construction sequences that reduce risk and speed up delivery.</li>
+                                        <li>Students can detail critical connection points at a concept level to ensure buildability and coordination.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Printed + conventional interface detailing</li>
+                                        <li>Embedded systems walkthroughs</li>
+                                        <li>Construction sequencing logic</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Cost Modeling and Optimization <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can build a simple cost model linking design parameters to time, materials, and labour.</li>
+                                        <li>Students can run basic sensitivity checks to identify which design changes reduce cost/time the most.</li>
+                                        <li>Students can optimise designs iteratively while maintaining structural and usability requirements.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Spreadsheet-based cost models</li>
+                                        <li>Parameter-driven optimisation loops</li>
+                                        <li>Sensitivity analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone - Printed Housing Proposal <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Lesson Time:</span> 8 hours (guided + independent)<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <br>
+                                    Capstone project
+                                    <ul>
+                                        <li>Team-based design project</li>
+                                        <li>Client-style presentation</li>
+                                        <li>Full technical + community justification</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4 class="Highlight-TitleMod-Main">Robotic Workcell Planning in Action</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 3_H1.jpeg">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Robotic Workcell Planning in Action</h4></div>
+                            <p>
+                                Our learners map a full robotic workcell layout, then test reach, clearance, and 
+                                safe zones before any build begins. In this session, a PrintAdobe student is 
+                                validating the robot's workspace so the toolpath stays accurate and the site setup 
+                                remains safe and efficient.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h4 class="Highlight-TitleMod-Main">Layer by Layer Robotic Printing Trial</h4>
+
+                    <div class="Highlights-Box">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Layer by Layer Robotic Printing Trial</h4></div>
+                            <p>
+                                Students learn how geometry becomes print paths, and how speed, extrusion, and 
+                                layer bonding affect wall quality. Here, a PrintAdobe learner is running a 
+                                supervised print trial and adjusting parameters to reduce defects like sagging 
+                                and cold joints.
+                            </p>
+                        </div>
+                        <img src="Media/Curriculum 3_H2.jpeg">
+                    </div>
+
+                    <h4 class="Highlight-TitleMod-Main">Prototype, Test, Improve</h4>
+
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 3_H3.jpeg">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Prototype, Test, Improve</h4></div>
+                            <p>
+                                Learners prototype design ideas and review buildability, strength, and print time 
+                                using real samples. In this moment, a PrintAdobe student is presenting a 
+                                lightweight structural concept and explaining how the shape was optimised for 
+                                machine fabrication and material efficiency.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Return to Top Button -->
+        <div class="Return-Btn" id="backToTop">
+            <a href="#top">
+                <img src="Media/Return_Btn.png" alt="Return to top">
+            </a>
+        </div>
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
+</html>
