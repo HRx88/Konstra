@@ -22,6 +22,14 @@ function loadSidebar() {
     // Only proceed if not admin (Admin profile separate) or handle generally
     const role = member ? (member.role === 'NGO' ? 'NGO' : 'User') : (admin ? 'Admin' : null);
 
+    // Update Header
+    const brandText = document.querySelector('.sidebar-header .brand-text');
+    if (brandText) {
+        if (role === 'Admin') brandText.innerHTML = '<i class="fas fa-user-shield me-2"></i>KonstraAdmin';
+        else if (role === 'NGO') brandText.innerHTML = '<i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO';
+        else brandText.innerHTML = '<i class="fas fa-user me-2"></i>KonstraMember';
+    }
+
     const dashLinks = document.getElementById('dashLinks');
 
     if (role === 'Admin') {
@@ -43,10 +51,12 @@ function loadSidebar() {
         // Standard User
         dashLinks.innerHTML = `
             <a href="user-dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="user-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
             <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
             <a href="user-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> Printadobe</a>
             <a href="user-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
             <a href="profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="user-overview.html" class="nav-link"><i class="fas fa-chart-pie"></i> Overview</a>
         `;
     }
 }

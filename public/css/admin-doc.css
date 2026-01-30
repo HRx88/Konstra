@@ -142,3 +142,21 @@ body {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 }
+
+/* Custom Role Tabs */
+#roleTabs .nav-link {
+    color: #4a5568;
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    margin-right: 5px;
+}
+
+#roleTabs .nav-link:hover {
+    background-color: #f7fafc;
+}
+
+#roleTabs .nav-link.active {
+    background-color: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Discounts | Konstra Admin</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin-sidebar.css">
+    <link rel="stylesheet" href="css/admin-home.css"> <!-- Reusing dashboard styles -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Mobile Responsive Styles */
+        @media (max-width: 991.98px) {
+            .admin-sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1050;
+                transition: transform 0.3s ease;
+            }
+
+            .admin-sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+            }
+
+            .mobile-header {
+                display: flex !important;
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .mobile-header {
+                display: none !important;
+            }
+        }
+
+        .mobile-header {
+            background: white;
+            padding: 1rem;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+            border-bottom: 1px solid #e9ecef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Table mobile improvements */
+        @media (max-width: 767.98px) {
+
+            .table-custom th,
+            .table-custom td {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.25rem !important;
+            }
+
+            .table-custom .btn-group .btn {
+                padding: 0.25rem 0.4rem;
+            }
+
+            .btn-group {
+                flex-wrap: wrap;
+                gap: 2px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: stretch !important;
+            }
+
+            .header-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Overlay for Mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <nav class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="admin-home.html" class="brand-text"><i class="fas fa-user-shield me-2"></i>KonstraAdmin</a>
+        </div>
+        <div class="d-flex flex-column">
+            <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
+            <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
+            <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> Meetings</a>
+            <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
+            <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+            <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Projects</a>
+            <a href="admin-discounts.html" class="nav-link active"><i class="fas fa-tags"></i> Discounts</a>
+            <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+        </div>
+        <div class="logout-btn-container">
+            <button id="logoutBtn" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+                Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Mobile Header -->
+        <div class="mobile-header d-flex justify-content-between align-items-center">
+            <button class="btn btn-outline-secondary" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="fw-bold">Discount Management</span>
+            <div style="width: 40px;"></div>
+        </div>
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 header-actions flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold mb-1">Discount Management</h3>
+                <div class="text-muted small">Create and manage promo codes</div>
+            </div>
+            <button class="btn btn-primary shadow-sm fw-medium" data-bs-toggle="modal"
+                data-bs-target="#createDiscountModal">
+                <i class="fas fa-plus me-2"></i>New Discount
+            </button>
+        </div>
+
+        <!-- Table Card -->
+        <div class="dashboard-card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom mb-0 align-middle">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Code</th>
+                                <th>Value</th>
+                                <th>Uses</th>
+                                <th>Applicability</th>
+                                <th>Expiry</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="discountTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="spinner-border text-primary" role="status"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE MODAL -->
+        <div class="modal fade" id="createDiscountModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title fw-bold">Create New Discount</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="createDiscountForm">
+                        <div class="modal-body pt-4">
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">CODE</label>
+                                <input type="text" class="form-control text-uppercase" id="dCode" required
+                                    placeholder="e.g. SUMMER2025">
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">TYPE</label>
+                                    <select class="form-select" id="dType">
+                                        <option value="Percentage">Percentage (%)</option>
+                                        <option value="Fixed">Fixed Amount ($)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">VALUE</label>
+                                    <input type="number" step="0.01" class="form-control" id="dValue" required
+                                        placeholder="e.g. 20">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-muted">APPLIES TO</label>
+                                <select class="form-select" id="dProgram">
+                                    <option value="">All Programs (Global)</option>
+                                    <!-- Dynamic Programs -->
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">MAX USES</label>
+                                    <input type="number" class="form-control" id="dMaxUses" placeholder="Unlimited">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label fw-bold small text-muted">EXPIRY DATE</label>
+                                    <input type="date" class="form-control" id="dExpiry">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer border-0 pt-0">
+                            <button type="button" class="btn btn-light fw-medium"
+                                data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary px-4 fw-medium">Create Code</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin-discounts.js"></script>
+    <script>
+        // Mobile Sidebar Toggle
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.add('show');
+            document.getElementById('sidebarOverlay').classList.add('show');
+        });
+        document.getElementById('sidebarOverlay')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('show');
+            document.getElementById('sidebarOverlay').classList.remove('show');
+        });
+    </script>
+</body>
+
+</html>

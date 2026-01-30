@@ -44,18 +44,31 @@ function setupSidebar() {
     const admin = JSON.parse(localStorage.getItem("adminDetails"));
     const userType = member ? 'User' : (admin ? 'Admin' : null);
 
+    // --- DYNAMIC BRANDING ---
+    const brandText = document.querySelector('.sidebar-header .brand-text');
+    if (brandText) {
+        if (userType === 'Admin') {
+            brandText.innerHTML = '<i class="fas fa-user-shield me-2"></i>KonstraAdmin';
+        } else if (member && member.role === 'NGO') {
+            brandText.innerHTML = '<i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO';
+        } else {
+            brandText.innerHTML = '<i class="fas fa-user me-2"></i>KonstraMember';
+        }
+    }
+
     const dashLinks = document.getElementById('dashLinks');
 
     // "Active" class is on 'Meetings' or 'Live Room'
     if (userType === 'Admin') {
         dashLinks.innerHTML = `
         <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
+        <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
         <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
-        <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Live Room</a>
+        <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Meetings</a>
         <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
         <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
-        <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
+        <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Projects</a>
+        <a href="admin-discounts.html" class="nav-link"><i class="fas fa-tags"></i> Discounts</a>
         <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
     `;
     } else {

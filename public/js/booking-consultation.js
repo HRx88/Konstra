@@ -12,7 +12,21 @@ let countdownInterval = null;
 document.addEventListener('DOMContentLoaded', () => {
     const user = getUser();
     if (!user) window.location.href = 'login.html';
-    else document.getElementById('userNameDisplay').textContent = user.username || "User";
+    else {
+        document.getElementById('userNameDisplay').textContent = user.username || "User";
+
+        // --- DYNAMIC BRANDING ---
+        const brandText = document.querySelector('.sidebar-header .brand-text');
+        if (brandText) {
+            if (localStorage.getItem('adminDetails')) {
+                brandText.innerHTML = '<i class="fas fa-user-shield me-2"></i>KonstraAdmin';
+            } else if (user.role === 'NGO') {
+                brandText.innerHTML = '<i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO';
+            } else {
+                brandText.innerHTML = '<i class="fas fa-user me-2"></i>KonstraMember';
+            }
+        }
+    }
 
     setupEventListeners();
 });

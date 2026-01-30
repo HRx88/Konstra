@@ -1,17 +1,15 @@
+// STATE
+let allPrograms = [];
+let currentCategory = 'Education';
+let searchQuery = '';
+
+// INIT
 document.addEventListener('DOMContentLoaded', () => {
     const member = JSON.parse(localStorage.getItem('memberDetails'));
     if (!member) { window.location.href = 'login.html'; return; }
 
-    // Assume member object has something like 'memberID' or 'userID' or 'id'
-    // Based on earlier code, it seems to be memberID from login.html
-    const userId = member.memberID || member.userID || member.id;
-
-    if (userId) {
-        loadEnrollments(userId);
-    } else {
-        console.error("User ID not found in localStorage");
-    }
     setupEventListeners();
+    loadCatalog();
 });
 
 function setupEventListeners() {
@@ -19,108 +17,122 @@ function setupEventListeners() {
     document.getElementById('mobileDashToggle')?.addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('active');
     });
+
+    // Search logic
+    document.getElementById('catalogSearch')?.addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderCatalog();
+    });
 }
 
-async function loadEnrollments(userId) {
-    const grid = document.getElementById('enrollmentGrid');
+function filterCategory(category) {
+    currentCategory = category;
+
+    // Update active tab UI
+    document.querySelectorAll('#catalogTabs .nav-link').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const id = category === 'Education' ? 'tab-program' : (category === 'Trip' ? 'tab-trip' : 'tab-lesson');
+    document.getElementById(id)?.classList.add('active');
+
+    renderCatalog();
+}
+
+async function loadCatalog() {
     const loader = document.getElementById('loader');
-    const emptyState = document.getElementById('emptyState');
+    const grid = document.getElementById('catalogGrid');
 
     try {
-        const res = await fetch(`/api/enrollments/my-enrollments?userID=${userId}`);
-        const enrollments = await res.json();
+        const res = await fetch('/api/programs');
+        if (!res.ok) throw new Error('Failed to load catalog');
+
+        allPrograms = await res.json();
 
         loader.style.display = 'none';
-
-        if (!res.ok || enrollments.length === 0) {
-            emptyState.style.display = 'block';
-            return;
-        }
-
         grid.style.display = 'flex';
 
-        // Helper to get badge color based on type
-        const getTypeBadge = (type) => {
-            if (type === 'Workshop') return 'bg-info';
-            if (type === 'Immersive Trip') return 'bg-success';
-            return 'bg-primary';
-        };
+        renderCatalog();
+    } catch (err) {
+        console.error("Catalog Load Error:", err);
+        loader.innerHTML = `<p class="text-danger">Failed to load opportunities. Please try again.</p>`;
+    }
+}
 
-        grid.innerHTML = '';
+function renderCatalog() {
+    const grid = document.getElementById('catalogGrid');
+    const emptyState = document.getElementById('emptyState');
 
-        // Load each enrollment with dynamic progress
-        for (const e of enrollments) {
-            // Fetch actual module progress
-            let completedCount = 0;
-            let totalCount = 0;
-            let dynamicProgress = e.Progress || 0;
+    // Filter by category and search query
+    let filtered = allPrograms.filter(p => {
+        const matchesCategory = p.Type === currentCategory;
+        const matchesSearch = p.Title.toLowerCase().includes(searchQuery) ||
+            (p.Description && p.Description.toLowerCase().includes(searchQuery));
+        return matchesCategory && matchesSearch;
+    });
 
-            try {
-                const [modulesRes, progressRes] = await Promise.all([
-                    fetch(`/api/programs/${e.ProgramID}/modules`),
-                    fetch(`/api/enrollments/${e.EnrollmentID}/progress`)
-                ]);
+    if (filtered.length === 0) {
+        grid.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+    }
 
-                const modules = await modulesRes.json();
-                const progress = await progressRes.json();
+    grid.style.display = 'flex';
+    emptyState.style.display = 'none';
 
-                totalCount = modules.length;
-                completedCount = progress.length;
-                dynamicProgress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
-            } catch (err) {
-                console.error('Error fetching progress:', err);
-            }
+    grid.innerHTML = filtered.map((p, index) => {
+        const isTrip = p.Type === 'Trip';
+        const image = p.ImageURL || 'https://images.unsplash.com/photo-1581092921461-eab6245b0262';
+        const enrolled = p.EnrolledCount || 0;
+        const max = p.MaxParticipants || 20;
+        const spotsLeft = max - enrolled;
 
-            const cardHTML = `
-            <div class="col-md-6 col-lg-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="position-relative">
-                        <img src="${e.ProgramImage || 'https://via.placeholder.com/400x200?text=Program'}" 
-                             class="card-img-top" alt="${e.ProgramTitle}" style="height: 180px; object-fit: cover;">
-                        <span class="badge ${getTypeBadge(e.ProgramType)} position-absolute top-0 end-0 m-3">
-                            ${e.ProgramType}
+        return `
+        <div class="col-md-6 col-lg-4 fade-in" style="animation-delay: ${index * 0.1}s">
+            <div class="card h-100 shadow-sm border-0 catalog-card">
+                <div class="position-relative">
+                    <img src="${image}" class="card-img-top" alt="${p.Title}" style="height: 200px; object-fit: cover;">
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge ${spotsLeft > 5 ? 'bg-success' : 'bg-danger'} shadow-sm">
+                            ${spotsLeft > 0 ? `${spotsLeft} spots left` : 'Full'}
                         </span>
                     </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold">${e.ProgramTitle}</h5>
-                        <p class="card-text text-muted small mb-3">
-                            ${e.ProgramDescription ? e.ProgramDescription.substring(0, 80) + '...' : 'No description available.'}
-                        </p>
-                        
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <small class="text-muted">Module Progress</small>
-                                <small class="fw-bold text-dark">${completedCount}/${totalCount} completed</small>
-                            </div>
-                            <div class="progress" style="height: 8px;">
-                                <div class="progress-bar bg-danger" role="progressbar" 
-                                     style="width: ${dynamicProgress}%" 
-                                     aria-valuenow="${dynamicProgress}" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div>
-                            <div class="d-flex justify-content-between mt-1">
-                                <small class="text-muted fw-bold">${dynamicProgress}%</small> 
-                                <small class="text-${dynamicProgress >= 100 ? 'success' : 'warning'} fw-bold">
-                                    ${dynamicProgress >= 100 ? 'Completed' : 'In Progress'}
-                                </small>
-                            </div>
-                        </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold mb-0">${p.Title}</h5>
+                        <span class="text-primary fw-bold">$${p.Price}</span>
+                    </div>
+                    
+                    <p class="card-text text-muted small mb-3">
+                        ${p.Description ? p.Description.substring(0, 100) + '...' : 'Unlock your potential with this Konstra session.'}
+                    </p>
 
-                        <div class="mt-auto d-flex justify-content-between align-items-center">
-                            <small class="text-muted"><i class="far fa-calendar-alt me-1"></i> ${new Date(e.EnrollmentDate).toLocaleDateString()}</small>
-                            <a href="program-content.html?enrollmentId=${e.EnrollmentID}&programId=${e.ProgramID}" class="btn btn-sm btn-outline-dark">Access Content</a>
-                        </div>
+                    ${isTrip ? `
+                    <div class="mb-3 p-2 bg-light rounded small">
+                        <div class="mb-1"><i class="fas fa-map-marker-alt text-danger me-2"></i>${p.Location || 'TBA'}</div>
+                        <div><i class="fas fa-calendar-day text-danger me-2"></i>${p.Duration || 'TBA'}</div>
+                    </div>
+                    ` : ''}
+
+                    <div class="mt-auto pt-3 border-top d-flex gap-2">
+                        <button onclick="goToEnrollment('${p.ProgramID}', '${p.Title}', '${p.Type}', '${p.Price}', '${image}')" 
+                                class="btn btn-dark flex-grow-1" ${spotsLeft <= 0 ? 'disabled' : ''}>
+                            ${isTrip ? 'Book Trip' : 'Enroll Now'}
+                        </button>
+                        <a href="printadobe-details.html?id=${p.ProgramID}" class="btn btn-outline-dark">
+                            <i class="fas fa-info-circle"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-            `;
-            grid.innerHTML += cardHTML;
-        }
+        </div>
+        `;
+    }).join('');
+}
 
-    } catch (error) {
-        console.error("Error loading enrollments:", error);
-        loader.style.display = 'none';
-        emptyState.style.display = 'block';
-    }
+function goToEnrollment(id, item, type, price, imageUrl) {
+    const url = `enrollment.html?id=${id}&item=${encodeURIComponent(item)}&type=${encodeURIComponent(type)}&price=${price}&image=${encodeURIComponent(imageUrl)}`;
+    window.location.href = url;
 }
 
 function logout() {

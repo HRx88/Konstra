@@ -1,4 +1,5 @@
 const Enrollment = require('../models/enrollment');
+const ProgramModule = require('../models/programModule');
 
 class EnrollmentController {
 
@@ -40,6 +41,22 @@ class EnrollmentController {
         } catch (err) {
             console.error('Get User Enrollments Error:', err);
             res.status(500).json({ error: err.message });
+        }
+    }
+
+    // Get progress for an enrollment
+    static async getProgress(req, res) {
+        try {
+            const enrollmentId = parseInt(req.params.id);
+            if (isNaN(enrollmentId)) {
+                return res.status(400).json({ success: false, message: 'Invalid Enrollment ID' });
+            }
+
+            const progress = await ProgramModule.getUserProgress(enrollmentId);
+            res.json(progress || []);
+        } catch (err) {
+            console.error('Get Progress Error:', err);
+            res.status(500).json({ success: false, message: 'Server error fetching progress' });
         }
     }
 }

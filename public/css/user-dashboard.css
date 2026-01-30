@@ -12,11 +12,8 @@ body {
 }
 
 /* --- CONTENT --- */
-.main-content {
-    margin-left: 250px;
-    padding: 30px;
-    transition: margin-left 0.3s ease;
-}
+/* .main-content handled in sidebar.css */
+
 
 /* --- HERO --- */
 .dashboard-hero {
@@ -297,4 +294,76 @@ body {
 .announcement-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- TRIP CARDS --- */
+.trip-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.trip-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.15) !important;
+}
+
+.trip-card .card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.trip-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.trip-details i {
+    width: 18px;
+    text-align: center;
+}
+
+/* --- TRAINING CARDS --- */
+.training-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.training-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 123, 255, 0.15) !important;
+}
+
+.training-card .card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.training-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.training-details i {
+    width: 18px;
+    text-align: center;
+}
+
+/* --- LIVE INDICATOR PULSE ANIMATION --- */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+.live-indicator .badge {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
 }

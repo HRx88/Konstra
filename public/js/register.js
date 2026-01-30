@@ -110,12 +110,29 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
         const data = await response.json();
 
         if (data.success) {
-            showSuccess('Account created successfully! Redirecting to login...');
+            // Check for welcome code
+            if (data.welcomeCode) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: '🎉 Welcome Gift!',
+                    html: `
+                        <p>Your account has been created!</p>
+                        <p>Here's your exclusive <strong>20% OFF</strong> discount code:</p>
+                        <div style="font-size: 1.5rem; font-weight: bold; background: #f0f0f0; padding: 12px; border-radius: 8px; margin: 12px 0; user-select: all;">
+                            ${data.welcomeCode}
+                        </div>
+                        <p class="text-muted" style="font-size: 0.9rem;">Save this code - it can only be used once!</p>
+                    `,
+                    confirmButtonText: 'Continue to Login'
+                });
+            } else {
+                showSuccess('Account created successfully! Redirecting to login...');
+            }
 
             // Redirect to login page after short delay
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 2000);
+            }, 500);
         } else {
             showError(data.message || 'Registration failed');
         }
