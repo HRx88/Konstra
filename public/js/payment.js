@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             allowOutsideClick: false
         });
 
-        window.location.href = 'printadobe.html'; // Redirect back
+        window.location.href = 'user-printadobe.html'; // Redirect back
         return;
     }
 
@@ -56,6 +56,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const slot = params.get('slot');
         const details = params.get('details'); // JSON string from URL
 
+        const member = JSON.parse(localStorage.getItem('memberDetails'));
+        const userId = member ? (member.memberID || member.id || member.UserID || member.ID) : null;
+
+        if (!userId) {
+            document.querySelector('.loader-card').style.display = 'none';
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Login Required',
+                text: 'Please log in to complete payment.',
+                confirmButtonColor: '#d32f2f'
+            });
+            window.location.href = 'login.html';
+            return;
+        }
+
         const response = await fetch('/api/payment/create-checkout-session', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -66,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 image: image,
                 slot,
                 details,
-                userId: JSON.parse(localStorage.getItem('memberDetails')).ID // Pass User ID
+                userId: userId
             })
         });
 
@@ -107,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.querySelector('.loader-card').innerHTML = `
             <h4 class="text-danger">Connection Error</h4>
             <p>Could not connect to server.</p>
-            <a href="printadobe.html" class="btn btn-secondary btn-sm">Go Back</a>
+            <a href="user-printadobe.html" class="btn btn-secondary btn-sm">Go Back</a>
         `;
 
         // Also show a toast for the catch block

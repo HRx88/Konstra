@@ -8,15 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const dashLinks = document.getElementById('dashLinks');
     if (userType === 'Admin') {
         dashLinks.innerHTML = `
-\t<a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-\t<a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
-\t<a href="chat.html" class="nav-link active"><i class="fas fa-comments"></i> Chat</a>
-\t<a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> Meeting</a>
-\t<a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
-\t<a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
-\t<a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
-\t<a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
-    `;
+<a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+				<a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
+				<a href="chat.html" class="nav-link active"><i class="fas fa-comments"></i> Chat</a>
+				<a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> Meetings</a>
+				<a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
+				<a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+				<a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Projects</a>
+				<a href="admin-discounts.html" class="nav-link"><i class="fas fa-tags"></i> Discounts</a>
+				<a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+			`;
     } else {
         // Check if NGO or Regular User
         if (member && member.role === 'NGO') {

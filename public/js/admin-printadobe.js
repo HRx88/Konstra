@@ -18,7 +18,11 @@ function setupEventListeners() {
     });
     document.getElementById('btnAddProgram')?.addEventListener('click', openModal);
     document.getElementById('btnSaveProgram')?.addEventListener('click', saveProgram);
+
+    // Slot Actions
     document.getElementById('btnAddSlot')?.addEventListener('click', addSlot);
+    document.getElementById('btnUpdateSlot')?.addEventListener('click', updateSlot);
+    document.getElementById('btnCancelSlot')?.addEventListener('click', resetSlotForm);
 
     // Filters
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -37,7 +41,7 @@ function setupEventListeners() {
         } else if (btn.classList.contains('btn-manage-modules')) {
             window.location.href = `admin-program-modules.html?programId=${btn.dataset.id}`;
         } else if (btn.classList.contains('btn-manage-slots')) {
-            manageSlots(parseInt(btn.dataset.id), btn.dataset.title);
+            manageSlots(parseInt(btn.dataset.id), btn.dataset.title, btn.dataset.type);
         }
     });
 
@@ -117,8 +121,8 @@ function renderPrograms() {
                     <button class="btn btn-outline-secondary w-100 mt-2 btn-sm btn-manage-modules" data-id="${p.ProgramID}">
                         <i class="fas fa-book me-1"></i> Manage Modules
                     </button>
-                    ${p.Type === 'Education' ? `
-                    <button class="btn btn-outline-primary w-100 mt-2 btn-sm btn-manage-slots" data-id="${p.ProgramID}" data-title="${p.Title.replace(/"/g, "&quot;")}">
+                    ${(p.Type === 'Education' || p.Type === 'Lesson') ? `
+                    <button class="btn btn-outline-primary w-100 mt-2 btn-sm btn-manage-slots" data-id="${p.ProgramID}" data-title="${p.Title.replace(/"/g, "&quot;")}" data-type="${p.Type}">
                         <i class="fas fa-calendar-alt me-1"></i> Manage Sessions
                     </button>` : ''}
                 </div>
@@ -221,14 +225,37 @@ async function deleteProgram(id) {
 // --- 6. SLOT MANAGEMENT ---
 const slotModal = new bootstrap.Modal(document.getElementById('slotsModal'));
 let currentProgramIdArgs = null;
+let currentProgramType = null;
+let editingSlotId = null; // Track if we are editing
 
-function manageSlots(pid, title) {
+function manageSlots(pid, title, type) {
     currentProgramIdArgs = pid;
+    currentProgramType = type;
     document.getElementById('slotProgramTitle').innerText = title;
-    document.getElementById('newSlotStart').value = '';
-    document.getElementById('newSlotEnd').value = '';
+
+    resetSlotForm();
+
+    // Show/hide Meeting URL field based on program type
+    const meetingUrlRow = document.getElementById('meetingUrlRow');
+    if (meetingUrlRow) {
+        meetingUrlRow.style.display = (type === 'Lesson') ? 'flex' : 'none';
+    }
+
     loadSlots(pid);
     slotModal.show();
+}
+
+function resetSlotForm() {
+    editingSlotId = null;
+    document.getElementById('newSlotStart').value = '';
+    document.getElementById('newSlotEnd').value = '';
+    document.getElementById('newSlotCapacity').value = '20';
+    document.getElementById('newSlotMeetingURL').value = '';
+
+    // Switch Buttons
+    document.getElementById('btnAddSlot').classList.remove('d-none');
+    document.getElementById('btnUpdateSlot').classList.add('d-none');
+    document.getElementById('btnCancelSlot').classList.add('d-none');
 }
 
 async function loadSlots(pid) {
@@ -244,18 +271,40 @@ async function loadSlots(pid) {
             return;
         }
 
-        container.innerHTML = `<table class="table table-sm">
-            <thead><tr><th>Start</th><th>End</th><th>Booked/Cap</th><th>Action</th></tr></thead>
+        // Table similar to screenshot style
+        container.innerHTML = `<table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Start</th>
+                    <th scope="col">End</th>
+                    <th scope="col">Booked/Cap</th>
+                    <th scope="col">Meeting Link</th>
+                    <th scope="col" class="text-end">Action</th>
+                </tr>
+            </thead>
             <tbody>
                 ${slots.map(s => {
             const start = new Date(s.StartTime).toLocaleString();
             const end = new Date(s.EndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            const rawStart = new Date(s.StartTime).toISOString().slice(0, 16);
+            const rawEnd = new Date(s.EndTime).toISOString().slice(0, 16);
+
+            const meetingLink = s.MeetingURL
+                ? `<a href="${s.MeetingURL}" target="_blank" class="btn btn-sm btn-outline-primary" title="${s.MeetingURL}"><i class="fas fa-video"></i></a>`
+                : '<span class="text-muted">-</span>';
+
             return `
                         <tr>
                             <td>${start}</td>
                             <td>${end}</td>
                             <td>${s.BookedCount} / ${s.Capacity}</td>
-                            <td>
+                            <td>${meetingLink}</td>
+                            <td class="text-end">
+                                <button class="btn btn-sm btn-outline-primary btn-edit-slot me-1" 
+                                    onclick="editSlot(${s.SlotID}, '${rawStart}', '${rawEnd}', ${s.Capacity}, '${s.MeetingURL || ''}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                                 <button class="btn btn-sm btn-outline-danger btn-delete-slot" data-id="${s.SlotID}"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
@@ -269,30 +318,70 @@ async function loadSlots(pid) {
     }
 }
 
+// Make global
+window.editSlot = function (id, start, end, cap, url) {
+    editingSlotId = id;
+
+    // Populate form
+    document.getElementById('newSlotStart').value = start;
+    document.getElementById('newSlotEnd').value = end;
+    document.getElementById('newSlotCapacity').value = cap;
+    document.getElementById('newSlotMeetingURL').value = url;
+
+    // Switch Buttons
+    document.getElementById('btnAddSlot').classList.add('d-none');
+    document.getElementById('btnUpdateSlot').classList.remove('d-none');
+    document.getElementById('btnCancelSlot').classList.remove('d-none');
+
+    // Listener for static buttons (ensure not duplicated or move to setupEventListeners)
+    // We'll rely on global onclick or setupEventListeners. 
+    // Ideally update setupEventListeners, but updating logic here for now.
+};
+
 async function addSlot() {
+    await saveSlot(false);
+}
+
+// Separate function for Update button logic
+async function updateSlot() {
+    await saveSlot(true);
+}
+
+async function saveSlot(isUpdate) {
     const start = document.getElementById('newSlotStart').value;
     const end = document.getElementById('newSlotEnd').value;
     const cap = document.getElementById('newSlotCapacity').value;
+    const meetingURL = document.getElementById('newSlotMeetingURL').value;
 
     if (!start || !end || !currentProgramIdArgs) {
         Swal.fire('Error', 'Please verify times.', 'error');
         return;
     }
 
+    const payload = { startTime: start, endTime: end, capacity: cap, meetingURL: meetingURL || null };
+
     try {
-        const res = await fetch(`/api/programs/${currentProgramIdArgs}/slots`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ startTime: start, endTime: end, capacity: cap })
-        });
+        let res;
+        if (isUpdate && editingSlotId) {
+            res = await fetch(`/api/programs/slots/${editingSlotId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        } else {
+            res = await fetch(`/api/programs/${currentProgramIdArgs}/slots`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
 
         if (res.ok) {
-            loadSlots(currentProgramIdArgs); // Reload list
-            // Clear inputs
-            document.getElementById('newSlotStart').value = '';
-            document.getElementById('newSlotEnd').value = '';
+            resetSlotForm();
+            loadSlots(currentProgramIdArgs);
+            Swal.fire('Success', isUpdate ? 'Session updated' : 'Session added', 'success');
         } else {
-            Swal.fire('Error', 'Failed to add slot', 'error');
+            Swal.fire('Error', 'Failed to save session', 'error');
         }
     } catch (e) { console.error(e); }
 }

@@ -51,7 +51,7 @@ class Program {
             const result = await pool.request()
                 .input('programId', sql.Int, programId)
                 .query(`
-                    SELECT SlotID, StartTime, EndTime, Capacity, BookedCount
+                    SELECT SlotID, StartTime, EndTime, Capacity, BookedCount, MeetingURL
                     FROM ProgramSlots
                     WHERE ProgramID = @programId AND IsActive = 1 AND BookedCount < Capacity
                     ORDER BY StartTime ASC
@@ -201,14 +201,61 @@ class Program {
                 .input('startTime', sql.DateTime, data.startTime)
                 .input('endTime', sql.DateTime, data.endTime)
                 .input('capacity', sql.Int, data.capacity)
+                .input('meetingURL', sql.NVarChar, data.meetingURL || null)
                 .query(`
-                    INSERT INTO ProgramSlots (ProgramID, StartTime, EndTime, Capacity, BookedCount, IsActive)
-                    VALUES (@programId, @startTime, @endTime, @capacity, 0, 1);
+                    INSERT INTO ProgramSlots (ProgramID, StartTime, EndTime, Capacity, BookedCount, IsActive, MeetingURL)
+                    VALUES (@programId, @startTime, @endTime, @capacity, 0, 1, @meetingURL);
                     SELECT SCOPE_IDENTITY() AS SlotID;
                 `);
             return result.recordset[0].SlotID;
         } catch (err) {
             console.error('SQL Create Slot Error:', err);
+            throw err;
+        } finally {
+            if (pool) pool.close();
+        }
+    }
+
+    // Update a slot
+    static async updateSlot(slotId, data) {
+        let pool;
+        try {
+            pool = await sql.connect(dbConfig);
+
+            let query = `UPDATE ProgramSlots SET `;
+            const inputs = {};
+
+            if (data.startTime) {
+                query += `StartTime = @startTime, `;
+                inputs.startTime = data.startTime;
+            }
+            if (data.endTime) {
+                query += `EndTime = @endTime, `;
+                inputs.endTime = data.endTime;
+            }
+            if (data.capacity) {
+                query += `Capacity = @capacity, `;
+                inputs.capacity = data.capacity;
+            }
+            if (data.meetingURL !== undefined) {
+                query += `MeetingURL = @meetingURL, `;
+                inputs.meetingURL = data.meetingURL;
+            }
+
+            query = query.slice(0, -2); // Remove trailing comma
+            query += ` WHERE SlotID = @slotId`;
+
+            const request = pool.request().input('slotId', sql.Int, slotId);
+
+            if (inputs.startTime) request.input('startTime', sql.DateTime, inputs.startTime);
+            if (inputs.endTime) request.input('endTime', sql.DateTime, inputs.endTime);
+            if (inputs.capacity) request.input('capacity', sql.Int, inputs.capacity);
+            if (inputs.meetingURL) request.input('meetingURL', sql.NVarChar, inputs.meetingURL);
+
+            await request.query(query);
+            return true;
+        } catch (err) {
+            console.error('SQL Update Slot Error:', err);
             throw err;
         } finally {
             if (pool) pool.close();

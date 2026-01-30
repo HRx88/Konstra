@@ -27,7 +27,7 @@ class ProgramController {
         if (isNaN(id)) return res.status(400).json({ error: 'Invalid Program ID' });
         try {
             const children = await Program.getChildPrograms(id);
-            res.status(200).json(children);
+            res.status(200).json(children); // Return raw data directly
         } catch (error) {
             console.error('Controller Error - getChildren:', error);
             res.status(500).json({ error: 'Failed to fetch child programs' });
@@ -67,7 +67,29 @@ class ProgramController {
         }
     }
 
-    // 1c. Delete Slot
+    // 1c. Update Slot
+    static async updateSlot(req, res) {
+        const slotId = parseInt(req.params.slotId);
+        const { startTime, endTime, capacity, meetingURL } = req.body;
+
+        if (isNaN(slotId) || !startTime || !endTime || !capacity) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        try {
+            const success = await Program.updateSlot(slotId, { startTime, endTime, capacity, meetingURL });
+            if (success) {
+                res.status(200).json({ message: 'Slot updated successfully' });
+            } else {
+                res.status(400).json({ error: 'Failed to update slot or slot not found' });
+            }
+        } catch (error) {
+            console.error('Controller Error - updateSlot:', error);
+            res.status(500).json({ error: 'Failed to update slot' });
+        }
+    }
+
+    // 1d. Delete Slot
     static async deleteSlot(req, res) {
         const slotId = parseInt(req.params.slotId);
         if (isNaN(slotId)) return res.status(400).json({ error: 'Invalid Slot ID' });

@@ -2,18 +2,23 @@ const express = require('express');
 const router = express.Router();
 const ProgramController = require('../controllers/programController');
 
-// Child programs
-router.get('/:id/children', ProgramController.getChildren);
-
-// Standard CRUD
+// Standard CRUD - List all
 router.get('/', ProgramController.getAll);
-router.post('/', ProgramController.create); // Standard REST Create
-router.get('/:id', ProgramController.getOne);
+
+// Specific routes MUST come before generic /:id route
+router.get('/:id/children', ProgramController.getChildren);
 router.get('/:id/slots', ProgramController.getSlots);
 router.post('/:id/slots', ProgramController.createSlot);
-router.delete('/slots/:slotId', ProgramController.deleteSlot);
-router.post('/create', ProgramController.create); // Keep alias if needed
+
+// Generic /:id routes (must come after specific routes)
+router.get('/:id', ProgramController.getOne);
 router.put('/:id', ProgramController.update);
 router.delete('/:id', ProgramController.delete);
+
+// Other routes
+router.post('/', ProgramController.create); // Standard REST Create
+router.post('/create', ProgramController.create); // Keep alias if needed
+router.put('/slots/:slotId', ProgramController.updateSlot); // Update Slot
+router.delete('/slots/:slotId', ProgramController.deleteSlot);
 
 module.exports = router;

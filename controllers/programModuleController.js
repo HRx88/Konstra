@@ -76,13 +76,26 @@ class ProgramModuleController {
 
     // Helper to notify clients of updates
     static notifyClients(programId) {
-        ProgramModuleController.clients.forEach(client => {
+        ProgramModuleController.clients.forEach((client, index) => {
             // Use loose equality (==) to handle string/number comparison
-            // req.params.programId is string, db ProgramID is int
             if (client.programId == programId) {
-                client.res.write(`data: ${JSON.stringify({ type: 'moduleUpdate', programId })}\n\n`);
+                try {
+                    // Check if response is writable
+                    if (client.res.writableEnded || !client.res.writable) {
+                        // Mark for removal? For now just skip
+                        return;
+                    }
+                    client.res.write(`data: ${JSON.stringify({ type: 'moduleUpdate', programId })}\n\n`);
+                } catch (error) {
+                    console.error('SSE Broadcast Error:', error);
+                    // Force close matches
+                    try { client.res.end(); } catch (e) { }
+                }
             }
         });
+
+        // Clean up closed connections
+        ProgramModuleController.clients = ProgramModuleController.clients.filter(c => !c.res.writableEnded && c.res.writable);
     }
 
     // Admin: Create a new module

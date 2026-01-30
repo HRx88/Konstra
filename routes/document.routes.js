@@ -80,6 +80,24 @@ router.delete("/:documentID/user/:userID", DocumentController.deleteDocument);
 // Download document
 router.get("/download/:documentID/user/:userID", DocumentController.downloadDocument);
 
+// User upload for review
+router.post("/upload-for-review", upload.single('document'), DocumentController.uploadForReview);
+
+// Get user's uploaded documents
+router.get("/user/:userID/uploads", DocumentController.getUserUploads);
+
+// Admin: Get pending documents
+router.get("/admin/pending", DocumentController.getPendingDocuments);
+
+// Admin: Approve document (with optional file)
+router.put("/admin/approve/:documentID", upload.single('feedbackFile'), DocumentController.approveDocument);
+
+// Admin: Reject document (with optional file)
+router.put("/admin/reject/:documentID", upload.single('feedbackFile'), DocumentController.rejectDocument);
+
+// Download feedback file
+router.get("/admin/feedback/download/:documentID", DocumentController.downloadFeedback);
+
 // ========== Export ==========
 module.exports = router;
 

@@ -44,11 +44,22 @@ class AuthController {
         { expiresIn: '24h' }
       );
 
+      // --- Generate Welcome Discount Code ---
+      let welcomeCode = null;
+      try {
+        const Discount = require('../models/discount');
+        welcomeCode = await Discount.createWelcomeCode(result.user.UserID, result.user.Username);
+        console.log('[AUTH] Welcome code created:', welcomeCode);
+      } catch (discountErr) {
+        console.error('[AUTH] Error generating welcome code:', discountErr);
+      }
+
       res.status(201).json({
         success: true,
         message: 'User registered successfully',
         user: result.user,
-        token
+        token,
+        welcomeCode // Send to frontend
       });
     } catch (error) {
       console.error('Register Controller Error:', error);

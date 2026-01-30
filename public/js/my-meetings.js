@@ -15,19 +15,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userID = member ? member.memberID : admin.adminID;
     const userName = member ? member.username : admin.username;
 
+    // --- DYNAMIC BRANDING ---
+    const brandText = document.querySelector('.sidebar-header .brand-text');
+    if (brandText) {
+        if (userType === 'Admin') {
+            brandText.innerHTML = '<i class="fas fa-user-shield me-2"></i>KonstraAdmin';
+        } else if (member && member.role === 'NGO') {
+            brandText.innerHTML = '<i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO';
+        } else {
+            brandText.innerHTML = '<i class="fas fa-user me-2"></i>KonstraMember';
+        }
+    }
+
     // --- DYNAMIC SIDEBAR LINKS ---
     const sidebarLinks = document.getElementById('sidebarLinks');
     if (userType === 'Admin') {
         sidebarLinks.innerHTML = `
-\t\t\t\t<a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-\t\t\t\t<a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
-\t\t\t\t<a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
-\t\t\t\t<a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Meeting</a>
-\t\t\t\t<a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
-\t\t\t\t<a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
-\t\t\t\t<a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
-\t\t\t\t<a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
-\t\t\t`;
+				<a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+				<a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Documents</a>
+				<a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
+				<a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Meetings</a>
+				<a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
+				<a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
+				<a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Projects</a>
+				<a href="admin-discounts.html" class="nav-link"><i class="fas fa-tags"></i> Discounts</a>
+				<a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
+			`;
     } else {
         sidebarLinks.innerHTML = `
             <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>

@@ -9,31 +9,75 @@ let userEnrollments = []; // To check access
 let completedModules = [];
 let currentModule = null;
 
+// Cleanup tracking
+let watchInterval = null;
+let pdfTimer = null;
+let ytPlayer = null;
+let eventSource = null;
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (!enrollmentId || !programId) {
-        alert('Invalid access. Missing enrollment or program ID.');
-        window.location.href = 'user-printadobe.html';
+        showToast('Invalid access. Missing enrollment or program ID.', 'error');
+        setTimeout(() => {
+            window.location.href = 'user-printadobe.html';
+        }, 2000);
         return;
     }
 
-    await Promise.all([loadLevels(), loadModules(), loadProgress(), loadUserEnrollments()]);
+    try {
+        await Promise.all([
+            loadLevels(),
+            loadModules(),
+            loadProgress(),
+            loadUserEnrollments()
+        ]);
 
-    // Start automatic refresh via SSE
-    setupSSE();
+        // Start automatic refresh via SSE
+        setupSSE();
 
-    // Static Listeners
-    document.getElementById('logoutBtn')?.addEventListener('click', logout);
-    document.getElementById('mobileDashToggle')?.addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('active');
-    });
+        // Static Listeners
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+        document.getElementById('mobileDashToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+    } catch (error) {
+        console.error('Initialization error:', error);
+        showToast('Failed to load course data. Please refresh the page.', 'error');
+    }
 });
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    cleanup();
+});
+
+function cleanup() {
+    if (watchInterval) {
+        clearInterval(watchInterval);
+        watchInterval = null;
+    }
+    if (pdfTimer) {
+        clearInterval(pdfTimer);
+        pdfTimer = null;
+    }
+    if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+    }
+    if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+        ytPlayer.destroy();
+        ytPlayer = null;
+    }
+}
 
 async function loadLevels() {
     try {
         const response = await fetch(`/api/programs/${programId}/children`);
-        if (response.ok) {
-            levels = await response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        const data = await response.json();
+        levels = Array.isArray(data) ? data : (data.children || []);
     } catch (error) {
         console.error('Error loading levels:', error);
         levels = [];
@@ -43,30 +87,38 @@ async function loadLevels() {
 async function loadUserEnrollments() {
     try {
         const memberDetails = JSON.parse(localStorage.getItem('memberDetails'));
-        if (!memberDetails) return;
+        if (!memberDetails?.memberID) {
+            throw new Error('No member details found');
+        }
 
         const response = await fetch(`/api/enrollments/my-enrollments?userID=${memberDetails.memberID}`);
-        if (response.ok) {
-            userEnrollments = await response.json();
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        userEnrollments = await response.json();
     } catch (error) {
         console.error('Error loading enrollments:', error);
+        userEnrollments = [];
     }
 }
 
 async function loadModules(silent = false) {
     try {
         const response = await fetch(`/api/programs/${programId}/modules`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
         const newModules = await response.json();
 
-        // Check if modules have changed (compare IDs and Titles to detect edits)
+        // Check if modules have changed
         const modulesChanged = silent && (
             newModules.length !== modules.length ||
             JSON.stringify(newModules.map(m => ({ id: m.ModuleID, title: m.Title }))) !==
             JSON.stringify(modules.map(m => ({ id: m.ModuleID, title: m.Title })))
         );
 
-        // If currently viewing a module that was just edited, update the UI
+        // Update current module if it was edited
         if (silent && currentModule) {
             const updatedActive = newModules.find(m => m.ModuleID === currentModule.ModuleID);
             if (updatedActive) {
@@ -76,8 +128,10 @@ async function loadModules(silent = false) {
                 const urlChanged = updatedActive.ContentURL !== currentModule.ContentURL;
 
                 if (titleChanged || typeChanged) {
-                    document.getElementById('currentModuleTitle').textContent = updatedActive.Title;
-                    document.getElementById('currentModuleType').textContent = (updatedActive.ContentType || 'video').toUpperCase();
+                    const titleEl = document.getElementById('currentModuleTitle');
+                    const typeEl = document.getElementById('currentModuleType');
+                    if (titleEl) titleEl.textContent = updatedActive.Title;
+                    if (typeEl) typeEl.textContent = (updatedActive.ContentType || 'video').toUpperCase();
                 }
 
                 if (descChanged) {
@@ -85,9 +139,12 @@ async function loadModules(silent = false) {
                     if (descEl) descEl.textContent = updatedActive.Description || 'No description available for this module.';
                 }
 
-                // If URL changed, we must refresh the content view (re-render player)
+                // If URL changed, refresh content
                 if (urlChanged) {
-                    selectModule(updatedActive, { currentTarget: document.querySelector(`.module-item[data-module-id="${updatedActive.ModuleID}"]`) });
+                    const moduleItem = document.querySelector(`.module-item[data-module-id="${updatedActive.ModuleID}"]`);
+                    if (moduleItem) {
+                        selectModule(updatedActive, { currentTarget: moduleItem });
+                    }
                 }
 
                 currentModule = updatedActive;
@@ -96,42 +153,53 @@ async function loadModules(silent = false) {
 
         modules = newModules;
 
-        // Try to get program title from enrollment or set a default
+        // Set program title
         if (!silent) {
             try {
-                const enrollRes = await fetch(`/api/enrollments/my-enrollments?userID=${JSON.parse(localStorage.getItem('memberDetails'))?.memberID}`);
-                const enrollments = await enrollRes.json();
-                const currentEnroll = enrollments.find(e => e.EnrollmentID == enrollmentId);
-                if (currentEnroll) {
-                    document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>${currentEnroll.ProgramTitle}`;
-                } else {
-                    document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
+                const memberDetails = JSON.parse(localStorage.getItem('memberDetails'));
+                if (memberDetails?.memberID) {
+                    const enrollRes = await fetch(`/api/enrollments/my-enrollments?userID=${memberDetails.memberID}`);
+                    if (enrollRes.ok) {
+                        const enrollments = await enrollRes.json();
+                        const currentEnroll = enrollments.find(e => e.EnrollmentID == enrollmentId);
+                        const programTitleEl = document.getElementById('programTitle');
+                        if (programTitleEl) {
+                            programTitleEl.innerHTML = currentEnroll
+                                ? `<i class="fas fa-graduation-cap me-2 text-warning"></i>${currentEnroll.ProgramTitle}`
+                                : `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
+                        }
+                    }
                 }
             } catch (e) {
-                document.getElementById('programTitle').innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
+                console.error('Error setting program title:', e);
+                const programTitleEl = document.getElementById('programTitle');
+                if (programTitleEl) {
+                    programTitleEl.innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Course Content`;
+                }
             }
         }
 
         if (modules.length === 0) {
-            document.getElementById('moduleList').innerHTML = `
-                <p class="text-center text-muted p-4">No modules available yet.</p>
-            `;
+            const moduleListEl = document.getElementById('moduleList');
+            if (moduleListEl) {
+                moduleListEl.innerHTML = `<p class="text-center text-muted p-4">No modules available yet.</p>`;
+            }
             return;
         }
 
         updateModuleList();
         updateProgress();
 
-        // Show notification if new modules were added (only during silent refresh)
+        // Show notification if modules changed
         if (silent && modulesChanged) {
             showModuleUpdateNotification();
         }
     } catch (error) {
         console.error('Error loading modules:', error);
+        showToast('Failed to load modules', 'error');
     }
 }
 
-// Show a subtle notification when modules are updated
 function showModuleUpdateNotification() {
     const notification = document.createElement('div');
     notification.style.cssText = `
@@ -158,9 +226,8 @@ function showModuleUpdateNotification() {
     }, 3000);
 }
 
-// Set up real-time updates via SSE
-let eventSource = null;
 function setupSSE() {
+    // Close existing connection
     if (eventSource) {
         eventSource.close();
     }
@@ -172,61 +239,69 @@ function setupSSE() {
     };
 
     eventSource.onmessage = function (event) {
-        const data = JSON.parse(event.data);
-
-        if (data.type === 'moduleUpdate') {
-            // Module list changed, refresh it silently
-            loadModules(true);
+        try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'moduleUpdate') {
+                loadModules(true);
+            }
+        } catch (error) {
+            console.error('Error parsing SSE message:', error);
         }
     };
 
     eventSource.onerror = function (error) {
         console.error('SSE Error:', error);
-        eventSource.close();
-        // Try to reconnect after 5 seconds
-        setTimeout(setupSSE, 5000);
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+        // Retry after 5 seconds
+        setTimeout(() => {
+            if (!eventSource) { // Only reconnect if not already connected
+                setupSSE();
+            }
+        }, 5000);
     };
 }
 
 async function loadProgress() {
     try {
         const response = await fetch(`/api/enrollments/${enrollmentId}/progress`);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
         completedModules = await response.json();
-
         updateProgress();
         updateModuleList();
     } catch (error) {
         console.error('Error loading progress:', error);
+        completedModules = [];
     }
 }
 
 function updateModuleList() {
     const moduleList = document.getElementById('moduleList');
+    if (!moduleList) return;
 
-    // Remember currently active module ID
     const activeModuleId = currentModule ? currentModule.ModuleID : null;
-
     moduleList.innerHTML = '';
 
-    // Create a Section Wrapper for Main Modules
+    // Main section
     const mainSection = document.createElement('div');
-    mainSection.className = 'level-section mt-0'; // No top margin for the first one
+    mainSection.className = 'level-section mt-0';
 
-    // Header
     const mainHeader = document.createElement('div');
     mainHeader.className = 'level-header';
     mainHeader.innerHTML = `<div class="d-flex align-items-center"><i class="fas fa-folder-open me-2 text-warning"></i><span>Core Curriculum</span></div>`;
 
-    // Body (Modules List)
     const mainBody = document.createElement('div');
     mainBody.className = 'level-body p-2';
 
     modules.forEach(module => {
-        const isCompleted = completedModules.some(c => c.ModuleID === module.ModuleID);
-        const isActive = activeModuleId === module.ModuleID;
-
         const item = createModuleItem(module);
-        if (isActive) item.classList.add('active');
+        if (activeModuleId === module.ModuleID) {
+            item.classList.add('active');
+        }
         mainBody.appendChild(item);
     });
 
@@ -234,7 +309,7 @@ function updateModuleList() {
     mainSection.appendChild(mainBody);
     moduleList.appendChild(mainSection);
 
-    // Render Levels (Child Programs)
+    // Render levels
     const levelsContainer = document.getElementById('levelsListContainer');
     if (levelsContainer) {
         levelsContainer.innerHTML = '';
@@ -244,19 +319,15 @@ function updateModuleList() {
     }
 }
 
-// Helper for creating module item (Global Scope) - uses global completedModules
 function createModuleItem(module) {
     return createModuleItemWithProgress(module, completedModules);
 }
 
-// Helper for creating module item with a specific progress array
 function createModuleItemWithProgress(module, progressArray) {
     const isCompleted = progressArray.some(c => c.ModuleID === module.ModuleID);
     const item = document.createElement('div');
     item.className = `module-item ${isCompleted ? 'completed' : ''}`;
-    // Note: 'active' class is handled by the caller if needed, or we can check global currentModule
 
-    // Check if this module is the currently active one (if currentModule is set)
     if (currentModule && currentModule.ModuleID === module.ModuleID) {
         item.classList.add('active');
     }
@@ -295,16 +366,12 @@ function createModuleItemWithProgress(module, progressArray) {
     return item;
 }
 
-
-
-// Render a Level (Child Program) section
 async function renderLevelSection(level, container) {
     const isEnrolled = userEnrollments.some(e => e.ProgramID === level.ProgramID);
 
     const section = document.createElement('div');
     section.className = 'level-section mt-0';
 
-    // Header
     const header = document.createElement('div');
     header.className = 'level-header';
 
@@ -314,35 +381,33 @@ async function renderLevelSection(level, container) {
     } else if (level.Price > 0) {
         statusBadge = `<span class="badge bg-warning text-dark"><i class="fas fa-lock me-1"></i>$${level.Price}</span>`;
     } else {
-        // Free but not enrolled? Should auto-enroll or show "Start"?
         statusBadge = `<span class="badge bg-info text-dark">Free</span>`;
     }
 
     header.innerHTML = `<div class="d-flex align-items-center"><i class="fas fa-folder-open me-2 text-warning"></i><span>${level.Title}</span></div>${statusBadge}`;
     section.appendChild(header);
 
-    // Body
     const body = document.createElement('div');
     body.className = 'level-body p-2';
 
     if (isEnrolled) {
-        // If enrolled, show modules (Need to fetch them!)
         body.innerHTML = `<div class="text-center text-muted small"><i class="fas fa-spinner fa-spin"></i> Loading content...</div>`;
         section.appendChild(body);
 
-        // Fetch modules AND progress for this level
         try {
             const childEnrollment = userEnrollments.find(e => e.ProgramID === level.ProgramID);
-            console.log(`[DEBUG] Fetching modules for level ${level.ProgramID}`, level);
 
             const [modulesRes, progressRes] = await Promise.all([
                 fetch(`/api/programs/${level.ProgramID}/modules`),
-                childEnrollment ? fetch(`/api/enrollments/${childEnrollment.EnrollmentID}/progress`) : Promise.resolve({ json: () => [] })
+                childEnrollment ? fetch(`/api/enrollments/${childEnrollment.EnrollmentID}/progress`) : Promise.resolve({ ok: true, json: () => [] })
             ]);
 
-            if (!modulesRes.ok) throw new Error(`HTTP error! status: ${modulesRes.status}`);
+            if (!modulesRes.ok) {
+                throw new Error(`HTTP ${modulesRes.status}`);
+            }
+
             const levelModules = await modulesRes.json();
-            const levelProgress = childEnrollment ? await progressRes.json() : [];
+            const levelProgress = progressRes.ok ? await progressRes.json() : [];
 
             body.innerHTML = '';
 
@@ -350,21 +415,19 @@ async function renderLevelSection(level, container) {
                 body.innerHTML = `<div class="text-muted small ps-3">No modules yet.</div>`;
             } else {
                 levelModules.forEach(mod => {
-                    // Use child's progress array instead of global completedModules
                     const item = createModuleItemWithProgress(mod, levelProgress);
                     body.appendChild(item);
                 });
             }
         } catch (e) {
-            console.error('[DEBUG] Failed to load level modules:', e);
-            body.innerHTML = `<div class="text-danger small">Failed to load content: ${e.message}</div>`;
+            console.error('Failed to load level modules:', e);
+            body.innerHTML = `<div class="text-danger small">Failed to load content</div>`;
         }
     } else {
-        // Locked / Not Enrolled
         body.innerHTML = `
             <div class="text-center p-3">
                 <p class="small text-muted mb-2">${level.Description || 'Unlock this level to access content.'}</p>
-                 <button class="btn btn-sm btn-warning w-100 unlock-level-btn" 
+                <button class="btn btn-sm btn-warning w-100 unlock-level-btn" 
                     data-level-id="${level.ProgramID}" 
                     data-price="${level.Price}"
                     data-title="${level.Title}">
@@ -378,7 +441,6 @@ async function renderLevelSection(level, container) {
     container.appendChild(section);
 }
 
-// Handle Unlocking a Level (Program)
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('unlock-level-btn')) {
         handleUnlockLevel(e.target);
@@ -391,29 +453,35 @@ async function handleUnlockLevel(btn) {
     const title = btn.dataset.title;
     const memberDetails = JSON.parse(localStorage.getItem('memberDetails'));
 
-    if (!memberDetails) {
-        alert('Please log in.');
+    if (!memberDetails?.memberID) {
+        showToast('Please log in to continue', 'error');
         return;
     }
 
-    // Use SweetAlert for confirmation
-    const result = await Swal.fire({
-        title: `Unlock "${title}"?`,
-        text: price > 0 ? `This will cost $${price}.` : 'This program is free to start.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: price > 0 ? `Yes, unlock for $${price}` : 'Yes, start now!'
-    });
+    if (typeof Swal === 'undefined') {
+        if (!confirm(`Unlock "${title}"? ${price > 0 ? `This will cost $${price}.` : 'This program is free.'}`)) {
+            return;
+        }
+    } else {
+        const result = await Swal.fire({
+            title: `Unlock "${title}"?`,
+            text: price > 0 ? `This will cost $${price}.` : 'This program is free to start.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: price > 0 ? `Yes, unlock for $${price}` : 'Yes, start now!'
+        });
 
-    if (!result.isConfirmed) return;
+        if (!result.isConfirmed) return;
+    }
 
     btn.disabled = true;
+    const originalHTML = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
 
     try {
-        const response = await fetch('/api/enrollments/create', { // FIXED: Added /create
+        const response = await fetch('/api/enrollments/create', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -426,38 +494,56 @@ async function handleUnlockLevel(btn) {
         const resData = await response.json();
 
         if (response.ok && (resData.success || resData.EnrollmentID)) {
-            await Swal.fire({
-                title: 'Unlocked!',
-                text: 'You now have access to this program.',
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-            });
-            // Refresh to show content
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire({
+                    title: 'Unlocked!',
+                    text: 'You now have access to this program.',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                showToast('Level unlocked successfully!', 'success');
+            }
+
             await Promise.all([loadUserEnrollments(), loadLevels()]);
             updateModuleList();
         } else {
-            Swal.fire('Error', resData.message || 'Failed to unlock.', 'error');
+            const errorMsg = resData.message || 'Failed to unlock level';
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error', errorMsg, 'error');
+            } else {
+                showToast(errorMsg, 'error');
+            }
             btn.disabled = false;
-            btn.innerHTML = price > 0 ? `Unlock for $${price}` : 'Start for Free';
+            btn.innerHTML = originalHTML;
         }
     } catch (e) {
-        console.error(e);
-        Swal.fire('Error', 'An unexpected error occurred.', 'error');
+        console.error('Unlock error:', e);
+        const errorMsg = 'An unexpected error occurred';
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Error', errorMsg, 'error');
+        } else {
+            showToast(errorMsg, 'error');
+        }
         btn.disabled = false;
-        btn.innerHTML = price > 0 ? `Unlock for $${price}` : 'Start for Free';
+        btn.innerHTML = originalHTML;
     }
 }
 
 function selectModule(module, event) {
-    console.log('[DEBUG selectModule] Selected module:', module.Title, 'ModuleID:', module.ModuleID, 'ProgramID:', module.ProgramID);
+    // Cleanup previous module resources
+    cleanup();
+
     currentModule = module;
 
     // Update active state
     document.querySelectorAll('.module-item').forEach(item => {
         item.classList.remove('active');
     });
-    event.currentTarget.classList.add('active');
+    if (event?.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 
     // Update header
     const typeIcon = {
@@ -465,37 +551,43 @@ function selectModule(module, event) {
         'quiz': 'fa-question-circle',
         'article': 'fa-file-alt',
         'pdf': 'fa-file-pdf'
-    }[module.ContentType || 'video'];
+    }[module.ContentType || 'video'] || 'fa-circle';
 
     const typeColor = {
         'video': 'text-danger',
         'quiz': 'text-primary',
         'article': 'text-info',
         'pdf': 'text-danger'
-    }[module.ContentType || 'video'];
+    }[module.ContentType || 'video'] || 'text-secondary';
 
-    document.getElementById('currentModuleTitle').innerHTML = module.Title;
-    document.getElementById('currentModuleTitle').className = 'mb-1 fw-bold text-dark h4';
+    const titleEl = document.getElementById('currentModuleTitle');
+    const typeEl = document.getElementById('currentModuleType');
 
-    document.getElementById('currentModuleType').innerHTML = `
-        <i class="fas ${typeIcon} ${typeColor} me-1"></i> 
-        <span class="text-uppercase fw-bold" style="letter-spacing:1px; font-size: 0.75rem;">${module.ContentType || 'video'}</span>
-    `;
+    if (titleEl) {
+        titleEl.innerHTML = module.Title;
+        titleEl.className = 'mb-1 fw-bold text-dark h4';
+    }
 
-    // Render content based on type
+    if (typeEl) {
+        typeEl.innerHTML = `
+            <i class="fas ${typeIcon} ${typeColor} me-1"></i> 
+            <span class="text-uppercase fw-bold" style="letter-spacing:1px; font-size: 0.75rem;">${module.ContentType || 'video'}</span>
+        `;
+    }
+
+    // Render content
     const contentMain = document.getElementById('contentMain');
+    if (!contentMain) return;
+
     const isCompleted = completedModules.some(c => c.ModuleID === module.ModuleID);
-
     let contentHTML = '';
-    let autoMarkEnabled = !isCompleted; // Only auto-mark if not already completed
+    const autoMarkEnabled = !isCompleted;
 
-    // Handle Video
+    // Video content
     if (module.ContentType === 'video' || !module.ContentType) {
         const url = module.ContentURL || '';
 
-        // Check if it's a direct video file (MP4, WebM, etc.)
         if (url.match(/\.(mp4|webm|ogg)($|\?)/i)) {
-            // HTML5 Video Player with auto-complete on ended
             contentHTML = `
                 <div class="video-container shadow-sm mb-4" style="padding-bottom: 0; height: auto;">
                     <video id="videoPlayer" controls style="width: 100%; border-radius: 12px;">
@@ -505,21 +597,20 @@ function selectModule(module, event) {
                 </div>
             `;
         } else {
-            // YouTube/External embed
             const embedUrl = getEmbedUrl(url);
             const isYouTube = embedUrl.includes('youtube.com/embed/');
 
             if (isYouTube && autoMarkEnabled) {
-                // YouTube with API for auto-complete
-                const videoId = embedUrl.split('embed/')[1].split('?')[0];
-                contentHTML = `
-                    <div class="video-container shadow-sm mb-4">
-                        <div id="ytPlayer" data-video-id="${videoId}"></div>
-                    </div>
-                    <p class="text-muted small text-center"><i class="fas fa-info-circle me-1"></i> This module will be marked complete when the video ends.</p>
-                `;
+                const videoId = embedUrl.split('embed/')[1]?.split('?')[0];
+                if (videoId) {
+                    contentHTML = `
+                        <div class="video-container shadow-sm mb-4">
+                            <div id="ytPlayer" data-video-id="${videoId}"></div>
+                        </div>
+                        <p class="text-muted small text-center"><i class="fas fa-info-circle me-1"></i> This module will be marked complete when the video ends.</p>
+                    `;
+                }
             } else {
-                // Generic iframe (manual complete required)
                 contentHTML = `
                     <div class="video-container shadow-sm mb-4">
                         <iframe src="${embedUrl}" 
@@ -532,10 +623,10 @@ function selectModule(module, event) {
             }
         }
     }
-    // Handle PDF - timed completion button (scroll detection doesn't work on iframes)
+    // PDF content
     else if (module.ContentType === 'pdf') {
         contentHTML = `
-            <div class="card mb-4 border-0 shadow-sm" style="height: 600px; position: relative;">
+            <div class="card mb-4 border-0 shadow-sm" style="height: 85vh; min-height: 800px; position: relative;">
                 <iframe id="pdfViewer" src="${module.ContentURL}" width="100%" height="100%" style="border:none;">
                     This browser does not support PDFs. Please download the PDF to view it: <a href="${module.ContentURL}">Download PDF</a>
                 </iframe>
@@ -552,11 +643,11 @@ function selectModule(module, event) {
             </div>
         `;
     }
-    // Handle Article/Link - scroll detection
+    // Article content
     else if (module.ContentType === 'article') {
         contentHTML = `
             <div class="card mb-4 border-0 shadow-sm overflow-hidden" id="articleContainer">
-                <div class="ratio" style="--bs-aspect-ratio: 100%; max-height: 800px; height: 600px;">
+                <div class="ratio" style="--bs-aspect-ratio: 100%; height: 800px;">
                     <iframe src="${module.ContentURL}" class="w-100 h-100 border-0" allowfullscreen title="Article Content" id="articleIframe"></iframe>
                 </div>
             </div>
@@ -564,130 +655,21 @@ function selectModule(module, event) {
                 <a href="${module.ContentURL}" target="_blank" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-external-link-alt me-1"></i> Open Original Link
                 </a>
-                <p class="text-muted small mb-0"><i class="fas fa-info-circle me-1"></i> Scroll content to view more</p>
+                
+                ${autoMarkEnabled ? `
+                <button id="articleCompleteBtn" class="btn btn-success" disabled>
+                     <i class="fas fa-spinner fa-spin me-2" id="articleBtnSpinner"></i>
+                     <span id="articleBtnText">Available in <span id="articleCountdown">5</span>s...</span>
+                </button>
+                ` : '<span class="text-success fw-bold"><i class="fas fa-check-circle me-1"></i> Completed</span>'}
             </div>
         `;
-
-        // Add iframe error handling with timeout
-        setTimeout(() => {
-            const iframe = document.getElementById('articleIframe');
-            const container = document.getElementById('articleContainer');
-
-            if (iframe && container) {
-                // Set up error handler for iframe load failures
-                iframe.addEventListener('error', () => {
-                    showArticleFallback(container, module.ContentURL);
-                });
-
-                // Also check if iframe is blocked after a timeout
-                setTimeout(() => {
-                    try {
-                        // Try to access iframe content - will throw if blocked by CORS
-                        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        if (!iframeDoc || iframeDoc.body.innerHTML === '') {
-                            // Iframe appears empty, might be blocked
-                            showArticleFallback(container, module.ContentURL);
-                        }
-                    } catch (e) {
-                        // CORS or other security restriction - use fallback
-                        showArticleFallback(container, module.ContentURL);
-                    }
-                }, 3000); // Wait 3 seconds for iframe to load
-            }
-        }, 100);
-
-        function showArticleFallback(container, url) {
-            container.innerHTML = `
-                <div class="card-body text-center py-5">
-                    <i class="fas fa-external-link-alt fa-4x text-primary mb-4"></i>
-                    <h4>Article Link</h4>
-                    <p class="text-muted mb-4">This content is hosted externally and cannot be displayed directly.</p>
-                    <a href="${url}" target="_blank" class="btn btn-primary btn-lg">
-                        <i class="fas fa-arrow-right me-2"></i> Open Article
-                    </a>
-                    <div class="mt-4 text-start bg-light p-3 rounded small">
-                        <strong>URL:</strong>
-                        <a href="${url}" target="_blank" class="text-break">${url}</a>
-                    </div>
-                </div>
-            `;
-        }
     }
-    // Handle Quiz
+    // Quiz content
     else if (module.ContentType === 'quiz') {
-        try {
-            const parsed = JSON.parse(module.ContentURL);
-            let quizData = [];
-            let passingPercentage = 70;
-            let manualRequired = null;
-
-            if (Array.isArray(parsed)) {
-                quizData = parsed;
-            } else if (parsed && parsed.questions) {
-                quizData = parsed.questions;
-                if (parsed.settings) {
-                    if (parsed.settings.passingPercentage) passingPercentage = parsed.settings.passingPercentage;
-                    if (parsed.settings.requiredCorrect) manualRequired = parsed.settings.requiredCorrect;
-                }
-            }
-
-            const totalQuestions = quizData.length;
-            const requiredCorrect = manualRequired || Math.ceil(totalQuestions * (passingPercentage / 100));
-
-            let quizHTML = `
-                <div class="card mb-4 border-0 shadow-sm">
-                    <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="mb-0"><i class="fas fa-question-circle me-2 text-primary"></i>Quiz</h5>
-                        <span class="badge bg-primary">${totalQuestions} Questions</span>
-                    </div>
-                    <div class="alert alert-info py-2 mb-3">
-                        <i class="fas fa-bullseye me-2"></i>
-                        <strong>Passing Requirement:</strong> Get at least ${requiredCorrect} out of ${totalQuestions} questions correct
-                    </div>
-                    <form id="quizForm" data-required="${requiredCorrect}">
-                        `;
-
-            quizData.forEach((q, index) => {
-                quizHTML += `
-                    <div class="mb-4 p-3 bg-light rounded">
-                        <p class="fw-bold mb-3">${index + 1}. ${q.question}</p>
-                        <div class="ms-3">
-                `;
-                q.options.forEach((opt, optIndex) => {
-                    quizHTML += `
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="q${index}" 
-                                       id="q${index}_opt${optIndex}" value="${optIndex}" required>
-                                <label class="form-check-label" for="q${index}_opt${optIndex}">${opt}</label>
-                            </div>
-                    `;
-                });
-                quizHTML += `
-                </div>
-                    </div >
-            `;
-            });
-
-            quizHTML += `
-                        </form >
-                        <div class="text-center mt-4">
-                            <button class="btn btn-primary btn-lg px-5" id="btnSubmitQuiz">
-                                <i class="fas fa-paper-plane me-2"></i>Submit Quiz
-                            </button>
-                        </div>
-                        <p class="text-muted small text-center mt-2">
-                            <i class="fas fa-info-circle me-1"></i>You need at least ${requiredCorrect}/${totalQuestions} correct to pass
-                        </p>
-                    </div>
-                </div>
-            `;
-            contentHTML = quizHTML;
-        } catch (e) {
-            contentHTML = `<div class="alert alert-danger">Error loading quiz data</div>`;
-        }
+        contentHTML = renderQuizContent(module);
     }
-    // Handle External Link (manual)
+    // External link
     else {
         contentHTML = `
             <div class="p-5 text-center bg-light rounded-3 mb-4">
@@ -707,96 +689,207 @@ function selectModule(module, event) {
             <h5 class="mb-2 fw-bold text-dark"><i class="fas fa-info-circle me-2 text-danger"></i>About this lesson</h5>
             <p class="text-secondary mb-0" id="lessonDescription" style="line-height: 1.6;">${module.Description || 'No description available for this module.'}</p>
         </div>
-        `;
+    `;
 
-    // Scroll to top
     contentMain.scrollTop = 0;
 
-    // Attach Dynamic Listeners
-    document.getElementById('pdfCompleteBtn')?.addEventListener('click', completeModule);
-    document.getElementById('btnSubmitQuiz')?.addEventListener('click', submitQuiz);
-    document.getElementById('errorOverlayOverlayButton')?.addEventListener('click', () => document.getElementById('errorOverlay').remove()); // Placeholder for error popup
+    // Attach listeners
+    setTimeout(() => {
+        const pdfBtn = document.getElementById('pdfCompleteBtn');
+        const articleBtn = document.getElementById('articleCompleteBtn');
+        const quizBtn = document.getElementById('btnSubmitQuiz');
 
-    // Setup auto-complete listeners (only if not already completed)
-    if (autoMarkEnabled) {
-        setupAutoComplete(module.ContentType || 'video');
+        if (pdfBtn) pdfBtn.addEventListener('click', completeModule);
+        if (articleBtn) articleBtn.addEventListener('click', completeModule);
+        if (quizBtn) quizBtn.addEventListener('click', submitQuiz);
+
+        if (autoMarkEnabled) {
+            setupAutoComplete(module.ContentType || 'video');
+        }
+
+        // Article iframe fallback
+        if (module.ContentType === 'article') {
+            setTimeout(() => {
+                const iframe = document.getElementById('articleIframe');
+                const container = document.getElementById('articleContainer');
+                if (iframe && container) {
+                    iframe.addEventListener('error', () => showArticleFallback(container, module.ContentURL));
+
+                    setTimeout(() => {
+                        try {
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                            if (!iframeDoc || iframeDoc.body.innerHTML === '') {
+                                showArticleFallback(container, module.ContentURL);
+                            }
+                        } catch (e) {
+                            showArticleFallback(container, module.ContentURL);
+                        }
+                    }, 3000);
+                }
+            }, 100);
+        }
+    }, 100);
+}
+
+function renderQuizContent(module) {
+    try {
+        const parsed = JSON.parse(module.ContentURL);
+        let quizData = [];
+        let passingPercentage = 70;
+        let manualRequired = null;
+
+        if (Array.isArray(parsed)) {
+            quizData = parsed;
+        } else if (parsed?.questions) {
+            quizData = parsed.questions;
+            if (parsed.settings) {
+                if (parsed.settings.passingPercentage) passingPercentage = parsed.settings.passingPercentage;
+                if (parsed.settings.requiredCorrect) manualRequired = parsed.settings.requiredCorrect;
+            }
+        }
+
+        const totalQuestions = quizData.length;
+        const requiredCorrect = manualRequired || Math.ceil(totalQuestions * (passingPercentage / 100));
+
+        let quizHTML = `
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0"><i class="fas fa-question-circle me-2 text-primary"></i>Quiz</h5>
+                        <span class="badge bg-primary">${totalQuestions} Questions</span>
+                    </div>
+                    <div class="alert alert-info py-2 mb-3">
+                        <i class="fas fa-bullseye me-2"></i>
+                        <strong>Passing Requirement:</strong> Get at least ${requiredCorrect} out of ${totalQuestions} questions correct
+                    </div>
+                    <form id="quizForm" data-required="${requiredCorrect}">
+        `;
+
+        quizData.forEach((q, index) => {
+            quizHTML += `
+                <div class="mb-4 p-3 bg-light rounded">
+                    <p class="fw-bold mb-3">${index + 1}. ${q.question}</p>
+                    <div class="ms-3">
+            `;
+            q.options.forEach((opt, optIndex) => {
+                quizHTML += `
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="q${index}" 
+                               id="q${index}_opt${optIndex}" value="${optIndex}" required>
+                        <label class="form-check-label" for="q${index}_opt${optIndex}">${opt}</label>
+                    </div>
+                `;
+            });
+            quizHTML += `</div></div>`;
+        });
+
+        quizHTML += `
+                    </form>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary btn-lg px-5" id="btnSubmitQuiz">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Quiz
+                        </button>
+                    </div>
+                    <p class="text-muted small text-center mt-2">
+                        <i class="fas fa-info-circle me-1"></i>You need at least ${requiredCorrect}/${totalQuestions} correct to pass
+                    </p>
+                </div>
+            </div>
+        `;
+        return quizHTML;
+    } catch (e) {
+        console.error('Quiz render error:', e);
+        return `<div class="alert alert-danger">Error loading quiz data</div>`;
     }
 }
 
-// Watch time tracking variables
+function showArticleFallback(container, url) {
+    container.innerHTML = `
+        <div class="card-body text-center py-5">
+            <i class="fas fa-external-link-alt fa-4x text-primary mb-4"></i>
+            <h4>Article Link</h4>
+            <p class="text-muted mb-4">This content is hosted externally and cannot be displayed directly.</p>
+            <a href="${url}" target="_blank" class="btn btn-primary btn-lg">
+                <i class="fas fa-arrow-right me-2"></i> Open Article
+            </a>
+            <div class="mt-4 text-start bg-light p-3 rounded small">
+                <strong>URL:</strong>
+                <a href="${url}" target="_blank" class="text-break">${url}</a>
+            </div>
+        </div>
+    `;
+}
+
 let watchedSeconds = 0;
 let videoDuration = 0;
-let watchInterval = null;
-let pdfTimer = null; // Global PDF timer
-const REQUIRED_WATCH_PERCENT = 0.90; // Must watch 90% of video
+const REQUIRED_WATCH_PERCENT = 0.90;
 
-// Auto-complete setup based on content type
 function setupAutoComplete(contentType) {
-    // Reset watch time
+    // Reset
     watchedSeconds = 0;
     videoDuration = 0;
     if (watchInterval) clearInterval(watchInterval);
-    if (pdfTimer) clearInterval(pdfTimer); // Clear existing PDF timer
+    if (pdfTimer) clearInterval(pdfTimer);
+    watchInterval = null;
+    pdfTimer = null;
 
-    // HTML5 Video: Track actual watch time
+    // HTML5 Video
     const videoPlayer = document.getElementById('videoPlayer');
     if (videoPlayer) {
+        // Fix: Check if metadata is already loaded
+        if (videoPlayer.readyState >= 1) {
+            videoDuration = videoPlayer.duration;
+        }
+
         videoPlayer.addEventListener('loadedmetadata', () => {
             videoDuration = videoPlayer.duration;
         });
 
-        // Track time while playing (not when paused/seeking)
         videoPlayer.addEventListener('playing', () => {
+            if (watchInterval) clearInterval(watchInterval);
             watchInterval = setInterval(() => {
                 if (!videoPlayer.paused && !videoPlayer.seeking) {
                     watchedSeconds++;
-                    updateWatchProgress();
                 }
             }, 1000);
         });
 
         videoPlayer.addEventListener('pause', () => {
-            if (watchInterval) clearInterval(watchInterval);
+            if (watchInterval) {
+                clearInterval(watchInterval);
+                watchInterval = null;
+            }
         });
 
         videoPlayer.addEventListener('ended', () => {
-            if (watchInterval) clearInterval(watchInterval);
+            if (watchInterval) {
+                clearInterval(watchInterval);
+                watchInterval = null;
+            }
+            // Ensure we have a valid duration before allowing completion check
+            if (videoDuration <= 0 && videoPlayer.duration > 0) {
+                videoDuration = videoPlayer.duration;
+            }
             checkWatchCompletion();
         });
         return;
     }
 
-    // YouTube Player: Track watch time with API
+    // YouTube
     const ytPlayerDiv = document.getElementById('ytPlayer');
     if (ytPlayerDiv) {
         const videoId = ytPlayerDiv.dataset.videoId;
-        if (videoId && typeof YT !== 'undefined' && YT.Player) {
-            initYouTubePlayer(videoId);
-        } else {
-            loadYouTubeAPI(videoId);
+        if (videoId) {
+            if (typeof YT !== 'undefined' && YT.Player) {
+                initYouTubePlayer(videoId);
+            } else {
+                loadYouTubeAPI(videoId);
+            }
         }
         return;
     }
 
-    // Scroll detection for articles/PDFs (unchanged)
-    const articleContent = document.getElementById('articleContent');
-    if (articleContent) {
-        let hasCompleted = false;
-        articleContent.addEventListener('scroll', () => {
-            if (hasCompleted) return;
-            const scrollHeight = articleContent.scrollHeight;
-            const scrollTop = articleContent.scrollTop;
-            const clientHeight = articleContent.clientHeight;
-
-            if (scrollTop + clientHeight >= scrollHeight - 20) {
-                hasCompleted = true;
-                console.log('Article scrolled to bottom - auto-marking complete');
-                completeModule();
-            }
-        });
-    }
-
-    // PDF: Enable button after countdown (scroll can't be detected on iframes)
+    // PDF countdown
     const pdfCompleteBtn = document.getElementById('pdfCompleteBtn');
     if (pdfCompleteBtn) {
         let countdown = 10;
@@ -810,17 +903,44 @@ function setupAutoComplete(contentType) {
 
             if (countdown <= 0) {
                 clearInterval(pdfTimer);
+                pdfTimer = null;
                 pdfCompleteBtn.disabled = false;
                 if (spinnerEl) spinnerEl.className = 'fas fa-check-circle me-2';
                 if (textEl) textEl.innerHTML = 'I have read this PDF';
             }
         }, 1000);
     }
+
+    // Article countdown
+    const articleBtn = document.getElementById('articleCompleteBtn');
+    if (articleBtn) {
+        let countdown = 5;
+        const countdownEl = document.getElementById('articleCountdown');
+        const spinnerEl = document.getElementById('articleBtnSpinner');
+        const textEl = document.getElementById('articleBtnText');
+
+        pdfTimer = setInterval(() => { // Re-using pdfTimer variable for convenience to track interval
+            countdown--;
+            if (countdownEl) countdownEl.textContent = countdown;
+
+            if (countdown <= 0) {
+                clearInterval(pdfTimer);
+                pdfTimer = null;
+                articleBtn.disabled = false;
+                if (spinnerEl) spinnerEl.className = 'fas fa-check-circle me-2';
+                if (textEl) textEl.innerHTML = 'Mark as Complete';
+            }
+        }, 1000);
+    }
 }
 
-// Initialize YouTube player with watch tracking
 function initYouTubePlayer(videoId) {
-    let ytPlayer = new YT.Player('ytPlayer', {
+    if (typeof YT === 'undefined' || !YT.Player) {
+        console.error('YouTube API not loaded');
+        return;
+    }
+
+    ytPlayer = new YT.Player('ytPlayer', {
         videoId: videoId,
         playerVars: {
             'origin': window.location.origin,
@@ -832,14 +952,16 @@ function initYouTubePlayer(videoId) {
                 videoDuration = event.target.getDuration();
             },
             'onStateChange': (event) => {
-                // YT.PlayerState: PLAYING=1, PAUSED=2, ENDED=0
                 if (event.data === 1) { // Playing
+                    if (watchInterval) clearInterval(watchInterval);
                     watchInterval = setInterval(() => {
                         watchedSeconds++;
-                        updateWatchProgress();
                     }, 1000);
                 } else if (event.data === 2 || event.data === 0) { // Paused or Ended
-                    if (watchInterval) clearInterval(watchInterval);
+                    if (watchInterval) {
+                        clearInterval(watchInterval);
+                        watchInterval = null;
+                    }
                     if (event.data === 0) {
                         checkWatchCompletion();
                     }
@@ -849,7 +971,6 @@ function initYouTubePlayer(videoId) {
     });
 }
 
-// Load YouTube IFrame API dynamically
 function loadYouTubeAPI(videoId) {
     if (window.ytApiLoading) return;
     window.ytApiLoading = true;
@@ -861,18 +982,12 @@ function loadYouTubeAPI(videoId) {
 
     window.onYouTubeIframeAPIReady = function () {
         const ytPlayerDiv = document.getElementById('ytPlayer');
-        if (ytPlayerDiv) {
+        if (ytPlayerDiv && ytPlayerDiv.dataset.videoId) {
             initYouTubePlayer(ytPlayerDiv.dataset.videoId);
         }
     };
 }
 
-// Update watch progress indicator
-function updateWatchProgress() {
-    // Progress is tracked silently - no console log needed
-}
-
-// Check if user watched enough to mark complete
 function checkWatchCompletion() {
     if (videoDuration <= 0) {
         completeModule();
@@ -890,14 +1005,14 @@ function checkWatchCompletion() {
     }
 }
 
-// Show styled error popup
 function showErrorPopup(message) {
-    // Create overlay
+    const existing = document.getElementById('errorOverlay');
+    if (existing) existing.remove();
+
     const overlay = document.createElement('div');
     overlay.id = 'errorOverlay';
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;';
 
-    // Create popup
     overlay.innerHTML = `
         <div style="background:white;padding:40px;border-radius:15px;max-width:400px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
             <i class="fas fa-exclamation-circle" style="font-size:50px;color:#d32f2f;margin-bottom:20px;"></i>
@@ -914,24 +1029,21 @@ function showErrorPopup(message) {
     document.getElementById('btnCloseErrorOverlay').addEventListener('click', () => overlay.remove());
 }
 
-// Helper to convert YouTube URLs to Embed URLs
 function getEmbedUrl(url) {
     if (!url) return '';
 
-    // Handle YouTube
     let videoId = '';
 
-    // https://www.youtube.com/watch?v=VIDEO_ID
     if (url.includes('youtube.com/watch')) {
-        const urlParams = new URLSearchParams(new URL(url).search);
-        videoId = urlParams.get('v');
-    }
-    // https://youtu.be/VIDEO_ID
-    else if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split('?')[0];
-    }
-    // Already embed URL
-    else if (url.includes('youtube.com/embed/')) {
+        try {
+            const urlParams = new URLSearchParams(new URL(url).search);
+            videoId = urlParams.get('v');
+        } catch (e) {
+            console.error('Invalid YouTube URL:', e);
+        }
+    } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    } else if (url.includes('youtube.com/embed/')) {
         return url;
     }
 
@@ -939,10 +1051,8 @@ function getEmbedUrl(url) {
         return `https://www.youtube.com/embed/${videoId}?rel=0&enablejsapi=1&origin=${window.location.origin}`;
     }
 
-    // Handle Vimeo (simple check)
     if (url.includes('vimeo.com')) {
-        // Assuming standard vimeo.com/ID format -> player.vimeo.com/video/ID
-        const vimeoId = url.split('vimeo.com/')[1];
+        const vimeoId = url.split('vimeo.com/')[1]?.split('?')[0];
         if (vimeoId && /^\d+$/.test(vimeoId)) {
             return `https://player.vimeo.com/video/${vimeoId}`;
         }
@@ -960,23 +1070,15 @@ async function completeModule() {
         completeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Completing...';
     }
 
-    // Determine valid enrollment ID for this module
-    // Convert to integers for consistent comparison
     const parentProgramId = parseInt(programId);
     const moduleProgramId = parseInt(currentModule.ProgramID);
-
-    let targetEnrollmentId = enrollmentId; // Default to parent
-
-    console.log('[DEBUG completeModule] parentProgramId:', parentProgramId, 'moduleProgramId:', moduleProgramId);
+    let targetEnrollmentId = enrollmentId;
 
     if (moduleProgramId !== parentProgramId) {
-        // It's a child program module - find the child's enrollment
         const childEnrollment = userEnrollments.find(e => parseInt(e.ProgramID) === moduleProgramId);
-        console.log('[DEBUG completeModule] Child enrollment found:', childEnrollment);
         if (childEnrollment) {
             targetEnrollmentId = childEnrollment.EnrollmentID;
         } else {
-            console.error('No enrollment found for this child program module');
             showToast('Error: You are not enrolled in this level.', 'error');
             if (completeBtn) {
                 completeBtn.disabled = false;
@@ -994,23 +1096,19 @@ async function completeModule() {
         const result = await response.json();
 
         if (result.success) {
-            // Show celebration
             const celebration = document.getElementById('celebration');
-            celebration.classList.add('show');
-            setTimeout(() => {
-                celebration.classList.remove('show');
-            }, 2000);
+            if (celebration) {
+                celebration.classList.add('show');
+                setTimeout(() => {
+                    celebration.classList.remove('show');
+                }, 2000);
+            }
 
-            // Reload progress (Parent + Children)
             await Promise.all([loadProgress(), updateProgress()]);
 
-            // Hide button
             if (completeBtn) completeBtn.style.display = 'none';
         } else {
-            // Only show error if it's not "Module already completed" (optional, but requested to remove "localhost says" message)
-            // The user said "remove all the localhost:8000 say message" which implies replacing alert with toast.
             showToast(result.message || 'Failed to mark module as complete', 'info');
-
             if (completeBtn) {
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = '<i class="fas fa-check me-2"></i>Mark as Complete';
@@ -1026,7 +1124,6 @@ async function completeModule() {
     }
 }
 
-// Toast Notification
 function showToast(message, type = 'info') {
     const existingToast = document.getElementById('toastPopup');
     if (existingToast) existingToast.remove();
@@ -1077,30 +1174,28 @@ function showToast(message, type = 'info') {
     }, 3000);
 }
 
-// Update progress bar (Global: Parent + Unlocked Children)
 async function updateProgress() {
-    // Get parent module IDs for accurate counting
     const parentModuleIds = new Set(modules.map(m => m.ModuleID));
-
-    // Only count completions that match actual parent modules
-    // (Fixes issue where child module completions were historically recorded against parent)
     const parentCompletedCount = completedModules.filter(c => parentModuleIds.has(c.ModuleID)).length;
 
     let globalTotal = modules.length;
     let globalCompleted = parentCompletedCount;
 
-    // Aggregate progress from unlocked levels
     if (levels.length > 0 && userEnrollments.length > 0) {
         const statsPromises = levels.map(async (level) => {
             const enrollment = userEnrollments.find(e => e.ProgramID === level.ProgramID);
             if (enrollment) {
                 try {
-                    // Fetch modules count for this level
-                    const modRes = await fetch(`/api/programs/${level.ProgramID}/modules`);
-                    const mods = await modRes.json();
+                    const [modRes, progRes] = await Promise.all([
+                        fetch(`/api/programs/${level.ProgramID}/modules`),
+                        fetch(`/api/enrollments/${enrollment.EnrollmentID}/progress`)
+                    ]);
 
-                    // Fetch progress count for this level's enrollment
-                    const progRes = await fetch(`/api/enrollments/${enrollment.EnrollmentID}/progress`);
+                    if (!modRes.ok || !progRes.ok) {
+                        throw new Error('Failed to fetch level stats');
+                    }
+
+                    const mods = await modRes.json();
                     const prog = await progRes.json();
 
                     return {
@@ -1132,11 +1227,11 @@ async function updateProgress() {
 }
 
 function logout() {
+    cleanup();
     localStorage.clear();
     window.location.href = 'index.html';
 }
 
-// ========== Quiz Submission ==========
 function submitQuiz() {
     if (!currentModule) return;
 
@@ -1147,16 +1242,17 @@ function submitQuiz() {
 
         if (Array.isArray(parsed)) {
             quizData = parsed;
-        } else if (parsed && parsed.questions) {
+        } else if (parsed?.questions) {
             quizData = parsed.questions;
-            if (parsed.settings && parsed.settings.passingPercentage) {
+            if (parsed.settings?.passingPercentage) {
                 passingPercentage = parsed.settings.passingPercentage;
             }
         }
 
         const form = document.getElementById('quizForm');
+        if (!form) return;
 
-        // Check all questions answered
+        // Check all answered
         let allAnswered = true;
         quizData.forEach((_, index) => {
             const selected = form.querySelector(`input[name="q${index}"]:checked`);
@@ -1168,26 +1264,25 @@ function submitQuiz() {
             return;
         }
 
-        // Calculate score and highlight answers
+        // Calculate score
         let correct = 0;
         quizData.forEach((q, index) => {
             const selected = form.querySelector(`input[name="q${index}"]:checked`);
             const questionDiv = form.querySelectorAll('.mb-4.p-3.bg-light.rounded')[index];
             const allOptions = form.querySelectorAll(`input[name="q${index}"]`);
 
-            // Mark each option
             allOptions.forEach((opt, optIdx) => {
                 const label = opt.closest('.form-check');
+                if (!label) return;
+
                 if (optIdx === q.correctIndex) {
-                    // Correct answer - always show green
                     label.classList.add('text-success');
                     label.innerHTML = label.innerHTML + ' <i class="fas fa-check-circle text-success"></i>';
                 } else if (selected && parseInt(selected.value) === optIdx && optIdx !== q.correctIndex) {
-                    // Wrong answer selected - show red
                     label.classList.add('text-danger');
                     label.innerHTML = label.innerHTML + ' <i class="fas fa-times-circle text-danger"></i>';
                 }
-                opt.disabled = true; // Disable all options after submit
+                opt.disabled = true;
             });
 
             if (selected && parseInt(selected.value) === q.correctIndex) {
@@ -1202,7 +1297,6 @@ function submitQuiz() {
         const requiredCorrect = parseInt(form.dataset.required) || Math.ceil(quizData.length * 0.7);
         const passed = correct >= requiredCorrect;
 
-        // Update submit button to show results
         const submitBtn = document.querySelector('#quizForm + .text-center button');
         if (submitBtn) {
             if (passed) {
@@ -1238,6 +1332,9 @@ function submitQuiz() {
 }
 
 function showQuizResult(passed, message) {
+    const existing = document.getElementById('quizResultOverlay');
+    if (existing) existing.remove();
+
     const overlay = document.createElement('div');
     overlay.id = 'quizResultOverlay';
     overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;';
@@ -1258,16 +1355,11 @@ function showQuizResult(passed, message) {
     document.body.appendChild(overlay);
 }
 
-// Retake quiz - reload the current module
 function retakeQuiz() {
     if (currentModule) {
-        // Re-render the module content to reset the quiz
         const moduleItem = document.querySelector(`.module-item[data-module-id="${currentModule.ModuleID}"]`);
         if (moduleItem) {
             selectModule(currentModule, { currentTarget: moduleItem });
-        } else {
-            // Fallback - just re-select the module
-            selectModule(currentModule, { currentTarget: document.querySelector('.module-item.active') });
         }
     }
 }
