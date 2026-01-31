@@ -136,8 +136,34 @@
                                 <input type="text" class="form-control" id="location" placeholder="e.g. Berlin, Online">
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Image URL</label>
-                                <input type="url" class="form-control" id="imageURL" placeholder="https://...">
+                                <label class="form-label">Image</label>
+                                <div class="d-flex gap-2 mb-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary flex-grow-1"
+                                        id="btnUseUrl" onclick="toggleImageInput('url')">
+                                        <i class="fas fa-link me-1"></i>Use URL
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-primary flex-grow-1"
+                                        id="btnUseFile" onclick="toggleImageInput('file')">
+                                        <i class="fas fa-upload me-1"></i>Upload File
+                                    </button>
+                                </div>
+                                <div id="imageUrlSection">
+                                    <input type="url" class="form-control" id="imageURL" placeholder="https://...">
+                                </div>
+                                <div id="imageFileSection" style="display:none;">
+                                    <input type="file" class="form-control" id="imageFile" accept="image/*">
+                                    <small class="text-muted">Max 5MB (JPG, PNG, GIF, WebP)</small>
+                                </div>
+                                <input type="hidden" id="uploadedImageUrl" value="">
+                            </div>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div class="mb-3" id="imagePreviewContainer" style="display:none;">
+                            <label class="form-label">Preview</label>
+                            <div class="border rounded p-2 bg-light text-center">
+                                <img id="imagePreview" src="" alt="Preview"
+                                    style="max-height: 150px; max-width: 100%; object-fit: contain;">
                             </div>
                         </div>
                     </form>

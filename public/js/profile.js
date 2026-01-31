@@ -26,7 +26,7 @@ function loadSidebar() {
     const brandText = document.querySelector('.sidebar-header .brand-text');
     if (brandText) {
         if (role === 'Admin') brandText.innerHTML = '<i class="fas fa-user-shield me-2"></i>KonstraAdmin';
-        else if (role === 'NGO') brandText.innerHTML = '<i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO';
+        else if (role === 'NGO') brandText.innerHTML = '<i class="fas fa-handshake me-2"></i>KonstraPartner';
         else brandText.innerHTML = '<i class="fas fa-user me-2"></i>KonstraMember';
     }
 

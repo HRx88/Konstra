@@ -1,5 +1,6 @@
 let allPrograms = [];
 let currentFilter = 'all';
+let imageInputMode = 'url'; // 'url' or 'file'
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check Admin Auth
@@ -8,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadPrograms();
     setupEventListeners();
+    setupImageUpload();
 });
 
 function setupEventListeners() {
@@ -138,6 +140,9 @@ function openModal() {
     document.getElementById('programForm').reset();
     document.getElementById('programId').value = '';
     document.getElementById('modalTitle').innerText = 'Add New Program';
+    document.getElementById('uploadedImageUrl').value = '';
+    resetImagePreview();
+    toggleImageInput('url');
     modal.show();
 }
 
@@ -153,15 +158,30 @@ function editProgram(id) {
     document.getElementById('duration').value = p.Duration;
     document.getElementById('maxParticipants').value = p.MaxParticipants;
     document.getElementById('location').value = p.Location;
-    document.getElementById('imageURL').value = p.ImageURL;
+    document.getElementById('imageURL').value = p.ImageURL || '';
+    document.getElementById('uploadedImageUrl').value = '';
+
+    // Show image preview if exists
+    if (p.ImageURL) {
+        showImagePreview(p.ImageURL);
+    } else {
+        resetImagePreview();
+    }
+    toggleImageInput('url');
 
     document.getElementById('modalTitle').innerText = 'Edit Program';
     modal.show();
 }
 
-// --- 4. CREATE / UPDATE ACTION ---
 async function saveProgram() {
     const id = document.getElementById('programId').value;
+
+    // Determine final image URL (uploaded file takes priority)
+    let finalImageUrl = document.getElementById('uploadedImageUrl').value;
+    if (!finalImageUrl) {
+        finalImageUrl = document.getElementById('imageURL').value;
+    }
+
     const data = {
         title: document.getElementById('title').value,
         type: document.getElementById('type').value,
@@ -170,7 +190,7 @@ async function saveProgram() {
         duration: document.getElementById('duration').value,
         maxParticipants: document.getElementById('maxParticipants').value,
         location: document.getElementById('location').value,
-        imageURL: document.getElementById('imageURL').value
+        imageURL: finalImageUrl
     };
 
     const method = id ? 'PUT' : 'POST';
@@ -397,4 +417,144 @@ async function deleteSlot(slotId) {
             Swal.fire('Error', 'Cannot delete (probably booked)', 'error');
         }
     } catch (e) { console.error(e); }
+}
+
+// ========== IMAGE UPLOAD FUNCTIONS ==========
+
+function setupImageUpload() {
+    const imageFileInput = document.getElementById('imageFile');
+    const imageUrlInput = document.getElementById('imageURL');
+
+    if (imageFileInput) {
+        imageFileInput.addEventListener('change', handleImageFileSelect);
+    }
+
+    if (imageUrlInput) {
+        imageUrlInput.addEventListener('input', (e) => {
+            const url = e.target.value;
+            if (url) {
+                showImagePreview(url);
+            } else {
+                resetImagePreview();
+            }
+        });
+    }
+}
+
+// Toggle between URL and File upload modes
+window.toggleImageInput = function (mode) {
+    imageInputMode = mode;
+    const urlSection = document.getElementById('imageUrlSection');
+    const fileSection = document.getElementById('imageFileSection');
+    const btnUrl = document.getElementById('btnUseUrl');
+    const btnFile = document.getElementById('btnUseFile');
+
+    if (mode === 'url') {
+        urlSection.style.display = 'block';
+        fileSection.style.display = 'none';
+        btnUrl.classList.remove('btn-outline-secondary');
+        btnUrl.classList.add('btn-secondary');
+        btnFile.classList.remove('btn-primary');
+        btnFile.classList.add('btn-outline-primary');
+    } else {
+        urlSection.style.display = 'none';
+        fileSection.style.display = 'block';
+        btnFile.classList.remove('btn-outline-primary');
+        btnFile.classList.add('btn-primary');
+        btnUrl.classList.remove('btn-secondary');
+        btnUrl.classList.add('btn-outline-secondary');
+    }
+};
+
+async function handleImageFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+        Swal.fire('Error', 'Image must be less than 5MB', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+        Swal.fire('Error', 'Only image files are allowed (JPG, PNG, GIF, WebP)', 'error');
+        e.target.value = '';
+        return;
+    }
+
+    // Show local preview first
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        showImagePreview(event.target.result);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to server
+    await uploadImage(file);
+}
+
+async function uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        Swal.fire({
+            title: 'Uploading...',
+            text: 'Please wait while the image is being uploaded.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        const res = await fetch('/api/programs/upload-image', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById('uploadedImageUrl').value = data.imageUrl;
+            showImagePreview(data.imageUrl);
+            Swal.fire({
+                icon: 'success',
+                title: 'Uploaded!',
+                text: 'Image uploaded successfully.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        } else {
+            Swal.fire('Error', data.error || 'Failed to upload image', 'error');
+        }
+    } catch (err) {
+        console.error('Upload error:', err);
+        Swal.fire('Error', 'Network error during upload', 'error');
+    }
+}
+
+function showImagePreview(src) {
+    const container = document.getElementById('imagePreviewContainer');
+    const img = document.getElementById('imagePreview');
+
+    if (container && img) {
+        img.src = src;
+        container.style.display = 'block';
+
+        // Handle load errors
+        img.onerror = () => {
+            container.style.display = 'none';
+        };
+    }
+}
+
+function resetImagePreview() {
+    const container = document.getElementById('imagePreviewContainer');
+    const img = document.getElementById('imagePreview');
+    const fileInput = document.getElementById('imageFile');
+
+    if (container) container.style.display = 'none';
+    if (img) img.src = '';
+    if (fileInput) fileInput.value = '';
 }
