@@ -317,11 +317,12 @@ PUT  /api/auth/profile      # Update profile (🔒)
 ### Programs
 
 ```http
-GET  /api/programs          # List all programs
-GET  /api/programs/:id      # Get program details
-POST /api/programs          # Create program (🔒 Admin)
-PUT  /api/programs/:id      # Update program (🔒 Admin)
-DELETE /api/programs/:id    # Delete program (🔒 Admin)
+GET  /api/programs              # List all programs
+GET  /api/programs/:id          # Get program details
+POST /api/programs              # Create program (🔒 Admin)
+PUT  /api/programs/:id          # Update program (🔒 Admin)
+DELETE /api/programs/:id        # Delete program (🔒 Admin)
+POST /api/programs/upload-image # Upload program image (🔒 Admin)
 ```
 
 ### Enrollments
