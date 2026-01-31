@@ -112,6 +112,12 @@ Konstra is a comprehensive educational platform built with Node.js, Express, Soc
    DB_USER=your_db_user
    DB_PASSWORD=your_db_password
    JWT_SECRET=your_jwt_secret_key
+   CALENDLY_API_TOKEN=your_calendly_api_token
+   CERTIFIER_API_KEY=your_certifier_api_key
+   WHEREBY_API_KEY=your_whereby_api_key
+   SMTPUser=your_email
+   SMTPUserPassword=your_email_password
+   SMTPService=gmail
    STRIPE_SECRET_KEY=sk_test_xxxx
    STRIPE_PUBLISHABLE_KEY=pk_test_xxxx
    GOOGLE_CLIENT_ID=your_google_client_id
