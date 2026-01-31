@@ -8,6 +8,9 @@ const path = require("path");
 // Body Parser
 const bodyParser = require("body-parser");
 const passport = require('./config/passport');
+// Swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./config/swagger');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require("./routes/message.routes");
 const documentRoutes = require('./routes/document.routes');
@@ -273,6 +276,18 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(passport.initialize());
 
 // ========== Routes ==========
+
+// Swagger API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Konstra API Documentation'
+}));
+
+// Serve Swagger JSON
+app.get('/api-docs.json', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
+});
 
 app.use("/api/documents", documentRoutes);
 app.use("/api/message", chatRoutes);
