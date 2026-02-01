@@ -52,14 +52,14 @@ class ProgramController {
     // 1b. Create Slot
     static async createSlot(req, res) {
         const programId = parseInt(req.params.id);
-        const { startTime, endTime, capacity } = req.body;
+        const { startTime, endTime, capacity, meetingURL } = req.body;
 
         if (isNaN(programId) || !startTime || !endTime || !capacity) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
         try {
-            const slotId = await Program.createSlot(programId, { startTime, endTime, capacity });
+            const slotId = await Program.createSlot(programId, { startTime, endTime, capacity, meetingURL });
             res.status(201).json({ message: 'Slot created', slotId });
         } catch (error) {
             console.error('Controller Error - createSlot:', error);
