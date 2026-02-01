@@ -58,16 +58,48 @@ class PaymentController {
             const successUrl = `${domain}/api/payment/success?session_id={CHECKOUT_SESSION_ID}`;
             const cancelUrl = `${domain}/payment.html?error=cancelled`;
 
-            // 3. Prepare Metadata for Enrollment
+            // 3. Prepare Image URL (must be absolute for Stripe)
+            let absoluteImageUrl = image;
+            if (image && image.startsWith('/')) {
+                absoluteImageUrl = `${domain}${image}`;
+            } else if (image && !image.startsWith('http')) {
+                // If it's a relative path without leading slash
+                absoluteImageUrl = `${domain}/${image}`;
+            }
+
+            // 4. Prepare Metadata for Enrollment (Prune to stay under 500 chars)
+            let prunedDetails = {};
+            try {
+                const rawDetails = typeof details === 'string' ? JSON.parse(details) : { ...details };
+
+                // Create a compact map for child slots to preserve them after pruning
+                if (rawDetails.childPrograms && Array.isArray(rawDetails.childPrograms)) {
+                    rawDetails.childSlots = {};
+                    rawDetails.childPrograms.forEach(cp => {
+                        if (cp.id && cp.slotId) {
+                            rawDetails.childSlots[cp.id] = cp.slotId;
+                        }
+                    });
+                }
+
+                prunedDetails = rawDetails;
+                // Remove bulky fields redundant for backend enrollment
+                delete prunedDetails.childPrograms;
+                delete prunedDetails.childProgramTitles;
+            } catch (e) {
+                console.error('[PAYMENT] Error pruning details', e);
+                prunedDetails = typeof details === 'string' ? details : JSON.stringify(details);
+            }
+
             const metadata = {
                 userId: userId.toString(),
                 programId: programId.toString(),
                 slot: slot ? slot.toString() : null,
-                details: typeof details === 'string' ? details : JSON.stringify(details)
+                details: typeof prunedDetails === 'string' ? prunedDetails : JSON.stringify(prunedDetails)
             };
 
-            // 4. Call Model with correct arguments
-            const session = await Payment.createCheckoutSession(amount, item, successUrl, cancelUrl, image, 'usd', metadata);
+            // 5. Call Model with correct arguments
+            const session = await Payment.createCheckoutSession(amount, item, successUrl, cancelUrl, absoluteImageUrl, 'usd', metadata);
 
             // 5. Return Session ID to frontend (NOT clientSecret)
             res.status(200).json({
@@ -123,13 +155,19 @@ class PaymentController {
                 // Process sequentially to avoid race conditions or DB locks
                 for (const childId of childIds) {
                     try {
+                        // Retrieve slot ID for this child from the map if it exists
+                        const childSlotId = (parsedDetails.childSlots && parsedDetails.childSlots[childId])
+                            ? parsedDetails.childSlots[childId]
+                            : null;
+
                         await Enrollment.createEnrollment(userId, childId, {
+                            slotId: childSlotId,
                             details: {
                                 parentEnrollmentId: enrollmentResult.EnrollmentID, // Link to parent
                                 ...parsedDetails
                             }
                         });
-                        console.log(`[PAYMENT] Child Program Enrollment Created: ${childId}`);
+                        console.log(`[PAYMENT] Child Program Enrollment Created: ${childId} (Slot: ${childSlotId})`);
                     } catch (childErr) {
                         console.error(`[PAYMENT ERROR] Failed to enroll in child program ${childId}:`, childErr);
                     }

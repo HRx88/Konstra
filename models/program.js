@@ -247,10 +247,13 @@ class Program {
 
             const request = pool.request().input('slotId', sql.Int, slotId);
 
-            if (inputs.startTime) request.input('startTime', sql.DateTime, inputs.startTime);
-            if (inputs.endTime) request.input('endTime', sql.DateTime, inputs.endTime);
-            if (inputs.capacity) request.input('capacity', sql.Int, inputs.capacity);
-            if (inputs.meetingURL) request.input('meetingURL', sql.NVarChar, inputs.meetingURL);
+            // Bind dynamic inputs
+            for (const [key, value] of Object.entries(inputs)) {
+                if (key === 'startTime' || key === 'endTime') request.input(key, sql.DateTime, value);
+                else if (key === 'capacity') request.input(key, sql.Int, value);
+                else if (key === 'meetingURL') request.input(key, sql.NVarChar, value || null);
+                else request.input(key, sql.NVarChar, value);
+            }
 
             await request.query(query);
             return true;
