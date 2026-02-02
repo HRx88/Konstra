@@ -87,6 +87,37 @@ class EmailService {
             return false;
         }
     }
+
+    /**
+     * Send a custom email (for discount broadcasts, announcements, etc.)
+     * @param {string} email - Recipient email
+     * @param {string} subject - Email subject
+     * @param {string} body - Email body (plain text)
+     */
+    static async sendCustomEmail(email, subject, body) {
+        const mailOptions = {
+            from: `"Konstra" <${process.env.SMTPUser}>`,
+            to: email,
+            subject: subject,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
+                    <div style="white-space: pre-wrap; line-height: 1.6;">${body}</div>
+                    <hr style="margin-top: 30px; border: 0; border-top: 1px solid #eee;" />
+                    <p style="font-size: 0.8rem; color: #777; text-align: center;">
+                        You received this email because you're a Konstra member.
+                    </p>
+                </div>
+            `
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            return true;
+        } catch (error) {
+            console.error('Custom Email Error:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = EmailService;

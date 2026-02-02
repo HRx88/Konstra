@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Consultation - KonstraNGO</title>
+    <title>Book Consultation - KonstraPartner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -12,205 +12,14 @@
     <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 
     <link rel="stylesheet" href="css/sidebar.css">
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', 'Inter', sans-serif;
-            overflow-x: hidden;
-            color: #333;
-        }
-
-        /* --- CONTENT --- */
-        .main-content {
-            margin-left: 250px;
-            padding: 40px;
-            min-height: 100vh;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 0;
-                padding: 20px;
-            }
-        }
-
-        /* --- WIZARD STYLES --- */
-        .wizard-container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .wizard-step {
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .wizard-step.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Step 1: Selection Cards */
-        .selection-card {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem 2rem;
-            text-align: center;
-            border: 2px solid transparent;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            height: 100%;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .selection-card:hover {
-            border-color: var(--ngo-brand);
-            transform: translateY(-8px);
-            box-shadow: 0 15px 40px rgba(211, 47, 47, 0.15);
-        }
-
-        .selection-icon {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
-
-        .selection-card:hover .selection-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .bg-icon-blue {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .bg-icon-green {
-            background: #e8f5e9;
-            color: #388e3c;
-        }
-
-        /* Step 2: Calendly Container */
-        .calendly-frame-container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            height: 700px;
-            /* Fixed height for widget */
-            position: relative;
-        }
-
-        /* Step 3: Ticket */
-        .ticket-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .ticket-header {
-            background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-        }
-
-        .ticket-header::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 100%;
-            height: 20px;
-            background: white;
-            border-radius: 50% 50% 0 0;
-        }
-
-        .ticket-body {
-            padding: 2.5rem;
-        }
-
-        .ticket-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px dashed #eee;
-            padding-bottom: 1rem;
-        }
-
-        .timer-badge {
-            display: inline-block;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #666;
-            margin-top: 2rem;
-        }
-
-        .progress-indicator {
-            height: 4px;
-            background: #e9ecef;
-            margin-bottom: 3rem;
-            border-radius: 2px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-bar-custom {
-            height: 100%;
-            background: var(--ngo-brand);
-            width: 33%;
-            transition: width 0.5s ease;
-        }
-
-        .back-nav {
-            cursor: pointer;
-            color: #666;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            transition: color 0.2s;
-        }
-
-        .back-nav:hover {
-            color: var(--ngo-brand);
-        }
-    </style>
+    <link rel="stylesheet" href="css/booking-consultation.css">
 </head>
 
 <body>
 
     <nav class="dashboard-sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="#" class="brand-text"><i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO</a>
+            <a href="#" class="brand-text"><i class="fas fa-handshake me-2"></i>KonstraPartner</a>
         </div>
         <div class="d-flex flex-column">
             <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
@@ -222,14 +31,13 @@
             <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
         </div>
         <div class="logout-btn">
-            <button onclick="logout()" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+            <button id="logoutBtn" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
                 Logout</button>
         </div>
     </nav>
 
     <main class="main-content">
-        <button class="btn btn-dark d-md-none mb-4"
-            onclick="document.getElementById('sidebar').classList.toggle('active')">
+        <button class="btn btn-dark d-md-none mb-4" id="mobileDashToggle">
             <i class="fas fa-bars"></i> Menu
         </button>
 
@@ -261,7 +69,7 @@
 
                 <div class="row justify-content-center g-4">
                     <div class="col-md-5">
-                        <div class="selection-card" onclick="goToStep2('ONLINE')">
+                        <div class="selection-card" id="btnSelectOnline">
                             <div class="selection-icon bg-icon-blue">
                                 <i class="fas fa-video"></i>
                             </div>
@@ -272,7 +80,7 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="selection-card" onclick="goToStep2('INPERSON')">
+                        <div class="selection-card" id="btnSelectInPerson">
                             <div class="selection-icon bg-icon-green">
                                 <i class="fas fa-building"></i>
                             </div>
@@ -287,7 +95,7 @@
 
             <!-- STEP 2: INLINE CALENDAR -->
             <div id="step2" class="wizard-step">
-                <div class="back-nav" onclick="goToStep1()">
+                <div class="back-nav" id="btnBackToStep1">
                     <i class="fas fa-chevron-left me-2"></i> Return to Meeting Options
                 </div>
 
@@ -342,151 +150,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // CONFIG
-        const CALENDLY_LINKS = {
-            ONLINE: "https://calendly.com/konstrabeta/online",
-            INPERSON: "https://calendly.com/konstrabeta/in-person"
-        };
-
-        // STATE
-        let currentStep = 1;
-        let selectedFormat = null;
-        let countdownInterval = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = getUser();
-            if (!user) window.location.href = 'login.html';
-            else document.getElementById('userNameDisplay').textContent = user.username || "User";
-        });
-
-        // --- WIZARD NAVIGATION ---
-        function updateProgress(step) {
-            const bar = document.getElementById('wizardProgress');
-            if (step === 1) bar.style.width = "33%";
-            if (step === 2) bar.style.width = "66%";
-            if (step === 3) bar.style.width = "100%";
-        }
-
-        function showStep(stepId) {
-            document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(stepId).classList.add('active');
-        }
-
-        function goToStep1() {
-            currentStep = 1;
-            updateProgress(1);
-            showStep('step1');
-            // Clean up calendar
-            document.getElementById('calendlyContainer').innerHTML = '';
-        }
-
-        function goToStep2(format) {
-            const user = getUser();
-            selectedFormat = format;
-            currentStep = 2;
-            updateProgress(2);
-            showStep('step2');
-
-            // Initialize Inline Widget
-            const container = document.getElementById('calendlyContainer');
-            container.innerHTML = ''; // Clear prev
-
-            Calendly.initInlineWidget({
-                url: CALENDLY_LINKS[format],
-                parentElement: container,
-                prefill: {
-                    email: user.email,
-                    name: user.username
-                },
-                utm: {}
-            });
-        }
-
-        function goToStep3(meetingData) {
-            currentStep = 3;
-            updateProgress(3);
-            showStep('step3');
-
-            // Populate Ticket
-            document.getElementById('ticketType').textContent = meetingData.meetingType;
-            const dateObj = new Date(meetingData.startTime);
-            document.getElementById('ticketTime').textContent = dateObj.toLocaleString();
-
-            if (meetingData.meetingType === 'Online' && meetingData.participantUrl) {
-                document.getElementById('ticketLocation').innerHTML = `<a href="${meetingData.participantUrl}" target="_blank">${meetingData.participantUrl}</a>`;
-            } else {
-                document.getElementById('ticketLocation').textContent = "Konstra HQ - 123 Innovation Drive, Tech City";
-            }
-
-            // Start Auto-Reset
-            startCountdown();
-        }
-
-        // --- CALENDLY EVENT HANDLING ---
-        window.addEventListener('message', function (e) {
-            if (e.data.event && e.data.event === 'calendly.event_scheduled') {
-                handleBookingSuccess(e.data.payload.event.uri);
-            }
-        });
-
-        async function handleBookingSuccess(eventURI) {
-            const user = getUser();
-            const userID = user.memberID || user.adminID || user.id || user.UserID;
-
-            try {
-                // Show a loading state inside step 2 if needed, 
-                // but usually we proceed directly to step 3 once data is saved.
-
-                const response = await fetch('/api/meetings/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userID, calendlyEventURI: eventURI })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    goToStep3(result.data);
-                } else {
-                    alert('Booking recorded but failed to sync details: ' + result.error);
-                }
-
-            } catch (err) {
-                console.error(err);
-                alert('Connection error saving booking.');
-            }
-        }
-
-        // --- AUTO RESET LOGIC ---
-        function startCountdown() {
-            let timeLeft = 15;
-            const display = document.getElementById('countdownTimer');
-            display.textContent = timeLeft;
-
-            if (countdownInterval) clearInterval(countdownInterval);
-
-            countdownInterval = setInterval(() => {
-                timeLeft--;
-                display.textContent = timeLeft;
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    goToStep1(); // Loop back
-                }
-            }, 1000);
-        }
-
-        // --- UTILS ---
-        function getUser() {
-            return JSON.parse(localStorage.getItem("currentUser")) ||
-                JSON.parse(localStorage.getItem("memberDetails")) ||
-                JSON.parse(localStorage.getItem("adminDetails"));
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-    </script>
+    <script src="js/booking-consultation.js"></script>
 </body>
 
 </html>

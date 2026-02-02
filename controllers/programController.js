@@ -2,14 +2,35 @@ const Program = require('../models/program');
 
 class ProgramController {
 
-    // 1. Get all active programs
+    // 1. Get all active programs (Top-level only by default unless query param specifies otherwise)
     static async getAll(req, res) {
         try {
             const programs = await Program.getAllPrograms();
+
+            // If ?hierarchy=true, nesting is handled by frontend or separate call. 
+            // For now, getAllPrograms fetches everything. 
+            // We might want to filter out children in the main list or categorize them.
+            // Let's filter to only return Parents (ParentProgramID IS NULL) for the main catalog 
+            // if specifically requested, or let frontend filtering handle it.
+            // For backward compatibility, we return all. 
+
             res.status(200).json(programs);
         } catch (error) {
             console.error('Controller Error - getAll:', error);
             res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    // 1a. Get Child Programs
+    static async getChildren(req, res) {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) return res.status(400).json({ error: 'Invalid Program ID' });
+        try {
+            const children = await Program.getChildPrograms(id);
+            res.status(200).json(children); // Return raw data directly
+        } catch (error) {
+            console.error('Controller Error - getChildren:', error);
+            res.status(500).json({ error: 'Failed to fetch child programs' });
         }
     }
 
@@ -31,14 +52,14 @@ class ProgramController {
     // 1b. Create Slot
     static async createSlot(req, res) {
         const programId = parseInt(req.params.id);
-        const { startTime, endTime, capacity } = req.body;
+        const { startTime, endTime, capacity, meetingURL } = req.body;
 
         if (isNaN(programId) || !startTime || !endTime || !capacity) {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
         try {
-            const slotId = await Program.createSlot(programId, { startTime, endTime, capacity });
+            const slotId = await Program.createSlot(programId, { startTime, endTime, capacity, meetingURL });
             res.status(201).json({ message: 'Slot created', slotId });
         } catch (error) {
             console.error('Controller Error - createSlot:', error);
@@ -46,7 +67,29 @@ class ProgramController {
         }
     }
 
-    // 1c. Delete Slot
+    // 1c. Update Slot
+    static async updateSlot(req, res) {
+        const slotId = parseInt(req.params.slotId);
+        const { startTime, endTime, capacity, meetingURL } = req.body;
+
+        if (isNaN(slotId) || !startTime || !endTime || !capacity) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        try {
+            const success = await Program.updateSlot(slotId, { startTime, endTime, capacity, meetingURL });
+            if (success) {
+                res.status(200).json({ message: 'Slot updated successfully' });
+            } else {
+                res.status(400).json({ error: 'Failed to update slot or slot not found' });
+            }
+        } catch (error) {
+            console.error('Controller Error - updateSlot:', error);
+            res.status(500).json({ error: 'Failed to update slot' });
+        }
+    }
+
+    // 1d. Delete Slot
     static async deleteSlot(req, res) {
         const slotId = parseInt(req.params.slotId);
         if (isNaN(slotId)) return res.status(400).json({ error: 'Invalid Slot ID' });

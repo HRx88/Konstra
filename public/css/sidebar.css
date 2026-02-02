@@ -6,6 +6,7 @@
     --text-default: #333333;
     --text-muted: #666666;
     --hover-bg: #fff1f1;
+    --font-family: 'Segoe UI', sans-serif;
 }
 
 /* --- SIDEBAR --- */
@@ -17,6 +18,7 @@
     left: 0;
     background-color: var(--sidebar-bg);
     color: var(--text-default);
+    font-family: var(--font-family);
     padding-top: 20px;
     z-index: 1000;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -38,7 +40,7 @@
 .brand-text {
     color: var(--ngo-brand);
     font-weight: 800;
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     text-decoration: none;
     letter-spacing: -0.5px;
 }
@@ -83,5 +85,20 @@
 
     .dashboard-sidebar.active {
         transform: translateX(0);
+    }
+}
+
+/* --- TEXT CONTENT --- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 30px;
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0 !important;
+        /* Force override */
+        padding: 20px;
     }
 }
