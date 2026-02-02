@@ -15,6 +15,12 @@ let pdfTimer = null;
 let ytPlayer = null;
 let eventSource = null;
 
+// In-Video Quiz State
+let activeInVideoQuizzes = [];
+let completedInVideoQuizzes = new Set();
+let isQuizShowing = false;
+let currentQuizFailCount = 0;
+
 document.addEventListener('DOMContentLoaded', async () => {
     if (!enrollmentId || !programId) {
         showToast('Invalid access. Missing enrollment or program ID.', 'error');
@@ -136,7 +142,7 @@ async function loadModules(silent = false) {
 
                 if (descChanged) {
                     const descEl = document.getElementById('lessonDescription');
-                    if (descEl) descEl.textContent = updatedActive.Description || 'No description available for this module.';
+                    if (descEl) descEl.textContent = (updatedActive.Description || 'No description available for this module.').replace(/\[QUIZ\][\s\S]*?\[\/QUIZ\]/g, '').trim() || 'No description available for this module.';
                 }
 
                 // If URL changed, refresh content
@@ -683,11 +689,38 @@ function selectModule(module, event) {
         `;
     }
 
+    const cleanDescription = (module.Description || 'No description available for this module.').replace(/\[QUIZ\][\s\S]*?\[\/QUIZ\]/g, '').trim();
+
+    // Extract quizzes to show timestamps to user
+    const quizMatches = (module.Description || '').match(/\[QUIZ\]([\s\S]*?)\[\/QUIZ\]/g) || [];
+    let quizInfoHTML = '';
+    if (quizMatches.length > 0) {
+        const times = quizMatches.map(m => {
+            try { return JSON.parse(m.replace('[QUIZ]', '').replace('[/QUIZ]', '')).time; } catch (e) { return null; }
+        }).filter(t => t !== null).sort((a, b) => a - b);
+
+        if (times.length > 0) {
+            quizInfoHTML = `
+                <div class="mt-3 pt-3 border-top">
+                    <small class="fw-bold text-muted text-uppercase mb-2 d-block" style="letter-spacing: 1px;">
+                        <i class="fas fa-stopwatch me-1"></i> Interactive Quizzes
+                    </small>
+                    <div class="d-flex flex-wrap gap-2">
+                        ${times.map(t => `<span class="badge bg-white border text-dark py-2 px-3"><i class="fas fa-question-circle text-primary me-2"></i>At ${Math.floor(t / 60)}:${(t % 60).toString().padStart(2, '0')}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
     contentMain.innerHTML = `
         ${contentHTML}
         <div class="module-description p-3 bg-light rounded-3 border-start border-4 border-danger shadow-sm" style="max-width: 1000px;">
-            <h5 class="mb-2 fw-bold text-dark"><i class="fas fa-info-circle me-2 text-danger"></i>About this lesson</h5>
-            <p class="text-secondary mb-0" id="lessonDescription" style="line-height: 1.6;">${module.Description || 'No description available for this module.'}</p>
+            <div class="d-flex justify-content-between align-items-start">
+                 <h5 class="mb-2 fw-bold text-dark"><i class="fas fa-info-circle me-2 text-danger"></i>About this lesson</h5>
+            </div>
+            <p class="text-secondary mb-0" id="lessonDescription" style="line-height: 1.6;">${cleanDescription || 'No description available for this module.'}</p>
+            ${quizInfoHTML}
         </div>
     `;
 
@@ -705,6 +738,11 @@ function selectModule(module, event) {
 
         if (autoMarkEnabled) {
             setupAutoComplete(module.ContentType || 'video');
+        }
+
+        // Initialize in-video quizzes if it's a video
+        if (module.ContentType === 'video' || !module.ContentType) {
+            parseInVideoQuizzes(module.Description);
         }
 
         // Article iframe fallback
@@ -729,6 +767,167 @@ function selectModule(module, event) {
             }, 100);
         }
     }, 100);
+}
+
+function parseInVideoQuizzes(description) {
+    activeInVideoQuizzes = [];
+    completedInVideoQuizzes = new Set();
+    isQuizShowing = false;
+    currentQuizFailCount = 0;
+
+    if (!description) return;
+
+    // Use regex to find [QUIZ]{...}[/QUIZ] patterns
+    const regex = /\[QUIZ\]([\s\S]*?)\[\/QUIZ\]/g;
+    let match;
+    while ((match = regex.exec(description)) !== null) {
+        try {
+            const quizData = JSON.parse(match[1]);
+            if (quizData.time !== undefined && quizData.question) {
+                activeInVideoQuizzes.push(quizData);
+            }
+        } catch (e) {
+            console.error('Failed to parse in-video quiz JSON:', e);
+        }
+    }
+
+    // Sort quizzes by timestamp
+    activeInVideoQuizzes.sort((a, b) => a.time - b.time);
+}
+
+function checkInVideoQuizzes(currentTime) {
+    if (isQuizShowing) return;
+
+    // RULE: If the module is already completed, don't show any in-video quizzes
+    if (currentModule && completedModules.some(c => c.ModuleID === currentModule.ModuleID)) {
+        return;
+    }
+
+    // Trigger quiz if we have reached or PASSED the timestamp and haven't completed it yet.
+    // This handles seeking/skipping forward.
+    const quiz = activeInVideoQuizzes.find(q =>
+        currentTime >= q.time &&
+        !completedInVideoQuizzes.has(q.time)
+    );
+
+    if (quiz) {
+        showInVideoQuiz(quiz);
+    }
+}
+
+function showInVideoQuiz(quiz) {
+    isQuizShowing = true;
+
+    // Pause video
+    const videoPlayer = document.getElementById('videoPlayer');
+    if (videoPlayer) {
+        videoPlayer.pause();
+    } else if (ytPlayer && ytPlayer.pauseVideo) {
+        ytPlayer.pauseVideo();
+    }
+
+    const container = document.querySelector('.video-container');
+    if (!container) return;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'video-quiz-overlay';
+    overlay.id = 'videoQuizOverlay';
+
+    let optionsHTML = quiz.options.map((opt, idx) => `
+        <button class="video-quiz-option" onclick="handleInVideoQuizSubmit(${idx}, ${quiz.correct}, ${quiz.time})">
+            ${opt}
+        </button>
+    `).join('');
+
+    overlay.innerHTML = `
+        <div class="video-quiz-card">
+            <h4><i class="fas fa-question-circle text-primary"></i> Quick Quiz</h4>
+            <p class="mb-4 fw-bold">${quiz.question}</p>
+            <div class="options-container">
+                ${optionsHTML}
+            </div>
+            <div id="quizFeedback" class="mt-3 small" style="display:none;"></div>
+        </div>
+    `;
+
+    container.appendChild(overlay);
+}
+
+window.handleInVideoQuizSubmit = function (selectedIdx, correctIdx, quizTime) {
+    const feedback = document.getElementById('quizFeedback');
+    const buttons = document.querySelectorAll('.video-quiz-option');
+
+    // Disable all buttons
+    buttons.forEach(btn => btn.disabled = true);
+
+    if (selectedIdx === correctIdx) {
+        buttons[selectedIdx].classList.add('correct');
+        feedback.textContent = 'Correct! Continuing video...';
+        feedback.className = 'mt-3 small text-success fw-bold';
+        feedback.style.display = 'block';
+        currentQuizFailCount = 0; // Reset on success
+
+        setTimeout(() => {
+            closeInVideoQuiz(quizTime);
+        }, 1500);
+    } else {
+        currentQuizFailCount++;
+        buttons[selectedIdx].classList.add('wrong');
+
+        if (currentQuizFailCount >= 3) {
+            feedback.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> Failed 3 times. Resetting to 0%...`;
+            feedback.className = 'mt-3 small text-danger fw-bold';
+            feedback.style.display = 'block';
+
+            setTimeout(() => {
+                // Reset video and close quiz
+                const videoPlayer = document.getElementById('videoPlayer');
+                if (videoPlayer) {
+                    videoPlayer.currentTime = 0;
+                    watchedSeconds = 0; // Reset watch tracking too
+                } else if (ytPlayer && ytPlayer.seekTo) {
+                    ytPlayer.seekTo(0);
+                    watchedSeconds = 0;
+                }
+
+                currentQuizFailCount = 0;
+                closeInVideoQuiz(null); // Close without marking completed
+
+                showToast('Video reset due to quiz failures', 'warning');
+            }, 2000);
+        } else {
+            feedback.textContent = `Incorrect. (${currentQuizFailCount}/3 attempts) Please try again.`;
+            feedback.className = 'mt-3 small text-danger fw-bold';
+            feedback.style.display = 'block';
+
+            setTimeout(() => {
+                // Re-enable buttons for retry
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('wrong');
+                });
+                feedback.style.display = 'none';
+            }, 2000);
+        }
+    }
+};
+
+function closeInVideoQuiz(quizTime) {
+    const overlay = document.getElementById('videoQuizOverlay');
+    if (overlay) overlay.remove();
+
+    if (quizTime !== null) {
+        completedInVideoQuizzes.add(quizTime);
+    }
+    isQuizShowing = false;
+
+    // Resume video
+    const videoPlayer = document.getElementById('videoPlayer');
+    if (videoPlayer) {
+        videoPlayer.play();
+    } else if (ytPlayer && ytPlayer.playVideo) {
+        ytPlayer.playVideo();
+    }
 }
 
 function renderQuizContent(module) {
@@ -822,7 +1021,7 @@ function showArticleFallback(container, url) {
 
 let watchedSeconds = 0;
 let videoDuration = 0;
-const REQUIRED_WATCH_PERCENT = 0.90;
+const REQUIRED_WATCH_PERCENT = 1.0;
 
 function setupAutoComplete(contentType) {
     // Reset
@@ -850,6 +1049,7 @@ function setupAutoComplete(contentType) {
             watchInterval = setInterval(() => {
                 if (!videoPlayer.paused && !videoPlayer.seeking) {
                     watchedSeconds++;
+                    checkInVideoQuizzes(videoPlayer.currentTime);
                 }
             }, 1000);
         });
@@ -956,6 +1156,7 @@ function initYouTubePlayer(videoId) {
                     if (watchInterval) clearInterval(watchInterval);
                     watchInterval = setInterval(() => {
                         watchedSeconds++;
+                        checkInVideoQuizzes(ytPlayer.getCurrentTime());
                     }, 1000);
                 } else if (event.data === 2 || event.data === 0) { // Paused or Ended
                     if (watchInterval) {
