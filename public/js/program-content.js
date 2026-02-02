@@ -1021,7 +1021,7 @@ function showArticleFallback(container, url) {
 
 let watchedSeconds = 0;
 let videoDuration = 0;
-const REQUIRED_WATCH_PERCENT = 1.0;
+const REQUIRED_WATCH_PERCENT = 0.99;
 
 function setupAutoComplete(contentType) {
     // Reset
