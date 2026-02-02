@@ -64,6 +64,24 @@ function setupEventListeners() {
         requiredInput.addEventListener('keyup', updatePassingScore);
     }
 
+    // Video Quiz Editor
+    document.getElementById('btnAddVideoQuiz')?.addEventListener('click', addVideoQuiz);
+    document.getElementById('videoQuizzes')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+
+        if (action === 'remove-video-quiz') {
+            removeVideoQuiz(id);
+        } else if (action === 'add-option') {
+            addVideoQuizOption(id);
+        } else if (action === 'remove-option') {
+            removeVideoQuizOption(btn);
+        }
+    });
+
     // Event Delegation: Modules Table (Edit/Delete)
     document.getElementById('moduleTableBody')?.addEventListener('click', (e) => {
         const btn = e.target.closest('button');
@@ -428,6 +446,13 @@ function openAddModal() {
     const nextOrder = modules.length > 0 ? Math.max(...modules.map(m => m.OrderIndex)) + 1 : 1;
     document.getElementById('moduleOrderIndex').value = nextOrder;
 
+    // Reset Video Quiz section
+    document.getElementById('videoQuizEditorSection').style.display = 'block'; // Default type is video
+    document.getElementById('videoQuizzes').innerHTML = `<p class="text-muted text-center py-3 mb-0" id="noVideoQuizzesMsg">
+        No stop points yet. Add one to show a quiz during the video.
+    </p>`;
+    videoQuizCounter = 0;
+
     modal.show();
 }
 
@@ -470,6 +495,19 @@ function openEditModal(moduleId) {
         questionCounter = 0;
         document.getElementById('requiredCorrectInput').value = 1;
     }
+
+    // Handle Video Quiz Builder
+    if (module.ContentType === 'video' || !module.ContentType) {
+        document.getElementById('videoQuizEditorSection').style.display = 'block';
+        loadVideoQuizData(module.Description);
+    } else {
+        document.getElementById('videoQuizEditorSection').style.display = 'none';
+        document.getElementById('videoQuizzes').innerHTML = `<p class="text-muted text-center py-3 mb-0" id="noVideoQuizzesMsg">
+            No stop points yet. Add one to show a quiz during the video.
+        </p>`;
+        videoQuizCounter = 0;
+    }
+
     updatePassingScore(); // Update display after loading/resetting
 
     modal.show();
@@ -562,9 +600,41 @@ async function saveModule() {
 
     const moduleId = document.getElementById('moduleId').value;
     // const trackIdVal = document.getElementById('moduleTrack').value;
+
+    let description = document.getElementById('moduleDescription').value;
+
+    // If it's a video, process video quizzes and embed them in the description
+    if (contentType === 'video' || !contentType) {
+        // Strip existing [QUIZ] tags
+        description = description.replace(/\[QUIZ\][\s\S]*?\[\/QUIZ\]/g, '').trim();
+
+        // Collect new video quizzes
+        const videoQuizCards = document.querySelectorAll('#videoQuizzes .card');
+        videoQuizCards.forEach(card => {
+            const time = parseInt(card.querySelector('input[data-field="time"]').value);
+            const question = card.querySelector('input[data-field="question"]').value.trim();
+            const correctIndex = parseInt(card.querySelector('input[name="' + card.id + '_correct"]:checked')?.value || 0);
+
+            const options = [];
+            card.querySelectorAll('input[data-field="option"]').forEach(opt => {
+                if (opt.value.trim()) options.push(opt.value.trim());
+            });
+
+            if (!isNaN(time) && question && options.length > 0) {
+                const quizJson = JSON.stringify({
+                    time,
+                    question,
+                    options,
+                    correct: correctIndex
+                });
+                description += `\n\n[QUIZ]${quizJson}[/QUIZ]`;
+            }
+        });
+    }
+
     const data = {
         title: document.getElementById('moduleTitle').value,
-        description: document.getElementById('moduleDescription').value,
+        description: description,
         contentURL: contentURL,
         contentType: document.getElementById('moduleContentType').value,
         orderIndex: parseInt(document.getElementById('moduleOrderIndex').value)
@@ -775,6 +845,171 @@ function toggleContentSections() {
             urlSection.style.display = 'none';
             fileSection.style.display = 'block';
         }
+    }
+
+    // Toggle Video Quiz Builder
+    const videoQuizSection = document.getElementById('videoQuizEditorSection');
+    if (contentType === 'video' || !contentType) {
+        videoQuizSection.style.display = 'block';
+    } else {
+        videoQuizSection.style.display = 'none';
+    }
+}
+
+// ========== Video Quiz Builder Functions ==========
+let videoQuizCounter = 0;
+
+function addVideoQuiz(data = null) {
+    const container = document.getElementById('videoQuizzes');
+    const noMsg = document.getElementById('noVideoQuizzesMsg');
+    if (noMsg) noMsg.style.display = 'none';
+
+    videoQuizCounter++;
+    const vqId = 'vq' + videoQuizCounter;
+
+    const quizDiv = document.createElement('div');
+    quizDiv.className = 'card mb-3 border-primary shadow-sm';
+    quizDiv.id = vqId;
+
+    // Correctly handle the case where 'data' is an Event object (when clicked from UI)
+    const isQuizData = data && typeof data === 'object' && 'question' in data;
+
+    // Default values (Default to 4 options for new quizzes)
+    const time = isQuizData ? data.time : 10;
+    const question = isQuizData ? data.question : '';
+    const options = isQuizData ? data.options : ['', '', '', ''];
+    const correct = isQuizData ? data.correct : 0;
+
+    quizDiv.innerHTML = `
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-primary">STOP POINT</span>
+                    <div class="input-group input-group-sm" style="width: 150px;">
+                        <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                        <input type="number" class="form-control" data-field="time" value="${time}" min="0" placeholder="Secs">
+                        <span class="input-group-text">sec</span>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger" data-action="remove-video-quiz" data-id="${vqId}">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            
+            <div class="mb-3">
+                <input type="text" class="form-control form-control-sm fw-bold" data-field="question" 
+                       value="${question}" placeholder="Enter question to show at this time...">
+            </div>
+
+            <div class="options-list" id="${vqId}_options">
+                ${options.map((opt, i) => `
+                    <div class="input-group input-group-sm mb-2">
+                        <div class="input-group-text">
+                            <input class="form-check-input mt-0" type="radio" name="${vqId}_correct" value="${i}" ${i === correct ? 'checked' : ''}>
+                        </div>
+                        <input type="text" class="form-control" data-field="option" value="${opt}" placeholder="Option">
+                        <button class="btn btn-outline-secondary" type="button" data-action="remove-option">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0" data-action="add-option" data-id="${vqId}">
+                    <i class="fas fa-plus-circle me-1"></i> Add Option
+                </button>
+                <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Select correct answer</small>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(quizDiv);
+}
+
+function removeVideoQuiz(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+
+    const container = document.getElementById('videoQuizzes');
+    if (container.querySelectorAll('.card').length === 0) {
+        const noMsg = document.getElementById('noVideoQuizzesMsg');
+        if (noMsg) noMsg.style.display = 'block';
+    }
+}
+
+function addVideoQuizOption(vqId) {
+    const optionsList = document.getElementById(vqId + '_options');
+    if (!optionsList) return;
+
+    const div = document.createElement('div');
+    div.className = 'input-group input-group-sm mb-2';
+
+    // Calculate new index based on existing inputs
+    const existingInputs = optionsList.querySelectorAll('input[type="radio"]');
+    const newIndex = existingInputs.length; // 0-based
+
+    div.innerHTML = `
+        <div class="input-group-text">
+            <input class="form-check-input mt-0" type="radio" name="${vqId}_correct" value="${newIndex}">
+        </div>
+        <input type="text" class="form-control" data-field="option" value="" placeholder="Option">
+        <button class="btn btn-outline-secondary" type="button" data-action="remove-option">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    optionsList.appendChild(div);
+}
+
+function removeVideoQuizOption(btn) {
+    if (!btn) return;
+    const group = btn.closest('.input-group');
+    const optionsList = btn.closest('.options-list');
+
+    // Don't remove if it's the last option (maybe keep at least 2?)
+    // But for flexibility, we allow removing all, user should be careful.
+    if (group) group.remove();
+
+    // Re-index radio buttons
+    if (optionsList) {
+        const radios = optionsList.querySelectorAll('input[type="radio"]');
+        radios.forEach((radio, index) => {
+            radio.value = index;
+            // Also need to check if the checked one was removed.
+            // If the checked one was removed, maybe select the first one?
+            // The browser just clears the selection if the checked radio is removed.
+        });
+
+        // If nothing is checked, user needs to check one. That's fine.
+    }
+}
+
+function loadVideoQuizData(description) {
+    const container = document.getElementById('videoQuizzes');
+    container.innerHTML = `<p class="text-muted text-center py-3 mb-0" id="noVideoQuizzesMsg">
+        No stop points yet. Add one to show a quiz during the video.
+    </p>`;
+    videoQuizCounter = 0;
+
+    if (!description) return;
+
+    const regex = /\[QUIZ\]([\s\S]*?)\[\/QUIZ\]/g;
+    let match;
+    let found = false;
+
+    while ((match = regex.exec(description)) !== null) {
+        try {
+            const data = JSON.parse(match[1]);
+            addVideoQuiz(data);
+            found = true;
+        } catch (e) {
+            console.error('Error parsing video quiz JSON:', e);
+        }
+    }
+
+    if (found) {
+        const noMsg = document.getElementById('noVideoQuizzesMsg');
+        if (noMsg) noMsg.style.display = 'none';
     }
 }
 
