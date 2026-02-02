@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Header Group */
+                .Header-Container{
+                    position: relative;
+                    overflow: hidden;
+                    min-height: 400px;
+                    margin-bottom: 59px;
+                }
+
+                .Header-Thumbnail{
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* fills viewport, crops excess */
+                    z-index: 0;
+                }
+
+                .Header-Title h1{
+                        /* Set the position so it can be placed above the thumbnail + Overlay */
+                            position: relative;
+                            z-index: 2;
+                        
+                        /* Define the color, font size, and weight */
+                            color: #ffffff;
+                            font-size: 47px;
+                            font-weight: bold;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
+                }
+
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
+
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
+
+                    text-align: center; /* Centralize the text */
+
+                }
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
+                    font-size: 40px;
+                    font-weight: 400;
+                    margin-bottom: 17px;
+                }
+
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
+                    font-size: 18px;
+                    font-weight: normal;
+                    margin-left: 32px;
+                }
+
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
+                }
+                
+            /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                /* Dropdown box styling */
+                    .Topics-Drop{
+
+                        /* Style the accordion box design */
+                            max-width: 1075px;
+                            margin: 20px auto;
+                            border: 1px solid #dddddd;
+                            border-radius: 10px;
+
+                        /* Shadow Styling */
+                            box-shadow:
+                            inset 0 5px 2px rgba(0,0,0,0.04), /* inner */
+                            0 12px 28px rgba(0,0,0,0.1);     /* outer */
+                    }
+
+                    .Topics-Drophead{
+                        cursor: pointer;
+                        padding: 16px 18px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        list-style: none;
+                    }
+
+                    .Topics-Level h4{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 20px;
+                        font-weight: normal;
+                        margin-left: 10px;
+                    }
+
+                    .Topics-Description p{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 18px;
+                        font-weight: normal;
+                        margin-left: 50px;
+                        margin-top: 15px;
+                    }
+
+                    .Topics-Drophead::-webkit-details-marker{ display: none; }
+
+                    .Topics-Drophead span{ opacity: 0.7; }
+
+                    .Topics-Icon::before{ content: "+"; font-size: 22px; }
+                    .Topics-Drop[open] .Topics-Icon::before{ content: "-"; }
+
+                    .Topics-Dropbody{
+                    padding: 0 18px 18px;
+                    line-height: 1.6;
+                    }
+
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .Topics-ModContent {
+                        margin-left: 20px;
+                    }
+
+                    .Topics-ModContent li{
+                        margin-left: 40px;
+                    }
+
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
+                    }
+
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
+
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
+
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
+                            display: flex;
+                            flex-direction: column;
+
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
+
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
+                    }
+
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
+
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
+                    }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
+                    }
+
+                /* Show and hide the title */
+                    .Highlight-TitleMod-Main{
+                        display: block;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: none;
+                    }
+
+
+            /* Responsiveness modifications */
+                @media (max-width: 1129px){
+                    .Highlights-Box{
+                        max-width: 900px;
+                        margin: 0 auto 50px;
+                        flex-direction: row;
+                        align-items: stretch;
+                    }
+
+                    .Highlights-Box img{
+                        /* max-width: 350px; */
+                        flex: 0 0 350px;
+                        width: 350px;
+                        height: 350px;
+                        max-height: 400px;
+                        object-fit: cover;
+                        margin-bottom: 40px;
+                    }
+
+                    .Highlights-Box p{
+                        flex: 1;
+                        margin: 60px 20px;
+                    }
+
+                    .Highlight-TitleMod-Main{
+                        display: none;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: block;
+                        margin-top: 40px;
+                    }
+                }
+            
+    </style>
+    <body>
+
+        <!-- Return to Top Button (Top) -->
+        <div id="top"></div>
+        
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        
+        <!-- Header Group -->
+        <section class="Header-Container">
+
+            <!-- Header Thumbnail -->
+            <img class="Header-Thumbnail" src="Media/Curriculum 4.png">
+
+            <!-- Overlay -->
+            <div class="bg-overlay"></div>
+
+            <!-- Title -->
+            <div class="Header-Title">
+                <h1><span class="color_conversion">SUSTAINABILITY</span> & EMERGING TECHNOLOGIES</h1>
+
+                <p>How to build a sustainable environment</p>
+            </div>
+        </section>
+
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        This course is for learners who want to understand how technology can solve real 
+                        sustainability problems, not just talk about them. You will learn how to think in 
+                        systems, measure impact, and spot where automation and better design can reduce waste, 
+                        emissions, and cost. It is especially useful if you care about building solutions that 
+                        still work in low resource environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        You will explore sustainability through practical lenses like materials, circular 
+                        design, automation, and impact measurement. The learning builds from fundamentals 
+                        to applied redesign, then to planning solutions at scale with real constraints 
+                        like policy, infrastructure, community needs, and risk. By the end, you can explain 
+                        sustainability clearly and turn concepts into a structured deployment plan.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Sustainability analyst or sustainability associate</li>
+                            <li>ESG and impact reporting executive</li>
+                            <li>Sustainability program coordinator for NGOs or social enterprises</li>
+                            <li>Sustainable design or innovation associate</li>
+                            <li>Climate tech operations or project assistant</li>
+                            <li>Urban resilience or community development project assistant</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 15 - 30, younger participants (13 - 14) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if interested.
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        <span class="Bold-Conversion">No prior experience</span> in sustainability, automation, or 3D 
+                        printing is required.
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
+                    
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of Sustainable Systems</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-30 <br>
+                            <span class="Bold-Conversion">Total Duration:</span> 20 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Sustainability concepts & systems thinking test<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Explain sustainability using systems thinking</li>
+                                <li>Identify where automation improves impact in areas like materials, energy, and waste</li>
+                                <li>Use correct sustainability terms and interpret simple system maps and metrics</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Explainer videos</li>
+                                <li>Diagrams & system maps</li>
+                                <li>Short applied exercises</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why Sustainability Needs Technology <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain major sustainability challenges across housing, food, and energy</li>
+                                        <li>Students can compare technology led approaches versus traditional approaches using simple examples</li>
+                                        <li>Students can identify where automation and better systems design can improve outcomes</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Global challenges overview (housing, food, energy)</li>
+                                        <li>Technology vs traditional solutions comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Materials and Resource Efficiency <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe basic material lifecycle stages from sourcing to disposal</li>
+                                        <li>Students can identify common efficiency levers such as reduction, substitution, and reuse</li>
+                                        <li>Students can explain how design choices affect resource use and waste</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Material lifecycle diagrams</li>
+                                        <li>Resource efficiency case studies</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Automation for Environmental Impact <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe how automation can reduce waste, improve consistency, and reduce rework</li>
+                                        <li>Students can map a simple automation workflow for an impact scenario</li>
+                                        <li>Students can identify risks where automation could increase harm if applied poorly</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Exploring how automation impacts housing, agriculture, energy</li>
+                                        <li>Simple automation flow diagrams</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Circular Design Principles <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain circular concepts such as reuse, repair, modularity, and closed loop systems</li>
+                                        <li>Students can identify where a product or system can be redesigned for circularity</li>
+                                        <li>Students can propose simple circular improvements for a basic use case</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Circular economy visuals</li>
+                                        <li>Reuse and modularity examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Measuring Impact <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can define basic impact metrics such as carbon, material use, and waste</li>
+                                        <li>Students can perform simple impact calculations and comparisons</li>
+                                        <li>Students can explain what a metric result means and how it guides better decisions</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Carbon, material, and waste metrics</li>
+                                        <li>Simple impact calculation exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Technology in Emerging Markets <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify constraints common in low resource contexts such as power, water, logistics, and skills</li>
+                                        <li>Students can explain what makes a technology appropriate for constrained environments</li>
+                                        <li>Students can adapt a solution concept to fit realistic local constraints</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Infrastructure limitations case studies</li>
+                                        <li>Appropriate technology discussions</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Case Studies in Sustainable Innovation <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can analyse why a sustainability innovation succeeded or failed</li>
+                                        <li>Students can identify key factors such as incentives, maintenance, adoption, and local fit</li>
+                                        <li>Students can summarise lessons that can be applied to future projects</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Real-world success & failure analysis</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span> Concept test + short scenario-based questions<br>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Applied Sustainability & Emerging Tech</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-30<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 32 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Applied sustainability redesign project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Apply sustainability principles to redesign real systems to reduce waste, emissions, or cost</li>
+                                <li>Evaluate emerging technologies using structured comparisons, including trade offs and ESG fit</li>
+                                <li>Design solutions that work in constrained environments with limited resources and infrastructure</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Increased technical depth</li>
+                                <li>Stronger step-up from Level 1</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Applied lessons</li>
+                                <li>Case-based work</li>
+                                <li>Modelling & analysis</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Sustainable Construction Systems <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify low impact construction strategies such as material reduction and smarter systems</li>
+                                        <li>Students can explain how design choices affect embodied impact and operational impact</li>
+                                        <li>Students can propose changes that reduce waste or emissions without losing function</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Low-impact building examples</li>
+                                        <li>Material reduction strategies</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Automation in Food, Housing & Energy <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe how automation supports outcomes in agriculture, housing delivery, and energy efficiency</li>
+                                        <li>Students can compare automation options based on cost, complexity, and impact</li>
+                                        <li>Students can propose an automation concept suited to a real use case</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Smart agriculture</li>
+                                        <li>Modular housing</li>
+                                        <li>Energy-efficient automation</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Life-Cycle Thinking <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain cradle to grave thinking and what it captures</li>
+                                        <li>Students can identify trade offs where an improvement in one area creates impact elsewhere</li>
+                                        <li>Students can justify a design choice using lifecycle reasoning</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Cradle-to-grave analysis</li>
+                                        <li>Design trade-off discussions</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Designing for Low-Resource Contexts <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can model key constraints such as cost limits, supply reliability, and infrastructure gaps</li>
+                                        <li>Students can redesign a concept to work with minimal resources and maintainability needs</li>
+                                        <li>Students can explain how constraints change what success looks like</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Cost & infrastructure constraint modelling</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Environmental Risk & Resilience <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify climate risks relevant to systems and communities</li>
+                                        <li>Students can propose resilience strategies that reduce failure under stress</li>
+                                        <li>Students can explain how resilience improves long term impact and adoption</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Climate risk mapping</li>
+                                        <li>Resilient design examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Evaluating Sustainable Technologies<br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can use a structured framework to compare technologies fairly</li>
+                                        <li>Students can assess fit with ESG style goals and stakeholder needs</li>
+                                        <li>Students can identify risks such as greenwashing, rebound effects, or hidden costs</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Tech comparison frameworks</li>
+                                        <li>ESG alignment discussions</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: From Concept to Impact Plan <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can create a simple impact plan with goals, metrics, and activities</li>
+                                        <li>Students can define who benefits, how impact is measured, and what assumptions exist</li>
+                                        <li>Students can outline a realistic path from pilot to early implementation</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Impact planning templates</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1.5 hours (plus project work)<br>
+                                    <span class="Bold-Conversion">Test Format:</span>
+                                    <br>
+                                    Individual Project
+                                    <ul>
+                                        <li>Redesign a system to reduce cost, waste, or emissions</li>
+                                    </ul>
+                                    <br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Sustainable Systems at Scale</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-25 & Advanced students & professionals<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 40 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Scalable sustainability deployment project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Design sustainable systems at scale across multiple connected areas like housing, food, and energy</li>
+                                <li>Balance cost, impact, feasibility, and risk using metrics, dashboards, and planning tools</li>
+                                <li>Communicate decisions clearly to stakeholders using an impact plan and deployment proposal</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced instruction</li>
+                                <li>System design & planning</li>
+                                <li>Evaluation & presentation</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Scaling Sustainable Solutions <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain what changes when a solution scales from pilot to adoption</li>
+                                        <li>Students can compare cost versus impact trade offs at different scales</li>
+                                        <li>Students can propose a scaling approach that protects quality and impact</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Scaling frameworks</li>
+                                        <li>Cost vs impact trade-offs</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Infrastructure & Policy Contexts <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify how policy, regulation, and institutions shape feasibility</li>
+                                        <li>Students can map key stakeholders such as government, NGOs, and private partners</li>
+                                        <li>Students can explain how to align a solution with real constraints and approvals</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Government & NGO case studies</li>
+                                        <li>Regulatory constraints</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Cross-System Integration <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can design a system concept that links housing, energy, and food outcomes</li>
+                                        <li>Students can identify dependencies and failure points across connected systems</li>
+                                        <li>Students can propose integration steps that improve efficiency and resilience</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Explore the how Housing, energy, and food systems can be integrated</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Data, Metrics & ESG Reporting <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can define meaningful KPIs and metrics for a sustainability initiative</li>
+                                        <li>Students can create a simple dashboard outline showing inputs, outputs, and outcomes</li>
+                                        <li>Students can explain results clearly to non technical stakeholders</li>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Impact dashboards</li>
+                                        <li>KPI definition</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Community-Centered Design <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can map stakeholders and identify community priorities</li>
+                                        <li>Students can apply co design steps to shape solutions with local input</li>
+                                        <li>Students can propose engagement methods that increase adoption and trust</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Stakeholder mapping</li>
+                                        <li>Co-design processes</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Failure Analysis & Risk Management <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify common reasons sustainability projects fail at scale</li>
+                                        <li>Students can build a simple risk register with mitigations</li>
+                                        <li>Students can propose monitoring actions to detect issues early</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>What goes wrong at scale</li>
+                                        <li>Mitigation strategies</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone - Sustainable Deployment Plan <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Lesson Time:</span> 7 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> Design + justify a scalable sustainability project
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4 class="Highlight-TitleMod-Main">Sustainability Planning on a Live Build Site</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 4_H1.jpeg">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Sustainability Planning on a Live Build Site</h4></div>
+                            <p>
+                                Learners practice spotting waste, safety risks, and carbon hotspots on a real 
+                                project site, then propose simple improvements such as smarter material staging 
+                                and fewer rework cycles. In this example, a student team is reviewing a site 
+                                checklist and mapping where time, cost, and emissions can be reduced.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h4 class="Highlight-TitleMod-Main">Low Waste Design Through 3D Printed Structures</h4>
+
+                    <div class="Highlights-Box">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Low Waste Design Through 3D Printed Structures</h4></div>
+                            <p>
+                                Learners study how geometry, toolpaths, and material choices affect print time, 
+                                structural performance, and material waste. In this example, a student is analysing 
+                                the layered print pattern and explaining how curved forms can reduce formwork and 
+                                cut material usage while still meeting strength needs.
+                            </p>
+                        </div>
+                        <img src="Media/Curriculum 4_H2.jpg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Return to Top Button -->
+        <div class="Return-Btn" id="backToTop">
+            <a href="#top">
+                <img src="Media/Return_Btn.png" alt="Return to top">
+            </a>
+        </div>
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
+</html>

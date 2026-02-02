@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Header Group */
+                .Header-Container{
+                    position: relative;
+                    overflow: hidden;
+                    min-height: 400px;
+                    margin-bottom: 59px;
+                }
+
+                .Header-Thumbnail{
+                    position: absolute;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover; /* fills viewport, crops excess */
+                    z-index: 0;
+                }
+
+                .Header-Title h1{
+                        /* Set the position so it can be placed above the thumbnail + Overlay */
+                            position: relative;
+                            z-index: 2;
+                        
+                        /* Define the color, font size, and weight */
+                            color: #ffffff;
+                            font-size: 47px;
+                            font-weight: bold;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
+                }
+
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
+
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
+
+                    text-align: center; /* Centralize the text */
+
+                }
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
+                    font-size: 40px;
+                    font-weight: 400;
+                    margin-bottom: 17px;
+                }
+
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
+                    font-size: 18px;
+                    font-weight: normal;
+                    margin-left: 32px;
+                }
+
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
+                }
+                
+            /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
+
+                /* Dropdown box styling */
+                    .Topics-Drop{
+
+                        /* Style the accordion box design */
+                            max-width: 1075px;
+                            margin: 20px auto;
+                            border: 1px solid #dddddd;
+                            border-radius: 10px;
+
+                        /* Shadow Styling */
+                            box-shadow:
+                            inset 0 5px 2px rgba(0,0,0,0.04), /* inner */
+                            0 12px 28px rgba(0,0,0,0.1);     /* outer */
+                    }
+
+                    .Topics-Drophead{
+                        cursor: pointer;
+                        padding: 16px 18px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        list-style: none;
+                    }
+
+                    .Topics-Level h4{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 20px;
+                        font-weight: normal;
+                        margin-left: 10px;
+                    }
+
+                    .Topics-Description p{
+                        max-width: 1100px; /* Description Box layout */
+                        font-size: 18px;
+                        font-weight: normal;
+                        margin-left: 50px;
+                        margin-top: 15px;
+                    }
+
+                    .Topics-Drophead::-webkit-details-marker{ display: none; }
+
+                    .Topics-Drophead span{ opacity: 0.7; }
+
+                    .Topics-Icon::before{ content: "+"; font-size: 22px; }
+                    .Topics-Drop[open] .Topics-Icon::before{ content: "-"; }
+
+                    .Topics-Dropbody{
+                    padding: 0 18px 18px;
+                    line-height: 1.6;
+                    }
+
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
+                    }
+
+                    .Topics-ModContent {
+                        margin-left: 20px;
+                    }
+
+                    .Topics-ModContent li{
+                        margin-left: 40px;
+                    }
+
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
+                    }
+
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
+
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
+
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
+                            display: flex;
+                            flex-direction: column;
+
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
+
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
+                    }
+
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
+
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
+                    }
+
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
+                    }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
+                    }
+
+                /* Show and hide the title */
+                    .Highlight-TitleMod-Main{
+                        display: block;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: none;
+                    }
+
+            /* Responsiveness modifications */
+                @media (max-width: 1129px){
+                    .Highlights-Box{
+                        max-width: 900px;
+                        margin: 0 auto 50px;
+                        flex-direction: row;
+                        align-items: stretch;
+                    }
+
+                    .Highlights-Box img{
+                        /* max-width: 350px; */
+                        flex: 0 0 350px;
+                        width: 350px;
+                        height: 350px;
+                        max-height: 400px;
+                        object-fit: cover;
+                        margin-bottom: 40px;
+                    }
+
+                    .Highlights-Box p{
+                        flex: 1;
+                        margin: 60px 20px;
+                    }
+
+                    .Highlight-TitleMod-Main{
+                        display: none;
+                    }
+
+                    .Highlight-TitleMod-Alt{
+                        display: block;
+                        margin-top: 40px;
+                    }
+                }
+            
+    </style>
+    <body>
+
+        <!-- Return to Top Button (Top) -->
+        <div id="top"></div>
+
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        
+        <!-- Header Group -->
+        <section class="Header-Container">
+
+            <!-- Header Thumbnail -->
+            <img class="Header-Thumbnail" src="Media/Curriculum 2.jpg">
+
+            <!-- Overlay -->
+            <div class="bg-overlay"></div>
+
+            <!-- Title -->
+            <div class="Header-Title">
+                <h1><span class="color_conversion">INDUSTRIAL</span> ROBOTICS & AUTOMATION</h1>
+
+                <p>The future of technology, made now</p>
+            </div>
+        </section>
+
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Robots are becoming the standard in factories, warehouses, smart infrastructure, and 
+                        even construction. This track is for learners who want to understand how automation 
+                        really works—from how a robot arm moves, to how engineers troubleshoot failures. You'll 
+                        build practical “automation thinking” and a strong safety mindset, so you can 
+                        confidently follow how real robotic systems are designed and operated.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Industrial Robotics & Automation is a structured pathway that takes learners from 
+                        fundamentals to real-world system integration. Across three levels, you'll learn the 
+                        following:
+                    </p>
+                    <br>
+                    <ul class="Course-List">
+                        <li>Robot anatomy (joints, end effectors, sensors)</li>
+                        <li>motion concepts (paths, kinematics)</li>
+                        <li>control logic (task sequencing, PLC-style signals)</li>
+                    </ul>
+                    <br>
+                    <p>
+                        As you progress, you'll move into reading robotic workcells, troubleshooting common 
+                        failures, and finally designing a realistic automation system with integration, 
+                        reliability planning, and human-robot safety culture.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Robotics Technician (robot setup, calibration, basic programming support)</li>
+                            <li>Automation Technician / Specialist (workcell operations, troubleshooting, maintenance support)</li>
+                            <li>Junior Automation Engineer (workflow design, control logic, integration planning)</li>
+                            <li>PLC / Controls Assistant (signals, interlocks, start/stop logic, diagnostics support)</li>
+                            <li>Manufacturing / Warehouse Automation Associate (robotic cells + operational improvements)</li>
+                            <li>Field Support / Application Engineer (help deploy and support robotic systems)</li>
+                            <li>System Integrator (support role—assisting with connecting robots, sensors, and controllers)</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 16 - 25, younger participants (13 - 15) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if interested.
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        <span class="Bold-Conversion">No prior experience</span> in robotics, automation, 
+                        construction, or programming is required. The track starts from fundamentals and 
+                        builds up progressively.
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
+                    
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of Industrial Robotics</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (Younger ages of 13 - 15 are also encouraged)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 20 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Concept & safety quiz + mini-project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Explain what industrial robots are and why industries use them (manufacturing, logistics, construction).</li>
+                                <li>Identify core robot parts (axes/joints, end effectors, sensors) and describe what each does.</li>
+                                <li>Describe how robots move in a simple, visual way (reach/workspace, basic motion types) without heavy math.</li>
+                                <li>Read and communicate a simple robot workflow using correct terms and safe practices.</li>
+                                <li>Demonstrate basic safety awareness (hazards, safety zones, correct behaviour around robots).</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Short video lessons</li>
+                                <li>Interactive visuals/diagrams</li>
+                                <li>Mini exercises & reflections</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why Industries Use Robots <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can successfully build intuition and motivation without the fear of technical pressure.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Short explainer videos</li>
+                                        <li>Animated industry examples (factory, construction site, warehouse)</li>
+                                        <li>Simple comparison charts (human vs robot tasks)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Meet the Industrial Robot Arm <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students successfully developed an understanding of the robot's anatomy.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Visual breakdown of a 6-axis robot</li>
+                                        <li>Interactive joint-movement diagrams</li>
+                                        <li>“Human arm vs robot arm” comparisons</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: End Effectors, Sensors, and Actuators <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can understand how robots interact with the physical world.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Video demos of tools (gripper, welder, sprayer)</li>
+                                        <li>Sensor explainer animations</li>
+                                        <li>Simple matching exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: How Robots Move - Basic Kinematics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can understand the importance of Kinematics in robotics</li>
+                                        <li>Students can successfully implement kinematic calculations</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>2D & 3D motion sketches</li>
+                                        <li>Reach and workspace simulators</li>
+                                        <li>Guided “why this position fails” examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Simple Robot Programming & Control Logic <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can understand and implement logical thinking during programming</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Flowchart-based logic</li>
+                                        <li>Block-style pseudo-programming</li>
+                                        <li>Step-sequence exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Industrial Safety and Working with Robots <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students actively practices safety procedures when working with robotics</li>
+                                        <li>Student understands the importance of following safety procedures</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Safety zone diagrams</li>
+                                        <li>Short incident case studies</li>
+                                        <li>Interactive “what went wrong” scenarios</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Real-World Examples and Career Paths <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students are aware of the numerous career paths they can take upon finishing the course</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 2 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Walkthrough videos of real cells</li>
+                                        <li>Career pathway visuals</li>
+                                        <li>Short reflection activity</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span> Mini-project (Explain a simple robotic workflow using correct terms)<br>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Applied Robotic Systems & Automation Logic</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-25  & Early-Career Professionals<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 32 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Workflow + troubleshooting analysis<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Interpret a basic robotic workcell layout and explain how components connect (robot, tooling, sensors, signals).</li>
+                                <li>Distinguish common motion modes (joint vs Cartesian) and explain how speed/safety trade-offs affect operation.</li>
+                                <li>Build or modify a simple task sequence for a real robotic task (pick-and-place / process steps) using structured logic.</li>
+                                <li>Explain PLC-style control concepts at a practical level (signals, interlocks, start/stop logic).</li>
+                                <li>Troubleshoot common failures using a step-by-step diagnostic approach and propose reasonable fixes.</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Increased technical depth</li>
+                                <li>Stronger step-up from Level 1</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Video lessons</li>
+                                <li>Applied case studies</li>
+                                <li>Guided problem-solving</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Robot Cells and Industrial Workflows <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students successfully learn how a robot cell is operated</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Cell layout diagrams</li>
+                                        <li>Signal flow animations</li>
+                                        <li>Reading simplified industrial schematics</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Kinematics, Paths, and Motion Modes <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can correctly identify and implement the correct configuration for the robot based on the scenario.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Joint vs Cartesian path visuals</li>
+                                        <li>Motion comparison simulations</li>
+                                        <li>Safety vs speed trade-off examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Programming Robots for Real Tasks <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students understand how machines are developed</li>
+                                        <li>Students can successfully implement the code to develop the robot</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Step-by-step task logic builds</li>
+                                        <li>Pick-and-place examples</li>
+                                        <li>Guided pseudo-coding exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: PLCs, Control Logic, and Signals <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain what a PLC does in an automation system and how it interacts with a robot cell.</li>
+                                        <li>Students can interpret simple ladder-logic style diagrams and identify key elements (inputs, outputs, basic logic flow).</li>
+                                        <li>Students can trace signal flow for common scenarios (start/stop, emergency stop, sensor triggers).</li>
+                                        <li>Students can describe how interlocks work and why they are critical for safety and reliability.</li>
+
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Ladder logic illustrations</li>
+                                        <li>Signal-flow diagrams</li>
+                                        <li>Start/stop interlock examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Sensors, Vision, and Feedback <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can identify common industrial sensors and describe what they detect (position, presence, distance, force, flow).</li>
+                                        <li>Students can explain the difference between open-loop and feedback-driven control in simple terms.</li>
+                                        <li>Students can describe the role of basic machine vision in automation (detection, alignment, verification) without heavy math.</li>
+                                        <li>Students can recognise common fault-detection patterns and explain how sensors/vision help prevent errors.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Sensor logic walkthroughs</li>
+                                        <li>Basic vision concepts (no math)</li>
+                                        <li>Fault detection examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Calibration, Tolerances, and Accuracy <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain why calibration is needed and what happens when calibration is off.</li>
+                                        <li>Students can describe tolerance and accuracy concepts using practical examples (fit, alignment, repeatability).</li>
+                                        <li>Students can identify signs of misalignment or drift from case examples and suggest likely causes.</li>
+                                        <li>Students can propose basic corrective actions (re-zeroing, re-calibration, verification checks) for accuracy issues.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 4 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Calibration scenarios</li>
+                                        <li>Misalignment case studies</li>
+                                        <li>Tolerance explanation visuals</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Common Failures and Troubleshooting <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can successfully categorise common failures (mechanical, electrical, software/logic, sensor-related, human/process).</li>
+                                        <li>Students is able to use a simple failure tree to narrow down causes logically. </li>
+                                        <li>Students can apply a step-by-step troubleshooting workflow to diagnose a fault and propose fixes.</li>
+                                        <li>Students can document issues clearly (symptoms, checks performed, root cause, resolution) in a structured format.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Failure trees</li>
+                                        <li>Step-by-step diagnostic workflows</li>
+                                        <li>Documentation practice</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Assessment Time:</span> 1 hours<br>
+                                    <span class="Bold-Conversion">Test Format:</span>
+                                    <br>
+                                    Group Project
+                                    <ul>
+                                        <li>Analyse a robotic cell</li>
+                                        <li>Identify faults</li>
+                                        <li>Propose fixes and explain reasoning</li>
+                                    </ul>
+                                    <br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Advanced Automation & System Integration</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 13-25, Serious students & Professionals<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 42 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> System design & deployment project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Design a realistic robotic workcell concept with constraints (space, safety, throughput, reliability).</li>
+                                <li>Explain how robots integrate with surrounding systems (networks, sensors/vision, tooling, control systems, monitoring).</li>
+                                <li>Justify motion/path choices for more complex coordination scenarios (advanced motion planning concepts).</li>
+                                <li>Create a basic preventive maintenance and reliability plan to reduce downtime and improve consistency.</li>
+                                <li>Produce and defend a capstone system proposal clearly (what it does, how it works, safety considerations, and why the design makes sense).</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced guided lessons with instruction</li>
+                                <li>System design work</li>
+                                <li>Review & presentation</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Designing a Robotic Workcell <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can design a basic workcell layout that accounts for space, safety zones, and workflow efficiency.</li>
+                                        <li>Students can identify constraints (reach, payload, cycle time, access, guarding) and explain their design impact.</li>
+                                        <li>Students can justify layout choices based on practical trade-offs (throughput vs safety vs cost).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Layout planning of a industry standard robotic workcell</li>
+                                        <li>constraint analysis different workcell layouts</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Integrating Robots with Other Systems <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain how robots connect with PLCs, sensors, vision systems, and supporting equipment.</li>
+                                        <li>Students can read and describe simple network/system diagrams at a high level (signals, data flow, control boundaries).</li>
+                                        <li>Students can identify integration risks (timing, communication failures, mismatched assumptions) and suggest mitigations.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Network & system diagrams</li>
+                                        <li>Exploring integration logic for robotic systems</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Advanced Motion, Paths, and Coordination <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain more advanced motion concepts (coordination, path planning considerations, collision awareness).</li>
+                                        <li>Students can compare coordination approaches (single robot vs multi-robot workflows) and when each is suitable.</li>
+                                        <li>Students can identify common coordination challenges (handoffs, timing conflicts, shared workspace risks).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 6.5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Robotics motion concepts</li>
+                                        <li>Multi-robot coordination approaches & examples</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Preventive Maintenance and Reliability <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe common wear points and failure risks in robotic systems (mechanical, electrical, tooling, sensors).</li>
+                                        <li>Students can build a basic preventive maintenance plan aligned to uptime and safety goals.</li>
+                                        <li>Students can use reliability thinking to reduce downtime (inspection routines, spares planning, simple checklists).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Common areas of failure in robotics</li>
+                                        <li>Maintenance planning scenarios</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Human-Robot Collaboration and Safety Culture <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can explain what human-robot collaboration is and how it differs from traditional guarded cells.</li>
+                                        <li>Students can identify hazards and perform a basic risk assessment using structured scenarios.</li>
+                                        <li>Students can propose safety behaviours and procedures that support a strong safety culture on site.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>identify and explain what human-robot collaborations is</li>
+                                        <li>Risk assessment exercises</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Automation in Construction & Smart Infrastructure <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can describe how automation is applied in construction and smart infrastructure contexts.</li>
+                                        <li>Students can compare these environments to factories (variable conditions, mobility, safety constraints, logistics).</li>
+                                        <li>Students can explain how robotics supports tasks like fabrication, inspection, and 3D printing workflows.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 5 hours<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>How automation is used in the industry</li>
+                                        <li>Walkthroughs demonstrating construction & 3D printing cases</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone Project <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Students can create a realistic automation system concept and explain how it works end-to-end.</li>
+                                        <li>Students can justify design decisions clearly using constraints, safety, reliability, and operational logic.</li>
+                                        <li>Students can present their solution in a professional format (system diagram + explanation + reasoning).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Lesson Time:</span> 3.5 hours (Guided session)<br>
+                                    <span class="Bold-Conversion">Activities:</span> 
+                                    <ul>
+                                        <li>Creat a realistic system design</li>
+                                        <li>Explain how the system designed works </li>
+                                        <li>Develop justifications for the system developed</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4 class="Highlight-TitleMod-Main">Robotic workcell @KonstraLabs</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 2_H1.jpeg">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>Robotic workcell @KonstraLabs</h4></div>
+                            <p>
+                                KonstraLabs provides the latest cutting edge technology for PrintAdobe students to 
+                                familiarize working and operating inside a robotic workspace, in addition to 
+                                learning the various components associated with the machine.
+                            </p>
+                        </div>
+                    </div>
+
+                    <h4 class="Highlight-TitleMod-Main">PrintAdobe Instructor leading demonstration</h4>
+
+                    <div class="Highlights-Box">
+                        <div>
+                            <div class="Highlight-TitleMod-Alt"><h4>PrintAdobe Instructor leading demonstration</h4></div>
+                            <p>
+                                Konstra ensures subject matter experts are brought in to ensure students are provided
+                                with comprehensive insights into the industry while observing best practices within
+                                the industry.
+                            </p>
+                        </div>
+                        <img src="Media/Curriculum 2_H2.jpeg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Return to Top Button -->
+        <div class="Return-Btn" id="backToTop">
+            <a href="#top">
+                <img src="Media/Return_Btn.png" alt="Return to top">
+            </a>
+        </div>
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
+</html>
