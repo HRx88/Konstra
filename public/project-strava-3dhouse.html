@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /* 
+                Z-index Guide:
+                 0 -> Background Video / Image 
+                 1 -> Overlay
+                 2 -> Text and other content
+            */
+
+            /* Image Gallery Group */
+            /* Starter Home Detail Page */
+.HomeDetail{
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  padding: 40px calc(3rem + 8px);
+  box-sizing: border-box;
+}
+
+/* Top bar */
+.HomeTop{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.HomeBack{
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  display: grid;
+  place-items: center;
+  text-decoration: none;
+  color: #111;
+  background: #fff;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.08);
+}
+
+.HomeTitle{
+  margin: 0;
+  font-size: clamp(26px, 3vw, 40px);
+  line-height: 1.1;
+}
+
+.HomeSub{
+  margin: 6px 0 0;
+  opacity: 0.85;
+  line-height: 1.6;
+  max-width: 90ch;
+  font-size: 14px;
+}
+
+/* Media area */
+.HomeMediaGrid{
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.HomeViewerCard{
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  position: relative;
+  min-height: 520px;
+}
+
+.HomeModel{
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  display: block;
+  background: #f4f4f4;
+}
+
+.HomeBigImg{
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: contain;
+  background: #f4f4f4;
+  display: block;
+}
+
+.HomeARBtn{
+  border: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #111;
+  color: #fff;
+  font-size: 14px;
+}
+
+.HomeViewerHint{
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
+
+/* Thumbnails grid */
+.HomeThumbGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.HomeThumb{
+  border: none;
+  background: #111;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  min-height: 150px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  padding: 0;
+}
+
+.HomeThumb img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.95;
+}
+
+.HomeThumbLabel{
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* 3D model thumb (no image) */
+.HomeThumbModel{
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #111;
+}
+
+.HomeThumbTag{
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.HomeThumbMini{
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Active thumb state */
+.HomeThumb.is-active{
+  outline: 2px solid rgba(225, 29, 46, 0.9);
+  outline-offset: 2px;
+}
+
+/* Details */
+.HomeDetails{
+  margin-top: 26px;
+}
+
+.HomeBlockTitle{
+  margin: 0 0 10px;
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.HomeBlockText{
+  margin: 0;
+  line-height: 1.75;
+  opacity: 0.9;
+  font-size: 14px;
+  max-width: 100ch;
+}
+
+.HomeSpec{
+  margin-top: 18px;
+  border-top: 1px solid rgba(0,0,0,0.15);
+}
+
+.HomeSpecRow{
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+}
+
+.HomeSpecTitle{
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.HomeSpecText{
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+#bigImg{
+  display: none;
+}
+
+
+            
+
+
+
+            /* Responsiveness modifications */
+            @media (max-width: 900px){
+  .HomeDetail{
+    padding: 28px calc(2rem + 6px);
+  }
+
+  .HomeMediaGrid{
+    grid-template-columns: 1fr;
+  }
+
+  .HomeViewerCard,
+  .HomeModel,
+  .HomeBigImg{
+    min-height: 420px;
+  }
+
+  .HomeThumbGrid{
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .HomeSpecRow{
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+            
+            
+            
+    </style>
+    <body>
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo" id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html" class="currentPage">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+        <!-- Starter Home Detail Page -->
+        <section class="HomeDetail">
+
+            <!-- Top bar -->
+            <div class="HomeTop">
+                <a class="HomeBack" href="project-strava.html" aria-label="Go back">←</a>
+                <div class="HomeTitleWrap">
+                <h1 class="HomeTitle">Starter Home</h1>
+                <p class="HomeSub">
+                    A compact, efficient home suitable for a wide range of individuals. With an external stair for efficient land use
+                </p>
+                </div>
+            </div>
+
+            <!-- Main media grid -->
+            <div class="HomeMediaGrid">
+
+                <!-- Left: Big viewer (3D model slot) -->
+                <div class="HomeViewerCard">
+
+                <!-- 3D MODEL SLOT -->
+                <model-viewer id="bigModel" class="HomeModel" src="Media/HouseWithStairs.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+                    <div class="progress-bar hide" slot="progress-bar">
+                        <div class="update-bar"></div>
+                    </div>
+                    <button slot="ar-button" id="ar-button">
+                        View in your space
+                    </button>
+                    <div id="ar-prompt">
+                        <img src="https://modelviewer.dev/shared-assets/icons/hand.png">
+                    </div>
+                </model-viewer>
+
+
+                <!-- BIG IMAGE FALLBACK (when thumbnails swap to images) -->
+                <img id="bigImg" class="HomeBigImg" src="Media/House_1.png" alt="Starter Home view" hidden>
+
+                <div class="HomeViewerHint">Click a view to preview. Select 3D Model anytime.</div>
+                </div>
+
+                <!-- Right: 4 thumbnails -->
+                <div class="HomeThumbGrid">
+
+                <!-- Button: force 3D model view -->
+                <button class="HomeThumb HomeThumbModel is-active" type="button" data-view="model">
+                    <span class="HomeThumbTag">3D Model</span>
+                    <span class="HomeThumbMini">Interactive</span>
+                </button>
+
+                <button class="HomeThumb" type="button" data-view="img" data-src="Media/House_2.png">
+                    <img src="Media/House_2.png" alt="Front View thumbnail">
+                    <span class="HomeThumbLabel">Front View</span>
+                </button>
+
+                <button class="HomeThumb" type="button" data-view="img" data-src="Media/House_4.png">
+                    <img src="Media/House_4.png" alt="Right Side View thumbnail">
+                    <span class="HomeThumbLabel">Right Side View</span>
+                </button>
+
+                <button class="HomeThumb" type="button" data-view="img" data-src="Media/House_5.png">
+                    <img src="Media/House_5.png" alt="Left Side View thumbnail">
+                    <span class="HomeThumbLabel">Left Side View</span>
+                </button>
+
+                <button class="HomeThumb" type="button" data-view="img" data-src="Media/House_3.png">
+                    <img src="Media/House_3.png" alt="Rear View thumbnail">
+                    <span class="HomeThumbLabel">Rear View</span>
+                </button>
+
+                <button class="HomeThumb" type="button" data-view="img" data-src="Media/House_1.png">
+                    <img src="Media/House_1.png" alt="Rear View thumbnail">
+                    <span class="HomeThumbLabel">Rear View</span>
+                </button>
+
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="HomeDetails">
+
+                <div class="HomeBlock">
+                <h2 class="HomeBlockTitle">Description</h2>
+                <p class="HomeBlockText">
+                    A durable 3D-printed studio designed for affordability and practicality. This layout offers a multifunctional open interior,
+                    natural cross-ventilation, and insulated wall segments to reduce heat. Ideal for single residents transitioning from informal housing.
+                    The compact footprint allows for higher density, making it suitable for community clusters in Point A or Point B.
+                </p>
+                </div>
+
+                <div class="HomeSpec">
+                <div class="HomeSpecRow">
+                    <div class="HomeSpecLeft">
+                    <span class="HomeSpecTitle">Dimensions</span>
+                    </div>
+                    <div class="HomeSpecRight">
+                    <p class="HomeSpecText">4m x 5m</p>
+                    <p class="HomeSpecText">40m²</p>
+                    </div>
+                </div>
+
+                <div class="HomeSpecRow">
+                    <div class="HomeSpecLeft">
+                    <span class="HomeSpecTitle">Land Required</span>
+                    </div>
+                    <div class="HomeSpecRight">
+                    <p class="HomeSpecText">70–85 m² (includes outdoor space, drainage gaps, walkway access)</p>
+                    </div>
+                </div>
+
+                <div class="HomeSpecRow">
+                    <div class="HomeSpecLeft">
+                    <span class="HomeSpecTitle">Bedrooms</span>
+                    </div>
+                    <div class="HomeSpecRight">
+                    <p class="HomeSpecText">Studio Layout (1 room, combined living space and sleeping)</p>
+                    </div>
+                </div>
+
+                <div class="HomeSpecRow">
+                    <div class="HomeSpecLeft">
+                    <span class="HomeSpecTitle">Bathroom</span>
+                    </div>
+                    <div class="HomeSpecRight">
+                    <p class="HomeSpecText">1 Full</p>
+                    </div>
+                </div>
+                </div>
+
+            </div>
+        </section>
+        
+
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div> 
+        </footer>
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/k1Gallery.js"></script> 
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script> <!-- Plug in for the 3D model -->
+        <script src="js/ProjectStrava_3DModel.js"></script>
+</html>

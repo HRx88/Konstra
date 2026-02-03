@@ -13,9 +13,9 @@
     <style>
         /* For specific styles applicable only to this page */
 
-            /* 
+            /*
                 Z-index Guide:
-                 0 -> Background Video / Image 
+                 0 -> Background Video / Image
                  1 -> Overlay
                  2 -> Text and other content
             */
@@ -44,19 +44,19 @@
                         aspect-ratio: 820 / 820;
                         overflow: hidden;
                         border-radius: 15px;
-                    
+
                     /* Shrink and grow behavior set the shrink to slow down*/
                         flex: 1 1 820px;
 
                 }
 
-                .Entrance-Thumbnail img{
+                .Entrance-Thumbnail video{
                     /* Set the image size */
                         width: 100%;
                         height: 100%;
                         object-fit: cover; /* fills viewport, crops excess */
                         display: block;
-                    
+
                 }
 
                 .Entrance-Description{
@@ -79,28 +79,28 @@
                     padding-top:  min(80px, 4.2vw, 15vh);
                     line-height: 1.05;
                 }
-            
+
             /* Quiz Group*/
 
                 /* Quiz Section Box */
                 .Quiz-Section{
                     width: 100%;
-                    padding: 60px calc(3rem + 8px) 0;
+                    padding: 60px calc(3rem + 8px) 60px;
                     background: #fff;
                 }
 
                 /* Inner Quiz box housing the left and rigth section */
                 .Quiz-Container{
                     max-width: 1200px; /* Box dimensions */
-                    
+
                     /* Centralize the item and determine its layout */
                         margin: 0 auto;
                         display: grid;
                         align-items: center;
-                    
-                    /* This sets how much space the left and right section take up in the inner quiz box, 
-                    the left section takes up 1.1fr or 1.1 of the space and vice versa on the right. Both 
-                    add up to 2.0fr total.Thus the first column takes up 55% as 1.1/2.0 while the second 
+
+                    /* This sets how much space the left and right section take up in the inner quiz box,
+                    the left section takes up 1.1fr or 1.1 of the space and vice versa on the right. Both
+                    add up to 2.0fr total.Thus the first column takes up 55% as 1.1/2.0 while the second
                     takes up 45% as 0.9/2.0 */
                     grid-template-columns: 1.1fr 0.9fr;
 
@@ -132,6 +132,18 @@
                     opacity: 0.9;
                 }
 
+                .Info-List li{
+                    font-weight: bold;
+                    font-size: 16;
+                    line-height: 1.7;
+                    margin: 5px 0;
+                    margin-left: 30px;
+                }
+
+                .Info-List p{
+                    margin-left: 30px;
+                }
+
                 /* Left Section, Fallback text */
                 .Quiz-Fallback{
                     margin-top: 18px;
@@ -152,13 +164,13 @@
                 .Quote-Container{
                     display: block;
                 }
-                
+
                 .Box{
                     /* Style the box design */
                         border: 1px solid #bdbcbc;
                         border-left: 4px solid #FF0000;
                         border-radius: 5px;
-                        
+
                     /* Define the box layout and behavior */
                         max-width: 550px;
                         width: 100%;
@@ -180,20 +192,73 @@
 
 
             /* The Vision / Why / Curriculum Group */
+                #Gray-Screen{
+                    background-color: #f5f5f5;
+                }
+
+                /* For the updated container that has the image on the left */
+                    .Info-Container-Updated{
+                        max-width: 1200px; /* Box dimensions */
+
+                        /* Centralize the item and determine its layout */
+                            margin: 0 auto;
+                            display: grid;
+                            align-items: center;
+
+                            /* This sets how much space the left and right section take */
+                            grid-template-columns: 1fr 1fr ;
+
+                            gap: 60px; /* The spacing between the left and right section*/
+                    }
+
+                /* Make the media wrapper fill the card */
+                .Info-Cover{
+                    width: 100%;
+                    height: 100%;
+                }
+
+                /* Force media to fill the card */
+                .Info-Cover img,
+                .Info-Cover video{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                }
+
+                .Info-Card{
+                    border-radius: 16px;
+                    overflow: hidden;
+                    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                    aspect-ratio: 627/750;
+                    width: 100%;
+                }
+
                 .Info-Container{
-                    margin: 60px calc(3rem + 8px) 0;
+                    /* Container layout */
+                        width: 100%;
+                        max-width: 1400px;
+
+                    /* Centralise the items */
+                        margin: 60px auto;
+                        align-items: center;
+                }
+
+                .Info-Standoff{
+                    margin: calc(3rem + 8px);
                 }
 
                 .Info-Content{
                     /* Centralize the group */
-                        max-width: 1140px;
+                        max-width: 1195px;
                         width: 100%;
                         margin: 0 auto;
                 }
 
                 .Info-Title h3{
-                    font-size: 40px;
-                    font-weight: 400;
+                    margin: 0 0 18px;
+                    font-size: clamp(28px, 3.2vw, 44px);
+                    line-height: 1.15;
                     margin-bottom: 17px;
                 }
 
@@ -220,7 +285,7 @@
                 .Curriculum-OuterBox{
                     /* Style the box design and define its behaviour*/
                         max-width: 350px;
-                        flex: 0 1 350px; 
+                        flex: 0 1 350px;
 
                     /* Set the Inner and Outer Shadow */
                         border-radius: 20px;
@@ -246,7 +311,7 @@
                     /* Set the radius of the top right and left for the image */
                         border-top-left-radius: 20px;
                         border-top-right-radius: 20px;
-                    
+
                     /* Remove a gap in between the image and title */
                     display: block;
                 }
@@ -272,13 +337,18 @@
                     /* Define Title Size and weight */
                         font-size: 15px;
                         font-weight: normal;
-                    
+
                     padding: 0 25px; /* Create standoff to the left and right of the title*/
                     margin-bottom: 50px;
                 }
 
                 .Curriculum-Cost{
                     margin: 0 25px;
+                }
+
+                .Curriculum-Bold{
+                    font-size: 25px;
+                    font-weight: bold;
                 }
 
                 .Curriculum-Cost span{
@@ -298,17 +368,30 @@
                         margin-top: 15px;
 
                     /* Button Dimensions */
-                        width: 85%;        
+                        width: 85%;
                         height: 45px;
                         padding: 12px 0;
-                    
+
                     /* Button text dimension */
                         font-size: 18px;
                         font-weight: 400;
-                    
+
                     /* Center the elements within the button */
                     justify-content: center;
                     box-sizing: border-box;
+                }
+
+                #btn-unclickable{
+                    /* Color Change */
+                        background-color: #a5a5a5;
+
+                    /* Make it unclickable */
+                        pointer-events: none;
+
+                    /* Text format */
+                        color: #ffffff;
+                        font-weight: 450;
+
                 }
 
                 #Details{
@@ -351,7 +434,7 @@
 
             /* Review Group */
             .Review-Container{
-                margin: 60px calc(3rem + 8px) 60px;
+                padding: 60px calc(3rem + 8px) 60px;
             }
 
 
@@ -374,9 +457,9 @@
 
                             .Entrance-Thumbnail{
                             /* Box dimensions */
-                                max-width: 400;
+                                max-width: 400px;
                                 aspect-ratio: 820 / 400;
-                            
+
                             /* Shrink and grow behavior set the shrink to slow down*/
                                 flex: 1 1 400px;
                             }
@@ -407,10 +490,38 @@
                         .Quiz-Card{
                             min-height: 680px;
                         }
+
+                        /* For the Why and Vision Group */
+                        .Info-Container-Updated{
+                            grid-template-columns: 1fr;
+                            gap: 28px;
+                        }
+
+                        /* Center the text like your Quiz section (optional) */
+                        #Gray-Screen .Quiz-Left{
+                            text-align: center;
+                            margin: 0 auto;
+                        }
+
+                        /* Keep the media card centered (optional) */
+                        #Gray-Screen .Info-Card{
+                            margin: 0 auto;
+                        }
+
+                        #Info-Video{  grid-row: 1;}
+                        #Info-Text{ grid-row: 2; }
+
+                        .Info-Card{
+                            height: clamp(200px, 38vw, 320px);  /* adjust to taste */
+                            max-height: 45vh;                   /* hard cap */
+                            aspect-ratio: auto;
+                            max-height: 500px;
+                            }
                     }
+                    
 
                     /* Quiz behavior when compressed */
-                    @media (max-width: 1436px) or (max-height: 800px) {  
+                    @media (max-width: 1436px), (max-height: 800px) {
                         /* Quiz Group */
                         .Quiz-PreTitle{
                             font-size: 10px;
@@ -423,7 +534,9 @@
                         /* Left Section, Description */
                         .Quiz-Desc{
                             font-size: 14px;
+                            margin: 0 auto;
                         }
+                        
 
                         /* Left Section, Fallback text */
                         .Quiz-Fallback{
@@ -448,14 +561,22 @@
                         }
                     }
 
+                    
+                /* The why and vision group dimensions when compressed */
+                    @media (max-height: 900px){
+                        .Quiz-Card{
+                            height: 480px;
+                        }
+                    }
+
                 /* Course Card Behavior when compressed */
                     @media (max-width: 715px){
                         .Curriculum-Container{
                             justify-items: center;
                         }
                     }
-                
-            
+
+
     </style>
     <body>
         <!-- NavBar Group -->
@@ -475,9 +596,9 @@
 
                 <!-- Navbar Links -->
                 <ul class ="navbar-menu">
-                    <!-- 
-                    <li><a href="#" class="currentPage">HOME</a></li> 
-                    Note: Set the class currentPage when working on that specific page 
+                    <!--
+                    <li><a href="#" class="currentPage">HOME</a></li>
+                    Note: Set the class currentPage when working on that specific page
                     to display the selected state of that link.
                     -->
                     <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
@@ -503,22 +624,24 @@
             <div class="Entrance-Box">
                 <!-- Thumbnail Image -->
                 <div class="Entrance-Thumbnail">
-                    <img src="Media/PrintAdobe Cover.jpg">
+                    <video autoplay loop muted>
+                        <source src="Media/PrintAdobe Cover.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
 
                 <!-- Description -->
                 <div class="Entrance-Description">
 
                     <!-- Subtitle -->
-                    <h2>
+                    <!-- <h2>
                         For the next generation of builders.
-                    </h2>
+                    </h2> -->
 
                     <!-- Title -->
                     <h1>
-                        Gain Real World 3D 
-                        Construction <span class="color_conversion">Experience</span> 
-                        With Konstra, Learn, Train, And Apply The Konstra Way.
+                        <span class="color_conversion">Training</span> 
+                        the next generation for construction's automated future.
                     </h1>
                 </div>
         </section>
@@ -538,8 +661,8 @@
 
                     <!-- Description -->
                     <p class="Quiz-Desc">
-                        Answer a few questions and we'll recommend the most suitable track for you.
-                        Takes about 2 minutes.
+                        Answer a few questions and we'll recommend the most suitable course for you.
+                        Takes about 5 minutes.
                     </p>
 
                     <!-- Fallback text (When the quiz fail to load) -->
@@ -555,8 +678,8 @@
                         <div class="Content">
 
                             <h2>
-                                We cannot always build the future 
-                                for our youth, but we can build our 
+                                We cannot always build the future
+                                for our youth, but we can build our
                                 youth for the future.
                             </h2>
 
@@ -571,54 +694,112 @@
                 <div class="Quiz-Right">
                     <div class="Quiz-Card">
                         <!-- Typeform embed goes here -->
-                        <div data-tf-live="01KG4E01T5JE6PYBR4YWMYG7C4"></div>
+                        <div data-tf-live="01KG6ACSQ2R4RM36GNWT9D67HV"></div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- The Vision Group -->
-        <section class="Info-Container">
-            <div class="Info-Content">
+        <section class="Quiz-Section" id="Gray-Screen">
+            <div class="Info-Container-Updated">
 
-                <div class="Info-Title">
-                    <h3>The Vision</h3>
+                <!-- Right content -->
+                <div class="Quiz-Right">
+                    <div class="Info-Card">
+                        <div class="Info-Cover">
+                            <img src="Media/Finding Inspiration .jpg">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="Info-Description">
-                    <p>
-                        PrintAdobe is Konstra's training program built to teach students and residents the core 
-                        skills needed in 3D-printed construction. The program is delivered through online 
+                <!-- Left content -->
+                <div class="Quiz-Left">
+                    <!-- Pre-Title text -->
+                    <p class="Quiz-PreTitle">Our hopes for the future</p>
+
+                    <!-- Title -->
+                    <h2 class="Quiz-Title">
+                        The <span class="color_conversion">Vision</span></h2>
+
+                    <!-- Description -->
+                    <p class="Quiz-Desc">
+                        PrintAdobe is Konstra's training program built to teach students and residents the core
+                        skills needed in 3D-printed construction. The program is delivered through online
                         workshops and in-person field training.
                         <br><br>
-                        Students follow structured online modules through the Print Adobe dashboard, and top 
-                        performers are offered a chance to join our Phnom Penh redevelopment sites to 
+                        Students follow structured online modules through the Print Adobe dashboard, and top
+                        performers are offered a chance to join our Phnom Penh redevelopment sites to
                         assist in real 3D-printing builds.
                     </p>
                 </div>
             </div>
         </section>
 
+
+
         <!-- The Why Group -->
-        <section class="Info-Container">
-            <div class="Info-Content">
+        <section class="Quiz-Section" id="Gray-Screen">
+            <div class="Info-Container-Updated">
 
-                <div class="Info-Title">
-                    <h3>The Why</h3>
-                </div>
+                <!-- Left content -->
+                <div class="Quiz-Left" id="Info-Text">
+                    <!-- Pre-Title text -->
+                    <!-- <p class="Quiz-PreTitle">Our Passion & Purpose</p> -->
 
-                <div class="Info-Description">
-                    <p>
-                        At Konstra, we believe that construction is more than just building structures — it's 
-                        about building futures. Too many communities across Southeast Asia face the challenge 
-                        of unstable housing and limited access to safe infrastructure. PrintAdobe exists to 
+                    <!-- Title -->
+                    <h2 class="Quiz-Title">
+                        <span class="color_conversion">Why</span> PrintAdobe
+                    </h2>
+
+                    <!-- Description -->
+                    <p class="Quiz-Desc">
+                        <!-- At Konstra, we believe that construction is more than just building structures — it's
+                        about building futures. Too many communities across Southeast Asia face the challenge
+                        of unstable housing and limited access to safe infrastructure. PrintAdobe exists to
                         change that.
                         <br><br>
-                        Through knowledge, technology, and collaboration, we're empowering students, residents, 
-                        and builders to take part in shaping their own environments. Every print, every wall, 
-                        and every design choice represents progress — the kind that gives people dignity, 
-                        safety, and a sense of belonging.
+                        Through knowledge, technology, and collaboration, we're empowering students, residents,
+                        and builders to take part in shaping their own environments. Every print, every wall,
+                        and every design choice represents progress — the kind that gives people dignity,
+                        safety, and a sense of belonging. -->
+                        PrintAdobe is built for learners who want to understand how construction-scale 
+                        technology actually works, not just experiment with tools.
+                        <br><br>
+                        Most learning stops at simulations and small kits.
+                        PrintAdobe goes deeper — into the systems, workflows, and constraints behind real 
+                        3D-printed construction.
+                        <br><br>
+                        <b>What Makes PrintAdobe Different</b>
+                        <div class="Info-List">
+                            <ol>
+                                <li>Industry-Led Learning</li>
+                                <p>
+                                    Curriculum is built around real construction robotics workflows — how printers, materials, and sites work together.
+                                </p>
+                                <li>Structured Progression</li>
+                                <p>
+                                    Learners progress through clearly defined levels based on understanding, not age.
+                                </p>
+                                <li>Applied Exposure</li>
+                                <p>
+                                    Advanced learners gain guided exposure to real construction environments and operational constraints.
+                                </p>
+                            </ol>
+                        </div>
                     </p>
+                </div>
+
+                <!-- Right content -->
+                <div class="Quiz-Right" id="Info-Video">
+                    <div class="Info-Card">
+                        <div class="Info-Cover">
+                            <video autoplay loop muted>
+                                <source src="Media/KonstraVideo_III.mp4" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -627,284 +808,31 @@
         <!-- The Curriculum Group -->
         <section class="Info-Container">
 
-            <!-- Title & Description -->
-            <div class="Info-Content">
-
-                <div class="Info-Title">
-                    <h3>The Curriculum</h3>
-                </div>
-
-                <div class="Info-Description">
-                    <p>
-                        In this program you will be exposed to a myriad of skills and expertise that includes:
-                    </p>
-                </div>
-            </div>
-
-            <!-- Individual Curriculum Group  -->
-            <div class="Curriculum-Container">
-
-                <!-- Curriculum 1 -->
-                <div class="Curriculum-OuterBox">
-
-                    <!-- Thumbnail -->
-                    <div class="Curriculum-Thumbnail">
-                        <img src="Media/Curriculum 1.jpeg">
-                    </div>
-
-                    <!-- The Inner box only consist of the text portion -->
-                    <div class="Curriculum-InnerBox">
-
-                        <!-- Title -->
-                        <div class="Curriculum-Title">
-                            <h4>
-                                3D PRINTING IN CONSTRUCTION (FLAGSHIP)
-                            </h4>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="Curriculum-Description">
-
-                            <!-- Subtitle -->
-                            <p>
-                                Explore the world of 3D Construction
-                                <br><br>
-                                <span class="Bold-Conversion">Format:</span>
-                                This course teaches the core foundations of 3D construction.
-                            </p>
-                        </div>
-
-                        <!-- Cost -->
-                        <div class="Curriculum-Cost">
-                            <p>
-                                <span class="color_conversion">SGD$199</span> / course
-                            </p>
-                        </div>
-
-                        <!-- CTA Buttons -->
-                        <div class="Curriculum-Btn">
-                            <a class= "cta-btn" id="Enrollment" href="#" >Enroll Now</a>
-                            <a class= "cta-btn" id="Details" href="3D-PRINTING-IN-CONSTRUCTION.html" >View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Curriculum 2 -->
-                <div class="Curriculum-OuterBox">
-
-                    <!-- Thumbnail -->
-                    <div class="Curriculum-Thumbnail">
-                        <img src="Media/Curriculum 2.jpg">
-                    </div>
-
-                    <!-- The Inner box only consist of the text portion -->
-                    <div class="Curriculum-InnerBox">
-
-                        <!-- Title -->
-                        <div class="Curriculum-Title">
-                            <h4>
-                                INDUSTRIAL ROBOTICS & AUTOMATION
-                            </h4>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="Curriculum-Description">
-
-                            <!-- Subtitle -->
-                            <p>
-                                The future of technology, made now
-                                <br><br>
-                                <span class="Bold-Conversion">Format:</span>
-                                This course explores the usage of robotics workflows for automated construction
-                            </p>
-                        </div>
-
-                        <!-- Cost -->
-                        <div class="Curriculum-Cost">
-                            <p>
-                                <span class="color_conversion">SGD$250</span> / course
-                            </p>
-                        </div>
-
-                        <!-- CTA Buttons -->
-                        <div class="Curriculum-Btn">
-                            <a class= "cta-btn" id="Enrollment" href="#" >Enroll Now</a>
-                            <a class= "cta-btn" id="Details" href="INDUSTRIAL-ROBOTICS-&-AUTOMATION.html" >View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Curriculum 3 -->
-                <div class="Curriculum-OuterBox">
-
-                    <!-- Thumbnail -->
-                    <div class="Curriculum-Thumbnail">
-                        <img src="Media/Curriculum 3.jpg">
-                    </div>
-
-                    <!-- The Inner box only consist of the text portion -->
-                    <div class="Curriculum-InnerBox">
-
-                        <!-- Title -->
-                        <div class="Curriculum-Title">
-                            <h4>
-                                ARCHITECTURE & DIGITAL FABRICATION
-                            </h4>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="Curriculum-Description">
-
-                            <!-- Subtitle -->
-                            <p>
-                                Learn how automation plays a role in the industry
-                                <br><br>
-                                <span class="Bold-Conversion">Format:</span>
-                                This course is designed to teach digital fabrication in 3D construction
-                            </p>
-                        </div>
-
-                        <!-- Cost -->
-                        <div class="Curriculum-Cost">
-                            <p>
-                                <span class="color_conversion">SGD$260</span> / course
-                            </p>
-                        </div>
-
-                        <!-- CTA Buttons -->
-                        <div class="Curriculum-Btn">
-                            <a class= "cta-btn" id="Enrollment" href="#" >Enroll Now</a>
-                            <a class= "cta-btn" id="Details" href="ARCHITECTURE-&-DIGITAL-FABRICATION.html" >View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Curriculum 4 -->
-                <div class="Curriculum-OuterBox">
-
-                    <!-- Thumbnail -->
-                    <div class="Curriculum-Thumbnail">
-                        <img src="Media/Curriculum 4.png">
-                    </div>
-
-                    <!-- The Inner box only consist of the text portion -->
-                    <div class="Curriculum-InnerBox">
-
-                        <!-- Title -->
-                        <div class="Curriculum-Title">
-                            <h4>
-                                SUSTAINABILITY & EMERGING TECHNOLOGIES
-                            </h4>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="Curriculum-Description">
-
-                            <!-- Subtitle -->
-                            <p>
-                                How to build a sustainable environment
-                                <br><br>
-                                <span class="Bold-Conversion">Format:</span>
-                                This course teaches sustainable methods and future construction technologies in the 3D construction space
-                            </p>
-                        </div>
-
-                        <!-- Cost -->
-                        <div class="Curriculum-Cost">
-                            <p>
-                                <span class="color_conversion">SGD$199</span> / course
-                            </p>
-                        </div>
-
-                        <!-- CTA Buttons -->
-                        <div class="Curriculum-Btn">
-                            <a class= "cta-btn" id="Enrollment" href="#" >Enroll Now</a>
-                            <a class= "cta-btn" id="Details" href="SUSTAINABILITY-&-EMERGING-TECHNOLOGIES.html" >View Details</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Curriculum 5 -->
-                <div class="Curriculum-OuterBox">
-
-                    <!-- Thumbnail -->
-                    <div class="Curriculum-Thumbnail">
-                        <img src="Media/Curriculum 5.jpg">
-                    </div>
-
-                    <!-- The Inner box only consist of the text portion -->
-                    <div class="Curriculum-InnerBox">
-
-                        <!-- Title -->
-                        <div class="Curriculum-Title">
-                            <h4>
-                                BUSINESS, INNOVATION & AUTOMATION STRATEGY
-                            </h4>
-                        </div>
-
-                        <!-- Description -->
-                        <div class="Curriculum-Description">
-
-                        <!-- Subtitle -->
-                        <p>
-                            Making Automation Viable, Scalable, and Ethical
-                            <br><br>
-                            <span class="Bold-Conversion">Format:</span>
-                            This course scale innovation with responsible strategy
-                        </p>
-                    </div>
-
-                    <!-- Cost -->
-                    <div class="Curriculum-Cost">
-                        <p>
-                            <span class="color_conversion">SGD$299</span> / course
-                        </p>
-                    </div>
-
-                    <!-- CTA Buttons -->
-                    <div class="Curriculum-Btn">
-                        <a class= "cta-btn" id="Enrollment" href="#" >Enroll Now</a>
-                        <a class= "cta-btn" id="Details" href="BUSINESS,-INNOVATION-&-AUTOMATION-STRATEGY.html" >View Details</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-           
-
-        <!-- Additional Learning Opportunities(ALO) -->
-            <!-- Reusing Curriculum Group Architecture -->
-            <!-- ALO Group -->
-            <section class="Info-Container">
-
+            <!-- Standoff margins -->
+            <div class="Info-Standoff">
                 <!-- Title & Description -->
                 <div class="Info-Content">
 
                     <div class="Info-Title">
-                        <h3>Additional Learning Opportunities</h3>
+                        <h3>The Curriculum</h3>
                     </div>
 
                     <div class="Info-Description">
-                        <h5>
-                            Excited To See The <span class="color_conversion">World</span> And Make A Difference?
-                        </h5>
                         <p>
-                            Konstra offers PrintAdobe learners an optional opportunity 
-                            to join selected field projects overseas, so they can experience 
-                            the realities on the ground and see how our team approaches 
-                            complex challenges through hands-on work.
+                            In this program you will be exposed to a myriad of skills and expertise that includes:
                         </p>
                     </div>
                 </div>
 
-                <!-- Individual ALO Group  -->
+                <!-- Individual Curriculum Group  -->
                 <div class="Curriculum-Container">
 
-                    <!-- ALO 1 -->
+                    <!-- Curriculum 1 -->
                     <div class="Curriculum-OuterBox">
 
                         <!-- Thumbnail -->
                         <div class="Curriculum-Thumbnail">
-                            <img src="Media/Stung Meanchey.jpg">
+                            <img src="Media/Curriculum 1.jpeg">
                         </div>
 
                         <!-- The Inner box only consist of the text portion -->
@@ -913,23 +841,8 @@
                             <!-- Title -->
                             <div class="Curriculum-Title">
                                 <h4>
-                                    PrintAdobe Cambodia Build Immersion (4 Days)
+                                    3D PRINTING IN CONSTRUCTION (FLAGSHIP)
                                 </h4>
-                            </div>
-
-                            <!-- Infographics -->
-                            <div class="ALO-Infographics">
-                                
-                                <!-- Location -->
-                                <p>
-                                    <img src="Media/Location.png"> Stung Meanchey, Cambodia
-                                </p>
-
-                                <!-- Time -->
-                                <p>
-                                    <img src="Media/Time Icon.png"> 4 Days 3 Nights
-                                </p>
-
                             </div>
 
                             <!-- Description -->
@@ -937,21 +850,298 @@
 
                                 <!-- Subtitle -->
                                 <p>
-                                    A 4 Day guided tour around Stung Meanchey
+                                    Explore the world of 3D Construction
+                                    <br><br>
+                                    <span class="Bold-Conversion">Format:</span>
+                                    This course teaches the core foundations of 3D construction.
                                 </p>
                             </div>
 
                             <!-- Cost -->
                             <div class="Curriculum-Cost">
                                 <p>
-                                    <span class="color_conversion">SGD$500</span> / person
+                                    <span class="Curriculum-Bold">From</span>
+                                    <span class="color_conversion">
+                                        SGD$700
+                                    </span> / course
                                 </p>
                             </div>
 
                             <!-- CTA Buttons -->
                             <div class="Curriculum-Btn">
-                                <a class= "cta-btn" id="Enrollment" href="#" >Register Now</a>
-                                <a class= "cta-btn" id="Details" href="PrintAdobe-Cambodia-Build-Immersion.html" >View Details</a>
+                                <a class= "cta-btn" id="Enrollment" href="enrollment.html?id=101" >Enroll Now</a>
+                                <a class= "cta-btn" id="Details" href="3D-PRINTING-IN-CONSTRUCTION.html" >View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum 2 -->
+                    <div class="Curriculum-OuterBox">
+
+                        <!-- Thumbnail -->
+                        <div class="Curriculum-Thumbnail">
+                            <img src="Media/Curriculum 2.jpg">
+                        </div>
+
+                        <!-- The Inner box only consist of the text portion -->
+                        <div class="Curriculum-InnerBox">
+
+                            <!-- Title -->
+                            <div class="Curriculum-Title">
+                                <h4>
+                                    INDUSTRIAL ROBOTICS & AUTOMATION
+                                </h4>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="Curriculum-Description">
+
+                                <!-- Subtitle -->
+                                <p>
+                                    The future of technology, made now
+                                    <br><br>
+                                    <span class="Bold-Conversion">Format:</span>
+                                    This course explores the usage of robotics workflows for automated construction
+                                </p>
+                            </div>
+
+                            <!-- Cost -->
+                            <div class="Curriculum-Cost">
+                                <p>
+                                    <span class="color_conversion">SGD$250</span> / course
+                                </p>
+                            </div>
+
+                            <!-- CTA Buttons -->
+                            <div class="Curriculum-Btn">
+                                <a class= "cta-btn" id="btn-unclickable" id="Enrollment" href="enrollment.html?id=102" >Coming Soon</a>
+                                <a class= "cta-btn" id="Details" href="INDUSTRIAL-ROBOTICS-&-AUTOMATION.html" >View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum 3 -->
+                    <div class="Curriculum-OuterBox">
+
+                        <!-- Thumbnail -->
+                        <div class="Curriculum-Thumbnail">
+                            <img src="Media/Curriculum 3.jpg">
+                        </div>
+
+                        <!-- The Inner box only consist of the text portion -->
+                        <div class="Curriculum-InnerBox">
+
+                            <!-- Title -->
+                            <div class="Curriculum-Title">
+                                <h4>
+                                    ARCHITECTURE & DIGITAL FABRICATION
+                                </h4>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="Curriculum-Description">
+
+                                <!-- Subtitle -->
+                                <p>
+                                    Learn how automation plays a role in the industry
+                                    <br><br>
+                                    <span class="Bold-Conversion">Format:</span>
+                                    This course is designed to teach digital fabrication in 3D construction
+                                </p>
+                            </div>
+
+                            <!-- Cost -->
+                            <div class="Curriculum-Cost">
+                                <p>
+                                    <span class="color_conversion">SGD$260</span> / course
+                                </p>
+                            </div>
+
+                            <!-- CTA Buttons -->
+                            <div class="Curriculum-Btn">
+                                <a class= "cta-btn" id="btn-unclickable" id="Enrollment" href="enrollment.html?id=103" >Coming Soon</a>
+                                <a class= "cta-btn" id="Details" href="ARCHITECTURE-&-DIGITAL-FABRICATION.html" >View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum 4 -->
+                    <div class="Curriculum-OuterBox">
+
+                        <!-- Thumbnail -->
+                        <div class="Curriculum-Thumbnail">
+                            <img src="Media/Curriculum 4.png">
+                        </div>
+
+                        <!-- The Inner box only consist of the text portion -->
+                        <div class="Curriculum-InnerBox">
+
+                            <!-- Title -->
+                            <div class="Curriculum-Title">
+                                <h4>
+                                    SUSTAINABILITY & EMERGING TECHNOLOGIES
+                                </h4>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="Curriculum-Description">
+
+                                <!-- Subtitle -->
+                                <p>
+                                    How to build a sustainable environment
+                                    <br><br>
+                                    <span class="Bold-Conversion">Format:</span>
+                                    This course teaches sustainable methods and future construction technologies in the 3D construction space
+                                </p>
+                            </div>
+
+                            <!-- Cost -->
+                            <div class="Curriculum-Cost">
+                                <p>
+                                    <span class="color_conversion">SGD$199</span> / course
+                                </p>
+                            </div>
+
+                            <!-- CTA Buttons -->
+                            <div class="Curriculum-Btn">
+                                <a class= "cta-btn" id="btn-unclickable" id="Enrollment" href="enrollment.html?id=104" >Coming Soon</a>
+                                <a class= "cta-btn" id="Details" href="SUSTAINABILITY-&-EMERGING-TECHNOLOGIES.html" >View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum 5 -->
+                    <div class="Curriculum-OuterBox">
+
+                        <!-- Thumbnail -->
+                        <div class="Curriculum-Thumbnail">
+                            <img src="Media/Curriculum 5.jpg">
+                        </div>
+
+                        <!-- The Inner box only consist of the text portion -->
+                        <div class="Curriculum-InnerBox">
+
+                            <!-- Title -->
+                            <div class="Curriculum-Title">
+                                <h4>
+                                    BUSINESS, INNOVATION & AUTOMATION STRATEGY
+                                </h4>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="Curriculum-Description">
+
+                            <!-- Subtitle -->
+                            <p>
+                                Making Automation Viable, Scalable, and Ethical
+                                <br><br>
+                                <span class="Bold-Conversion">Format:</span>
+                                This course scale innovation with responsible strategy
+                            </p>
+                        </div>
+
+                        <!-- Cost -->
+                        <div class="Curriculum-Cost">
+                            <p>
+                                <span class="color_conversion">SGD$299</span> / course
+                            </p>
+                        </div>
+
+                        <!-- CTA Buttons -->
+                        <div class="Curriculum-Btn">
+                            <a class= "cta-btn"  id="btn-unclickable"  id="Enrollment" href="enrollment.html?id=105" >Coming Soon</a>
+                            <a class= "cta-btn" id="Details" href="BUSINESS,-INNOVATION-&-AUTOMATION-STRATEGY.html" >View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Additional Learning Opportunities(ALO) -->
+            <!-- Reusing Curriculum Group Architecture -->
+            <!-- ALO Group -->
+            <section class="Info-Container">
+
+                <!-- Standoff margins -->
+                <div class="Info-Standoff">
+                    <!-- Title & Description -->
+                    <div class="Info-Content">
+
+                        <div class="Info-Title">
+                            <h3>Additional Learning Opportunities</h3>
+                        </div>
+
+                        <div class="Info-Description">
+                            <h5>
+                                Excited To See The <span class="color_conversion">World</span> And Make A Difference?
+                            </h5>
+                            <p>
+                                Konstra offers PrintAdobe learners an optional opportunity
+                                to join selected field projects overseas, so they can experience
+                                the realities on the ground and see how our team approaches
+                                complex challenges through hands-on work.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Individual ALO Group  -->
+                    <div class="Curriculum-Container">
+
+                        <!-- ALO 1 -->
+                        <div class="Curriculum-OuterBox">
+
+                            <!-- Thumbnail -->
+                            <div class="Curriculum-Thumbnail">
+                                <img src="Media/Stung Meanchey.jpg">
+                            </div>
+
+                            <!-- The Inner box only consist of the text portion -->
+                            <div class="Curriculum-InnerBox">
+
+                                <!-- Title -->
+                                <div class="Curriculum-Title">
+                                    <h4>
+                                        PrintAdobe Cambodia Build Immersion (3 Days)
+                                    </h4>
+                                </div>
+
+                                <!-- Infographics -->
+                                <div class="ALO-Infographics">
+
+                                    <!-- Location -->
+                                    <p>
+                                        <img src="Media/Location.png"> Stung Meanchey, Cambodia
+                                    </p>
+
+                                    <!-- Time -->
+                                    <p>
+                                        <img src="Media/Time Icon.png"> 3 Days 2 Nights
+                                    </p>
+
+                                </div>
+
+                                <!-- Description -->
+                                <div class="Curriculum-Description">
+
+                                    <!-- Subtitle -->
+                                    <p>
+                                        3-Day Immersion Program: Operational and Cultural Insights in Stung Meanchey
+                                    </p>
+                                </div>
+
+                                <!-- Cost -->
+                                <div class="Curriculum-Cost">
+                                    <p>
+                                        <span class="color_conversion">SGD$2999</span> / person
+                                    </p>
+                                </div>
+
+                                <!-- CTA Buttons -->
+                                <div class="Curriculum-Btn">
+                                    <a class= "cta-btn" id="Enrollment" href="enrollment.html?id=106" >Register Now</a>
+                                    <a class= "cta-btn" id="Details" href="PrintAdobe-Cambodia-Build-Immersion.html" >View Details</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -959,7 +1149,7 @@
             </section>
 
         <!-- Review Group -->
-            <section class="Review-Container">
+            <section class="Review-Container" id="Gray-Screen">
                 <!-- Elfsight All-in-One Reviews | Untitled All-in-One Reviews -->
                 <div class="elfsight-app-dd931879-13be-49e5-b30f-f8cf3acb3ac1" data-elfsight-app-lazy></div>
             </section>
@@ -987,7 +1177,7 @@
                         </li>
                     </ul>
                 </div>
-            </div> 
+            </div>
         </footer>
         <!-- All Javascript components here -->
         <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->

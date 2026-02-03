@@ -323,10 +323,11 @@ body {
     /* Button Design */
     display: inline-flex;
     white-space: nowrap;
-    padding: 8px 50px; /* Button box size */
+    padding: 13px 50px; /* Button box size */
+    /* padding: 8px 50px; */
     margin-top: 44px;
-    background: #FF0000;
-    border-radius: 8px;
+    background: #e11e1e;
+    /* border-radius: 8px; */
     position: relative; /* Set position to relative so that the z-index may take effect*/
     z-index: 2;
     box-shadow: inset 0 6px 4px rgba(0,0,0,0.25); /* Inner shadow */
@@ -338,9 +339,10 @@ body {
 
     /* Text Design */
     color: #fff;
-    font-size: 25px;
-    font-weight: 200;
+    font-size: 18px;
+    font-weight: 400;
     text-decoration: none;
+    letter-spacing: 2px;
 
 }
 

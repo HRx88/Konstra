@@ -7,10 +7,19 @@ class PaymentController {
             // 1. Get data from Frontend (payment.html)
             const { amount, item, image } = req.body;
 
+            // 🔒 The line here only applies to the donation feature - Codi
+            const isDonation = item && item.toLowerCase() === "donation";
+
             // 2. Define Redirect URLs (Where user goes after payment)
             // CHANGE THIS DOMAIN IF DEPLOYING (e.g., https://your-site.com)
             const domain = 'http://localhost:8000'; 
-            const successUrl = `${domain}/success.html`; // Make sure you create this file!
+
+            //const successUrl = `${domain}/success.html`; // Make sure you create this file!
+            // 🔒 The line here only applies to the donation feature - Codi
+            const successUrl = isDonation
+                ? `${domain}/success.html?type=donation&session_id={CHECKOUT_SESSION_ID}`
+                : `${domain}/success.html?session_id={CHECKOUT_SESSION_ID}`;
+
             const cancelUrl = `${domain}/payment.html?error=cancelled`;
 
             // 3. Call Model with correct arguments

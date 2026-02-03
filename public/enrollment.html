@@ -455,6 +455,24 @@
             generateExtraFields();
         });
 
+        // Function for New PrintAdobe
+        async function loadEnrollment(){
+            const params = new URLSearchParams(location.search);
+            const id = params.get("id");
+            if (!id) return;
+
+            const res = await fetch(`/api/programs/${id}`);
+            const program = await res.json();
+
+            document.getElementById("enroll-title").textContent = program.Title;
+            document.getElementById("enroll-price").textContent = `$${program.Price}`;
+            document.getElementById("enroll-type").textContent = program.Type;
+            document.getElementById("enroll-img").src = program.ImageURL || "";
+        }
+        document.addEventListener("DOMContentLoaded", loadEnrollment);
+
+
+
         // --- Fetch & Generate Slots ---
         async function fetchSlots(id) {
             if (type === 'Trip') {
