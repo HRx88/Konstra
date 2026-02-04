@@ -1,0 +1,172 @@
+:root {
+    --brand-yellow: #FFD200;
+    --brand-dark: #1a1a1a;
+    --primary-red: #d32f2f;
+    --hover-red: #b71c1c;
+    --light-bg: #ffffff;
+}
+
+/* --- Navbar & Hero --- */
+.brand-text {
+    color: var(--primary-red);
+    font-weight: 800;
+    font-size: 1.5rem;
+}
+
+.hero-section {
+    background-color: var(--brand-yellow);
+    padding: 60px 0 40px;
+    text-align: center;
+}
+
+.hero-title {
+    color: var(--brand-dark);
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.hero-subtitle {
+    color: #2c2c2c;
+    max-width: 800px;
+    margin: 0 auto;
+    font-weight: 500;
+}
+
+/* --- Tabs Styling --- */
+.nav-tabs {
+    border-bottom: 2px solid #dee2e6;
+    justify-content: center;
+    margin-bottom: 40px;
+    margin-top: -20px;
+    background: white;
+    padding-top: 20px;
+}
+
+.nav-tabs .nav-link {
+    color: #555;
+    font-weight: 600;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--primary-red);
+    border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary-red);
+    border: none;
+    border-bottom: 3px solid var(--primary-red);
+    background: transparent;
+}
+
+/* --- Cards --- */
+.program-card {
+    border: 1px solid #eee;
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    height: 100%;
+    background: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(211, 47, 47, 0.15);
+    border-color: var(--primary-red);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.card-body {
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-title {
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+}
+
+.card-text {
+    color: #666;
+    font-size: 0.95rem;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+/* --- PRICE TAG STYLING --- */
+.price-tag {
+    font-size: 1.5rem;
+    color: var(--primary-red);
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.price-sub {
+    font-size: 0.9rem;
+    color: #777;
+    font-weight: 400;
+}
+
+.btn-custom {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: auto;
+    transition: background 0.3s;
+}
+
+.btn-custom:hover {
+    background-color: var(--hover-red);
+    color: white;
+}
+
+/* --- Intake & Trip Specifics --- */
+.spots-badge {
+    font-size: 0.85rem;
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.spots-badge.full {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.trip-meta {
+    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 15px;
+}
+
+/* Navbar Tweaks for Bootstrap compatibility */
+a {
+    text-decoration: none;
+}

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Program Modules - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/admin-sidebar.css">
+    <link rel="stylesheet" href="css/admin-program-modules.css">
+</head>
+
+<body>
+
+    <!-- Admin Sidebar -->
+    <nav class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="admin-home.html" class="brand-text"><i class="fas fa-user-shield me-2"></i>KonstraAdmin</a>
+        </div>
+        <div class="d-flex flex-column">
+            <a href="admin-home.html" class="nav-link" id="nav-dashboard"><i class="fas fa-tachometer-alt"></i>
+                Dashboard</a>
+            <a href="admin-doc.html" class="nav-link" id="nav-document"><i class="fas fa-folder-open"></i> Documents</a>
+            <a href="chat.html" class="nav-link" id="nav-chat"><i class="fas fa-comments"></i> Chat</a>
+            <a href="my-meetings.html" class="nav-link" id="nav-meeting"><i class="fas fa-video"></i> Meetings</a>
+            <a href="admin-printadobe.html" class="nav-link active" id="nav-printadobe"><i
+                    class="fas fa-graduation-cap"></i> PrintAdobe</a>
+            <a href="admin-credentials.html" class="nav-link" id="nav-credentials"><i class="fas fa-certificate"></i>
+                Credentials</a>
+            <a href="admin-projects.html" class="nav-link" id="nav-project"><i class="fas fa-tasks"></i> Projects</a>
+            <a href="admin-discounts.html" class="nav-link" id="nav-discounts"><i class="fas fa-tags"></i> Discounts</a>
+            <a href="admin-profile.html" class="nav-link" id="nav-profile"><i class="fas fa-user-circle"></i>
+                Profile</a>
+        </div>
+        <div class="logout-btn-container">
+            <button id="logoutBtn" class="btn btn-outline-danger w-100"><i class="fas fa-sign-out-alt me-2"></i>
+                Logout</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <button class="btn btn-dark d-md-none mb-4" id="mobileDashToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>Manage Modules</h2>
+                <p class="text-muted mb-0" id="programInfo">Loading program...</p>
+            </div>
+            <div>
+                <a href="admin-printadobe.html" class="btn btn-outline-secondary me-2">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Programs
+                </a>
+                <button class="btn btn-outline-primary me-2" id="btnManageTracks">
+                    <i class="fas fa-layer-group me-1"></i> Manage Levels
+                </button>
+                <button class="btn btn-primary" id="btnAddModule">
+                    <i class="fas fa-plus me-1"></i> Add Module
+                </button>
+            </div>
+        </div>
+
+        <!-- Modules Table -->
+        <div class="module-table">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 60px;">#</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Content URL</th>
+                        <th style="width: 150px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="moduleTableBody">
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <i class="fas fa-spinner fa-spin me-2"></i> Loading modules...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Add/Edit Module Modal -->
+    <div class="modal fade" id="moduleModal" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Add Module</h5>
+                    <button type="button" class="btn-close" id="btnCloseModalHeader" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="moduleForm">
+                        <input type="hidden" id="moduleId">
+                        <div class="mb-3">
+                            <label for="moduleTitle" class="form-label">Title <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="moduleTitle" required>
+                        </div>
+                        <!-- Track selection removed: Modules belong directly to this Program -->
+                        <div class="mb-3">
+                            <label for="moduleDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="moduleDescription" rows="3"></textarea>
+                        </div>
+
+                        <!-- Content Source Toggle -->
+                        <div class="mb-3">
+                            <div class="form-label">Content Source <span class="text-danger">*</span></div>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="contentSource" id="sourceURL" value="url"
+                                    checked>
+                                <label class="btn btn-outline-primary" for="sourceURL">
+                                    <i class="fas fa-link me-1"></i> URL
+                                </label>
+                                <input type="radio" class="btn-check" name="contentSource" id="sourceFile" value="file">
+                                <label class="btn btn-outline-primary" for="sourceFile">
+                                    <i class="fas fa-upload me-1"></i> Upload File
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- URL Input -->
+                        <div class="mb-3" id="urlInputSection">
+                            <label for="moduleContentURL" class="form-label">Content URL</label>
+                            <input type="url" class="form-control" id="moduleContentURL"
+                                placeholder="https://www.youtube.com/watch?v=...">
+                            <small class="text-muted">Paste YouTube link, Vimeo link, or direct file URL</small>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="mb-3" id="fileInputSection" style="display: none;">
+                            <label for="moduleFile" class="form-label">Upload File</label>
+                            <div class="border rounded p-4 text-center bg-light" id="dropZone" style="cursor: pointer;">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-2"></i>
+                                <p class="mb-1">Click to select or drag & drop</p>
+                                <small class="text-muted">MP4, WebM, PDF (max 2GB)</small>
+                                <input type="file" id="moduleFile" class="d-none"
+                                    accept=".mp4,.webm,.ogg,.mov,.pdf,.jpg,.jpeg,.png">
+                            </div>
+                            <div id="uploadProgress" style="display: none;">
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                        id="progressBar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted" id="uploadStatus">Uploading...</small>
+                            </div>
+                            <div id="uploadedFileInfo" class="mt-2 p-2 bg-success-subtle rounded"
+                                style="display: none;">
+                                <i class="fas fa-check-circle text-success me-1"></i>
+                                <span id="uploadedFileName"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="moduleContentType" class="form-label">Content Type <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select" id="moduleContentType" required>
+                                <option value="video">Video</option>
+                                <option value="pdf">PDF</option>
+                                <option value="article">Article</option>
+                                <option value="quiz">Quiz</option>
+                            </select>
+                        </div>
+
+                        <!-- Video Quiz Builder Section -->
+                        <div id="videoQuizEditorSection" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="form-label mb-0 fw-bold text-primary">
+                                    <i class="fas fa-clock me-1"></i> Video Quizzes (Stop points)
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddVideoQuiz">
+                                    <i class="fas fa-plus me-1"></i> Add Stop Point
+                                </button>
+                            </div>
+                            <div id="videoQuizzes" class="border rounded p-2 bg-light mb-3"
+                                style="max-height: 300px; overflow-y: auto;">
+                                <p class="text-muted text-center py-3 mb-0" id="noVideoQuizzesMsg">
+                                    No stop points yet. Add one to show a quiz during the video.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Quiz Editor Section -->
+                        <div id="quizEditorSection" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="form-label mb-0">Quiz Questions <span class="text-danger">*</span></div>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnAddQuestion">
+                                    <i class="fas fa-plus me-1"></i> Add Question
+                                </button>
+                            </div>
+                            <div id="quizQuestions" class="border rounded p-2 bg-light"
+                                style="max-height: 300px; overflow-y: auto;">
+                                <p class="text-muted text-center py-3 mb-0" id="noQuestionsMsg">
+                                    No questions yet. Click "Add Question" to create one.
+                                </p>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-2">
+                                <div class="d-flex align-items-center">
+                                    <label class="me-2 small fw-bold mb-0" for="requiredCorrectInput">Required
+                                        Correct:</label>
+                                    <div class="input-group input-group-sm" style="width: 130px;">
+                                        <input type="number" id="requiredCorrectInput" class="form-control" value="1"
+                                            min="1">
+                                        <span class="input-group-text" id="totalQuestionsLabel">/ 0</span>
+                                    </div>
+                                </div>
+                                <small class="text-muted fst-italic ms-3 flex-grow-1 text-end"
+                                    id="passingScoreText">Passing: 70% of questions correct</small>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="moduleOrderIndex" class="form-label">Order <span
+                                    class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="moduleOrderIndex" min="1" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelModal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="btnSaveModule">Save Module</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Tracks Modal -->
+    <div class="modal fade" id="tracksModal" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Manage Tracks / Levels</h5>
+                    <button type="button" class="btn-close" id="btnCloseTracksModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Add Track Form -->
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="newLevelTitle"
+                            placeholder="Level Name (e.g. Beginner)">
+                        <input type="number" class="form-control" id="newLevelPrice" placeholder="Price ($)" step="0.01"
+                            min="0" style="max-width: 100px;">
+                        <button class="btn btn-primary" type="button" id="btnAddLevel">Create</button>
+                    </div>
+                    <small class="text-muted d-block mb-3">Creating a level creates a separate Sub-Program.</small>
+
+                    <!-- Levels List -->
+                    <div id="levelsList" class="list-group">
+                        <div class="text-center text-muted py-3">Loading levels...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Module</h5>
+                    <button type="button" class="btn-close" id="btnCloseDeleteModalHeader" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this module? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelDeleteModal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin-program-modules.js"></script>
+</body>
+
+</html>

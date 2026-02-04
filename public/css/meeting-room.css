@@ -1,0 +1,162 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+    /* Prevent scrolling during call */
+    margin: 0;
+    padding: 0;
+}
+
+/* 1. DASHBOARD SIDEBAR (Fixed Left) */
+.dash-sidebar {
+    height: 100vh;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #ffffff;
+    color: #333;
+    padding-top: 20px;
+    z-index: 3000;
+    /* Higher than video overlays */
+    transition: transform 0.3s ease;
+    border-right: 1px solid #eee;
+}
+
+.sidebar-header {
+    text-align: center;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.dash-sidebar .nav-link {
+    color: #666;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+    transition: 0.3s;
+}
+
+.dash-sidebar .nav-link:hover,
+.dash-sidebar .nav-link.active {
+    color: #d32f2f;
+    background-color: #fff1f1;
+    border-left: 4px solid #d32f2f;
+}
+
+.dash-sidebar i {
+    width: 30px;
+    font-size: 1.1rem;
+}
+
+.brand-text {
+    color: #d32f2f;
+    font-weight: 800;
+    font-size: 1.5rem;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+/* 2. MAIN VIDEO WRAPPER (Pushed Right) */
+.video-main-area {
+    margin-left: 250px;
+    /* Sidebar width */
+    width: calc(100% - 250px);
+    height: 100vh;
+    position: relative;
+    background-color: #f4f6f9;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* --- VIDEO UI ELEMENTS --- */
+.splash-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.video-container {
+    width: 100%;
+    height: 100%;
+    display: none;
+    /* Hidden until loaded */
+    position: relative;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* Floating Header inside Video Area */
+.room-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 15px 25px;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: none;
+    /* Allow clicks to pass through to video */
+}
+
+.header-controls {
+    pointer-events: auto;
+}
+
+/* Re-enable buttons */
+
+.badge-role {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    padding: 5px 12px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .dash-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .dash-sidebar.active {
+        transform: translateX(0);
+    }
+
+    .video-main-area {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Toggle Button */
+    #mobileDashToggle {
+        display: block !important;
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 4000;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+}

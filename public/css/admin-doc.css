@@ -1,0 +1,162 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+/* --- DOC MANAGEMENT STYLES --- */
+
+/* --- DOC MANAGEMENT STYLES --- */
+.admin-panel {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.user-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.user-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.user-item:hover {
+    background: #f8f9fa;
+}
+
+.user-item.selected {
+    background: #e9ecef;
+    border-left: 4px solid #d32f2f;
+}
+
+.upload-area {
+    border: 2px dashed #cbd5e0;
+    border-radius: 10px;
+    padding: 40px 20px;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.3s;
+}
+
+.upload-area:hover {
+    border-color: #d32f2f;
+    background: #fff5f5;
+}
+
+/* Preview Modal Improved */
+.preview-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.preview-modal.show {
+    opacity: 1;
+}
+
+.modal-content-custom {
+    background: #fff;
+    width: 90%;
+    max-width: 1200px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.preview-modal.show .modal-content-custom {
+    transform: scale(1);
+}
+
+.preview-header {
+    padding: 1rem 1.5rem;
+    background: #fff;
+    border-bottom: 1px solid #edf2f7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.preview-area {
+    flex: 1;
+    overflow-y: auto;
+    background-color: #525659;
+    /* Standard PDF Viewer Gray */
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    /* Stack pages vertically */
+    align-items: center;
+    /* Center pages horizontally */
+    gap: 20px;
+    /* Space between pages */
+}
+
+/* Center content wrapper inside preview area */
+.preview-content-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.preview-area canvas {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    /* Stronger shadow for depth */
+    background-color: white;
+    /* Ensure white page background */
+}
+
+.preview-area img {
+    max-width: 90%;
+    height: auto;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+/* Custom Role Tabs */
+#roleTabs .nav-link {
+    color: #4a5568;
+    background-color: transparent;
+    border: 1px solid #e2e8f0;
+    margin-right: 5px;
+}
+
+#roleTabs .nav-link:hover {
+    background-color: #f7fafc;
+}
+
+#roleTabs .nav-link.active {
+    background-color: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}

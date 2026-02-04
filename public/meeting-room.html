@@ -7,185 +7,27 @@
     <title>Live Session</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden;
-            /* Prevent scrolling during call */
-            margin: 0;
-            padding: 0;
-        }
-
-        /* 1. DASHBOARD SIDEBAR (Fixed Left) */
-        .dash-sidebar {
-            height: 100vh;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background-color: #ffffff;
-            color: #333;
-            padding-top: 20px;
-            z-index: 3000;
-            /* Higher than video overlays */
-            transition: transform 0.3s ease;
-            border-right: 1px solid #eee;
-        }
-
-        .dash-sidebar .nav-link {
-            color: #666;
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            border-left: 4px solid transparent;
-            transition: 0.3s;
-        }
-
-        .dash-sidebar .nav-link:hover,
-        .dash-sidebar .nav-link.active {
-            color: #d32f2f;
-            background-color: #fff1f1;
-            border-left: 4px solid #d32f2f;
-        }
-
-        .dash-sidebar i {
-            width: 30px;
-            font-size: 1.1rem;
-        }
-
-        .brand-text {
-            color: #d32f2f;
-            font-weight: 800;
-            font-size: 1.5rem;
-            text-decoration: none;
-            padding-left: 25px;
-            display: block;
-            margin-bottom: 20px;
-        }
-
-        /* 2. MAIN VIDEO WRAPPER (Pushed Right) */
-        .video-main-area {
-            margin-left: 250px;
-            /* Sidebar width */
-            width: calc(100% - 250px);
-            height: 100vh;
-            position: relative;
-            background-color: #f4f6f9;
-            transition: margin-left 0.3s ease, width 0.3s ease;
-        }
-
-        /* --- VIDEO UI ELEMENTS --- */
-        .splash-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #111;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .video-container {
-            width: 100%;
-            height: 100%;
-            display: none;
-            /* Hidden until loaded */
-            position: relative;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            display: block;
-        }
-
-        /* Floating Header inside Video Area */
-        .room-header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px 25px;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            pointer-events: none;
-            /* Allow clicks to pass through to video */
-        }
-
-        .header-controls {
-            pointer-events: auto;
-        }
-
-        /* Re-enable buttons */
-
-        .badge-role {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(5px);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .dash-sidebar {
-                transform: translateX(-100%);
-            }
-
-            .dash-sidebar.active {
-                transform: translateX(0);
-            }
-
-            .video-main-area {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            /* Toggle Button */
-            #mobileDashToggle {
-                display: block !important;
-                position: absolute;
-                top: 15px;
-                left: 15px;
-                z-index: 4000;
-                background: rgba(0, 0, 0, 0.5);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                color: white;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/meeting-room.css">
 </head>
 
 <body>
 
     <nav class="dash-sidebar" id="dashSidebar">
-        <a href="#" class="brand-text"><i class="fas fa-hand-holding-heart me-2"></i>KonstraNGO</a>
+        <div class="sidebar-header">
+            <a href="#" class="brand-text"><i class="fas fa-handshake me-2"></i>KonstraPartner</a>
+        </div>
 
         <div class="d-flex flex-column" id="dashLinks">
         </div>
 
         <div style="position: absolute; bottom: 20px; width: 100%; padding: 0 20px;">
-            <button onclick="logout()" class="btn btn-outline-danger w-100">
+            <button id="logoutBtn" class="btn btn-outline-danger w-100">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout
             </button>
         </div>
     </nav>
 
-    <button class="btn d-none" id="mobileDashToggle"
-        onclick="document.getElementById('dashSidebar').classList.toggle('active')">
+    <button class="btn d-none" id="mobileDashToggle">
         <i class="fas fa-bars"></i>
     </button>
 
@@ -223,114 +65,7 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 1. Sidebar Logic (Shared)
-            setupSidebar();
-
-            // 2. Meeting Logic
-            const params = new URLSearchParams(window.location.search);
-            const meetingID = params.get('id');
-
-            if (!meetingID) {
-                showError("Invalid Link", "No meeting ID provided.");
-                return;
-            }
-
-            const user = getUserDetails();
-            if (!user) { window.location.href = 'login.html'; return; }
-
-            const userID = user.memberID || user.adminID;
-            const userType = user.memberID ? 'NGO' : 'Admin';
-
-            try {
-                const response = await fetch(`/api/meetings/join/${meetingID}?userID=${userID}&userType=${userType}`);
-                const data = await response.json();
-
-                if (data.success) {
-                    initializeRoom(data.roomUrl, userType);
-                } else {
-                    showError("Access Denied", data.error || "Unable to join room.");
-                }
-            } catch (err) {
-                console.error(err);
-                showError("Network Error", "Server is unreachable.");
-            }
-        });
-
-        function setupSidebar() {
-            const member = JSON.parse(localStorage.getItem("memberDetails"));
-            const admin = JSON.parse(localStorage.getItem("adminDetails"));
-            const userType = member ? 'User' : (admin ? 'Admin' : null);
-
-            const dashLinks = document.getElementById('dashLinks');
-
-            // "Active" class is on 'Meetings' or 'Live Room'
-            if (userType === 'Admin') {
-                dashLinks.innerHTML = `
-            <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="admin-doc.html" class="nav-link"><i class="fas fa-folder-open"></i> Document</a>
-            <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
-            <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> Live Room</a>
-            <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
-            <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
-            <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
-            <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
-        `;
-            } else {
-                dashLinks.innerHTML = `
-                    <a href="ngo-dashboard.html" class="nav-link"><i class="fas fa-chart-pie"></i> Dashboard</a>
-                    <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Partner Chat</a>
-                    <a href="booking-Consultation.html" class="nav-link"><i class="fas fa-calendar-check"></i> Book Consultation</a>
-                    <a href="my-meetings.html" class="nav-link active"><i class="fas fa-video"></i> My Meetings</a>
-                    <a href="profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
-                `;
-            }
-        }
-
-        function initializeRoom(url, userType) {
-            // Update UI Badge
-            const badge = document.getElementById('roleBadge');
-            if (userType === 'Admin') {
-                badge.innerHTML = '<i class="fas fa-crown text-warning me-2"></i> Host';
-                badge.style.border = '1px solid rgba(255, 193, 7, 0.5)';
-            } else {
-                badge.innerHTML = '<i class="fas fa-user me-2"></i> Participant';
-            }
-
-            // Create Iframe
-            const iframe = document.createElement('iframe');
-            iframe.src = url;
-            iframe.allow = "camera; microphone; fullscreen; display-capture; autoplay; screen-wake-lock";
-            document.getElementById('iframeWrapper').appendChild(iframe);
-
-            // Switch Views
-            setTimeout(() => {
-                document.getElementById('loadingArea').style.display = 'none';
-                document.getElementById('videoContainer').style.display = 'block';
-            }, 1000);
-        }
-
-        function getUserDetails() {
-            return JSON.parse(localStorage.getItem("memberDetails")) || JSON.parse(localStorage.getItem("adminDetails"));
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = "index.html";
-        }
-
-        function showError(title, msg) {
-            document.getElementById('loadingArea').style.display = 'none';
-            document.getElementById('videoContainer').style.display = 'none';
-
-            const errArea = document.getElementById('errorArea');
-            errArea.style.display = 'flex';
-
-            document.getElementById('errorTitle').innerText = title;
-            document.getElementById('errorText').innerText = msg;
-        }
-    </script>
+    <script src="js/meeting-room.js"></script>
 </body>
 
 </html>

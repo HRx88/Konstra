@@ -16,13 +16,17 @@ class Enrollment {
                         e.EnrollmentDate,
                         e.Status,
                         e.Progress,
+                        e.Details,
+                        e.SlotID,
                         p.ProgramID,
                         p.Title AS ProgramTitle,
                         p.Type AS ProgramType,
                         p.Description AS ProgramDescription,
                         p.ImageURL AS ProgramImage,
-                        p.Duration,
-                        p.Location
+                        p.Duration AS ProgramDuration,
+                        p.Location,
+                        p.ParentProgramID,
+                        p.IsActive
                     FROM Enrollments e
                     INNER JOIN Programs p ON e.ProgramID = p.ProgramID
                     WHERE e.UserID = @userId

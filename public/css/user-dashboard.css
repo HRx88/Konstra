@@ -1,0 +1,369 @@
+:root {
+    --brand-yellow: #FFD200;
+    --brand-dark: #1a1a1a;
+    --primary-red: #d32f2f;
+    --hover-red: #b71c1c;
+}
+
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+}
+
+/* --- CONTENT --- */
+/* .main-content handled in sidebar.css */
+
+
+/* --- HERO --- */
+.dashboard-hero {
+    background: white !important;
+    border-left: 5px solid var(--brand-yellow);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* --- STATS CARDS --- */
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 5px solid var(--primary-red);
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* --- STATS CARD ICONS --- */
+.stat-icon {
+    width: 65px;
+    height: 65px;
+    border-radius: 16px;
+    /* softer square/circle hybrid */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Specific colors for icons */
+.stat-icon.bg-warning {
+    background: linear-gradient(135deg, #fff9c4 0%, #fff176 100%) !important;
+    color: #fbc02d !important;
+}
+
+.stat-icon.bg-success {
+    background: linear-gradient(135deg, #e8f5e9 0%, #a5d6a7 100%) !important;
+    color: #388e3c !important;
+}
+
+.stat-icon.bg-primary {
+    background: linear-gradient(135deg, #e3f2fd 0%, #90caf9 100%) !important;
+    color: #1976d2 !important;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* --- CARD-STYLE TABS --- */
+.nav-tabs {
+    border: none;
+    margin-bottom: 30px;
+    background-color: transparent;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    /* Space between card-tabs */
+}
+
+.nav-tabs .nav-item {
+    margin-bottom: 0;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+    font-weight: 700;
+    border: none;
+    background-color: white;
+    padding: 15px 30px;
+    border-radius: 12px;
+    /* Match card radius */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    /* Match card shadow */
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 5px solid transparent;
+    /* Prepare for active indicator */
+}
+
+.nav-tabs .nav-link:hover {
+    transform: translateY(-3px);
+    /* Match card hover lift */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    color: var(--primary-red);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--brand-dark) !important;
+    background-color: white;
+    /* Keep white */
+    border-left: 5px solid var(--brand-yellow);
+    /* Branding accent */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    /* Higher elevation */
+    transform: translateY(-3px);
+}
+
+/* Cleanup old underlines */
+.nav-tabs .nav-link::after {
+    display: none;
+}
+
+/* --- CAROUSEL LAYOUT --- */
+/* Override the row/grid behavior for carousel mode */
+#contentArea.carousel-mode {
+    display: flex !important;
+    /* Force flex row */
+    overflow-x: auto;
+    gap: 25px;
+    padding-bottom: 30px;
+    /* Space for shadow/scroll */
+    scroll-snap-type: x mandatory;
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+    -webkit-overflow-scrolling: touch;
+    margin-right: -20px;
+    /* Bleed out to right */
+    padding-right: 20px;
+}
+
+/* Hide scrollbar but keep functionality */
+#contentArea.carousel-mode::-webkit-scrollbar {
+    height: 6px;
+}
+
+#contentArea.carousel-mode::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+#contentArea.carousel-mode .col-md-6.col-lg-4 {
+    flex: 0 0 350px;
+    /* Fixed card width */
+    max-width: 85vw;
+    /* Responsive constraint */
+    scroll-snap-align: start;
+}
+
+/* Ensure empty state centers properly despite flex row */
+#contentArea.carousel-mode .col-12 {
+    flex: 0 0 100%;
+}
+
+/* --- COURSE CARDS --- */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.badge.bg-primary {
+    background-color: var(--primary-red) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--brand-yellow) !important;
+    color: #000;
+}
+
+.progress-bar.bg-warning {
+    background-color: var(--brand-yellow) !important;
+}
+
+.progress-bar.bg-danger {
+    background-color: var(--primary-red) !important;
+}
+
+.btn-dark {
+    background-color: var(--primary-red);
+    border: none;
+    color: white;
+}
+
+.btn-dark:hover {
+    background-color: var(--hover-red);
+    color: white;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+        /* Reduced padding for mobile */
+    }
+
+    .dashboard-hero {
+        padding: 20px !important;
+    }
+
+    .stat-card {
+        margin-bottom: 15px;
+    }
+
+    .nav-tabs .nav-link {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+/* --- ANNOUNCEMENT BADGES --- */
+.badge-urgent {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    color: #c62828 !important;
+    border: 1px solid rgba(198, 40, 40, 0.1);
+    box-shadow: 0 2px 6px rgba(198, 40, 40, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-important {
+    background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
+    color: #f9a825 !important;
+    border: 1px solid rgba(249, 168, 37, 0.1);
+    box-shadow: 0 2px 6px rgba(249, 168, 37, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-normal {
+    background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+    color: #616161 !important;
+    border: 1px solid rgba(97, 97, 97, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* Announcement Card Animation */
+.announcement-card {
+    transition: all 0.3s ease;
+}
+
+.announcement-card.border-danger {
+    border-color: #ffcdd2 !important;
+    background: linear-gradient(to bottom, #fff, #fffafb);
+}
+
+.announcement-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- TRIP CARDS --- */
+.trip-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.trip-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(40, 167, 69, 0.15) !important;
+}
+
+.trip-card .card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.trip-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.trip-details i {
+    width: 18px;
+    text-align: center;
+}
+
+/* --- TRAINING CARDS --- */
+.training-card {
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.training-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0, 123, 255, 0.15) !important;
+}
+
+.training-card .card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.training-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.training-details i {
+    width: 18px;
+    text-align: center;
+}
+
+/* --- LIVE INDICATOR PULSE ANIMATION --- */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+.live-indicator .badge {
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+}

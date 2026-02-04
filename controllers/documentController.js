@@ -170,6 +170,139 @@ class DocumentController {
       res.status(500).json({ success: false, error: "Failed to download document" });
     }
   }
+
+  // Upload document for review (by user)
+  static async uploadForReview(req, res) {
+    try {
+      const { userID } = req.body;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ success: false, error: "No file uploaded" });
+      }
+
+      if (!userID) {
+        fs.unlinkSync(file.path);
+        return res.status(400).json({ success: false, error: "User ID is required" });
+      }
+
+      const documentData = {
+        userID: parseInt(userID),
+        fileName: file.originalname,
+        fileType: file.mimetype,
+        fileSize: file.size,
+        filePath: file.path
+      };
+
+      const result = await Document.uploadUserDocument(documentData);
+
+      // Notify all admins (optional - could implement admin SSE later)
+
+      res.status(200).json({
+        success: true,
+        message: "Document submitted for review",
+        document: result.document
+      });
+    } catch (err) {
+      console.error('User Upload Error:', err);
+      if (req.file) fs.unlinkSync(req.file.path);
+      res.status(500).json({ success: false, error: "Failed to upload document" });
+    }
+  }
+
+  // Get user's uploaded documents
+  static async getUserUploads(req, res) {
+    try {
+      const { userID } = req.params;
+      const documents = await Document.getUserUploads(parseInt(userID));
+      res.status(200).json({ success: true, documents: documents });
+    } catch (err) {
+      console.error('Get User Uploads Error:', err);
+      res.status(500).json({ success: false, error: "Failed to fetch uploads" });
+    }
+  }
+  // Get pending documents
+  static async getPendingDocuments(req, res) {
+    try {
+      const documents = await Document.getPendingDocuments();
+      res.status(200).json({ success: true, documents: documents });
+    } catch (err) {
+      console.error('Get Pending Docs Error:', err);
+      res.status(500).json({ success: false, error: "Failed to fetch pending documents" });
+    }
+  }
+
+  // Approve document
+  static async approveDocument(req, res) {
+    try {
+      const { documentID } = req.params;
+      const { feedback } = req.body;
+      const file = req.file;
+
+      await Document.updateReviewStatus(
+        parseInt(documentID),
+        'Approved',
+        feedback || null,
+        file ? file.path : null,
+        file ? file.originalname : null
+      );
+
+      res.status(200).json({ success: true, message: "Document approved" });
+    } catch (err) {
+      console.error('Approve Doc Error:', err);
+      if (req.file) fs.unlinkSync(req.file.path);
+      res.status(500).json({ success: false, error: "Failed to approve document" });
+    }
+  }
+
+  // Reject document
+  static async rejectDocument(req, res) {
+    try {
+      const { documentID } = req.params;
+      const { feedback } = req.body;
+      const file = req.file;
+
+      if (!feedback) {
+        if (file) fs.unlinkSync(file.path);
+        return res.status(400).json({ success: false, error: "Reason is required for rejection" });
+      }
+
+      await Document.updateReviewStatus(
+        parseInt(documentID),
+        'Rejected',
+        feedback,
+        file ? file.path : null,
+        file ? file.originalname : null
+      );
+
+      res.status(200).json({ success: true, message: "Document rejected" });
+    } catch (err) {
+      console.error('Reject Doc Error:', err);
+      if (req.file) fs.unlinkSync(req.file.path);
+      res.status(500).json({ success: false, error: "Failed to reject document" });
+    }
+  }
+
+  // Download feedback document
+  static async downloadFeedback(req, res) {
+    try {
+      const { documentID } = req.params;
+      const document = await Document.getDocumentById(parseInt(documentID));
+
+      if (!document || !document.FeedbackFilePath) {
+        return res.status(404).json({ success: false, error: "Feedback file not found" });
+      }
+
+      if (!fs.existsSync(document.FeedbackFilePath)) {
+        return res.status(404).json({ success: false, error: "File not found on server" });
+      }
+
+      res.download(document.FeedbackFilePath, document.FeedbackFileName);
+    } catch (err) {
+      console.error('Download Feedback Error:', err);
+      res.status(500).json({ success: false, error: "Failed to download feedback" });
+    }
+  }
 }
 
 module.exports = DocumentController;

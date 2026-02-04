@@ -1,0 +1,290 @@
+                                    /* General Page styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Inter, Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* background: url() -> Add the background video here for the home page.*/
+}
+
+
+
+
+                                        /* NavBar Styling */
+/* Styling for the entire Navigation Bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 164px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background: #FFFFFF;
+    /* box-shadow: ; */
+    z-index: 999;
+}
+
+/* Styling for the items inside the navbar */
+.navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 2rem;
+    max-width: auto;
+    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Styling for the Logo in the navbar */
+.navbar-logo img{
+    cursor: pointer;
+    max-height: 114px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Styling the navbar link alignment*/
+.navbar-container .navbar-menu {
+    display: flex;
+    text-align: center;
+    gap: 1.5rem;
+    list-style: none;
+}
+
+/* Styling the navbar links */
+.navbar-container .navbar-menu li a {
+    text-decoration: none; /* This removes the underline*/
+    color:#000000;
+    font-size: 20px;
+    font-weight: normal;
+    white-space: nowrap; /* {revents wrapping onto a new line*/
+}
+
+/* Styling the navbar links hover animation */
+.navbar-container .navbar-menu li a:hover {
+    color: #FF0000;
+}
+
+/* Styling the account image */
+.account img {
+    cursor: pointer;
+    max-height: 28px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Styling the account image hover animation */
+.account img:hover {
+    content: url("Media/Profile when hovering.png");
+}
+
+/* Styling the Navbar toggle button (Hamburger menu) */
+.navbar-toggle {
+    display: none;
+    background: transparent;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Styling the lines on the hamburger menu */
+.bar {
+    display : block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background: #000000;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Adding the underline effect for NavBar */
+.navbar-menu li:not(.account) > a {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* Styling the design and position of the line */
+.navbar-menu li:not(.account) > a::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background-color: #ff0000;
+    transition: all 0.5s ;
+}
+
+/* Setting the lines behavior when the mouse hovers over it */
+.navbar-menu li:not(.account) > a:hover::before {
+    width: 100%;
+}
+
+/* Setting the behavior of the navbar link that is selected */
+.currentPage {
+    color: #FF0000 !important;
+}
+
+/* Keep underline visible for the current page */
+.navbar-menu li:not(.account) > a.currentPage::before{
+  width: 100%;
+}
+
+
+
+
+
+                                /* Making the Navbar responsive */
+
+/* 800 px for smaller screens */
+@media (max-width: 1029px) {
+    .navbar {
+        backdrop-filter: none;
+    }
+
+    /* Hamburger vertical navbar */
+    .navbar-container .navbar-menu {
+        display: none;
+        flex-direction: column; /* This enables the items to be stacked vertically*/
+        align-items: flex-start; /* Align items to the left of the container */
+        gap: 1.7rem !important; /* This gives 1.7 rems of space between each item in the navbar*/
+        position: absolute;
+        height: 100vh;
+        width: 250px;
+        top: 0;
+        right: 0;
+        padding: 5rem 1.5rem;
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Styling the hamburger icon to make it appear in this config */
+    .navbar-toggle {
+        display: block;
+        z-index: 1000;
+    }
+
+    /* Make the hamburger icon visible when page shrinks to the specified size. */
+    .navbar-container .navbar-menu.active {
+        display: flex;
+    }
+
+    /* Hamburger menu icon to 'X' when toggled */
+    /*Note each number represents 1 of the 3 bars in the icon */
+    .navbar-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .navbar-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    footer{
+    height: auto !important;
+    padding: 24px 0;
+  }
+
+  .footer-container{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: 100%;
+    padding: 0 20px;
+  }
+
+  .footer-left,
+  .footer-right{
+    width: 100%;              /* same width so centering is consistent */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+    padding-bottom: 20px;
+    padding-right: 0 !important;
+  }
+
+  .Socials{
+    justify-content: center;  /* center icons row */
+  }
+}
+
+
+
+
+
+                                    /* Footer styling */
+/* Overall Footer Design */
+footer {
+    background-color:#000000;
+    padding: 49px 40px;  
+    height: 120px;
+    align-items: center;
+    display: flex;
+}
+
+/* Footer Container Styling to organize the different footer contents into their respective category*/
+.footer-container {
+    width: 100%;
+    /* width: min(1100px, 100%); */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* This allows the rest of the components to center in between the Follow Us and Icons part*/
+    flex-wrap: nowrap;
+}
+
+.footer-container p{
+  margin:0;
+  color:#FFFFFF;
+  font-family: Inter, sans-serif;
+  font-size:15px;
+  font-weight:300;
+  line-height: 1;;
+  white-space:nowrap;
+  opacity:0.9;
+}
+
+/* Styling for the text in the footer (Left)*/
+.footer-left {
+    display:flex;
+    align-items:center;
+    gap: 35px;  /* controls spacing between the 3 texts */
+    padding-right: 86px;
+}
+
+/* Styling for the text in the footer (Right) */
+.footer-right{
+  display:flex;
+  flex-direction: column; /* This enables the Follow Us and Icons to be stacked*/
+  align-items:center;
+  gap: 14px;
+  white-space: nowrap; 
+}
+
+/* Set the social media icons to sit beside each other */
+.Socials {
+    display: flex;
+    align-items: center;
+    gap:10px;
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+
+.Socials img{
+  height:23px;
+  width:auto;
+  display:block;
+}

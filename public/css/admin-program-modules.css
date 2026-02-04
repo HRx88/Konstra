@@ -1,0 +1,112 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 30px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Sidebar Toggle Active State (for mobile/responsive) */
+#sidebar.active+.main-content {
+    margin-left: 0;
+}
+
+/* Module Table Styling */
+.module-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.table thead th {
+    border-bottom: 2px solid #e9ecef;
+    font-weight: 600;
+    color: #495057;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+.btn-action {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+/* Levels Management Styling */
+#levelsList {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.level-item {
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.level-item:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-color: #dee2e6;
+    background-color: #f8f9fa;
+}
+
+.level-title {
+    font-weight: 500;
+    color: #343a40;
+}
+
+/* Drag & Drop Zone */
+#dropZone {
+    transition: all 0.3s ease;
+    border: 2px dashed #dee2e6 !important;
+}
+
+#dropZone:hover,
+#dropZone.border-primary {
+    border-color: #0d6efd !important;
+    background-color: #f1f8ff !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .module-table {
+        overflow-x: auto;
+    }
+
+    /* Stack header on mobile */
+    .main-content>.d-flex {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 15px;
+    }
+
+    .main-content>.d-flex>div:last-child {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .main-content>.d-flex>div:last-child a,
+    .main-content>.d-flex>div:last-child button {
+        width: 100%;
+        margin-right: 0 !important;
+    }
+}

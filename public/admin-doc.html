@@ -16,180 +16,35 @@
 
 
     <link rel="stylesheet" href="css/admin-sidebar.css">
-    <style>
-        body {
-            background-color: #f4f6f9;
-            font-family: 'Segoe UI', sans-serif;
-            overflow-x: hidden;
-        }
-
-        /* --- DOC MANAGEMENT STYLES --- */
-
-        /* --- DOC MANAGEMENT STYLES --- */
-        .admin-panel {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .user-list {
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-        }
-
-        .user-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: background 0.2s;
-        }
-
-        .user-item:hover {
-            background: #f8f9fa;
-        }
-
-        .user-item.selected {
-            background: #e9ecef;
-            border-left: 4px solid #d32f2f;
-        }
-
-        .upload-area {
-            border: 2px dashed #cbd5e0;
-            border-radius: 10px;
-            padding: 40px 20px;
-            text-align: center;
-            background: #f8f9fa;
-            transition: all 0.3s;
-        }
-
-        .upload-area:hover {
-            border-color: #d32f2f;
-            background: #fff5f5;
-        }
-
-        /* Preview Modal Improved */
-        .preview-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .preview-modal.show {
-            opacity: 1;
-        }
-
-        .modal-content-custom {
-            background: #fff;
-            width: 90%;
-            max-width: 1200px;
-            height: 85vh;
-            display: flex;
-            flex-direction: column;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-        }
-
-        .preview-modal.show .modal-content-custom {
-            transform: scale(1);
-        }
-
-        .preview-header {
-            padding: 1rem 1.5rem;
-            background: #fff;
-            border-bottom: 1px solid #edf2f7;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .preview-area {
-            flex: 1;
-            overflow-y: auto;
-            background-color: #525659;
-            /* Standard PDF Viewer Gray */
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            /* Stack pages vertically */
-            align-items: center;
-            /* Center pages horizontally */
-            gap: 20px;
-            /* Space between pages */
-        }
-
-        /* Center content wrapper inside preview area */
-        .preview-content-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .preview-area canvas {
-            max-width: 100%;
-            height: auto;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            /* Stronger shadow for depth */
-            background-color: white;
-            /* Ensure white page background */
-        }
-
-        .preview-area img {
-            max-width: 90%;
-            height: auto;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-            border-radius: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/admin-doc.css">
 </head>
 
 <body>
 
     <nav class="admin-sidebar" id="sidebar">
         <div class="sidebar-header">
-            <a href="admin-home.html" class="brand-text"><i class="fas fa-print me-2"></i>AdminPanel</a>
+            <a href="admin-home.html" class="brand-text"><i class="fas fa-user-shield me-2"></i>KonstraAdmin</a>
         </div>
         <div class="d-flex flex-column">
             <a href="admin-home.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="admin-doc.html" class="nav-link active"><i class="fas fa-folder-open"></i> Document</a>
+            <a href="admin-doc.html" class="nav-link active"><i class="fas fa-folder-open"></i> Documents</a>
             <a href="chat.html" class="nav-link"><i class="fas fa-comments"></i> Chat</a>
-            <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> Meeting</a>
+            <a href="my-meetings.html" class="nav-link"><i class="fas fa-video"></i> Meetings</a>
             <a href="admin-printadobe.html" class="nav-link"><i class="fas fa-graduation-cap"></i> PrintAdobe</a>
             <a href="admin-credentials.html" class="nav-link"><i class="fas fa-certificate"></i> Credentials</a>
-            <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Project</a>
+            <a href="admin-projects.html" class="nav-link"><i class="fas fa-tasks"></i> Projects</a>
+            <a href="admin-discounts.html" class="nav-link"><i class="fas fa-tags"></i> Discounts</a>
             <a href="admin-profile.html" class="nav-link"><i class="fas fa-user-circle"></i> Profile</a>
         </div>
         <div class="logout-btn-container">
-            <button onclick="logout()" class="btn btn-outline-danger w-100">
+            <button id="logoutBtn" class="btn btn-outline-danger w-100">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout
             </button>
         </div>
     </nav>
 
     <main class="main-content">
-        <button class="btn btn-dark d-md-none mb-4"
-            onclick="document.getElementById('sidebar').classList.toggle('active')">
+        <button class="btn btn-dark d-md-none mb-4" id="mobileDashToggle">
             <i class="fas fa-bars"></i>
         </button>
 
@@ -198,45 +53,111 @@
             <div class="text-muted">Upload and Manage Files</div>
         </div>
 
-        <div class="admin-panel">
-            <h5 class="border-bottom pb-2 mb-3 text-secondary">1. Select User</h5>
-            <div class="input-group mb-3">
-                <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-                <input type="text" class="form-control" id="searchInput" placeholder="Search user..."
-                    oninput="filterUsers(this.value)">
-            </div>
-            <div class="user-list mb-4" id="userList">
-            </div>
+        <ul class="nav nav-tabs mb-4" id="adminTabs">
+            <li class="nav-item">
+                <button class="nav-link active" id="tab-manage" data-bs-toggle="tab" data-bs-target="#managePane">
+                    <i class="fas fa-tasks me-2"></i>Manage Files
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="tab-review" data-bs-toggle="tab" data-bs-target="#reviewPane">
+                    <i class="fas fa-check-double me-2"></i>Review User Documents
+                </button>
+            </li>
+        </ul>
 
-            <div id="actionArea" style="display:none;">
-                <div class="row">
-                    <div class="col-md-5">
-                        <h5 class="border-bottom pb-2 mb-3 text-secondary">2. Upload File</h5>
-                        <div class="upload-area mb-3">
-                            <div id="selectedUserName" class="fw-bold mb-2 text-dark"></div>
-                            <i class="fas fa-cloud-upload-alt text-danger" style="font-size: 3rem;"></i>
-                            <div class="mt-2 text-muted small">Drag & drop or click</div>
-                            <input type="file" id="fileInput" class="form-control form-control-sm w-75 mx-auto mt-3">
-                            <button class="btn btn-danger w-75 mt-3" onclick="uploadFile()">
-                                <i class="fas fa-upload me-2"></i>Upload
+        <div class="tab-content" id="adminTabsContent">
+            <!-- MANAGE TAB -->
+            <div class="tab-pane fade show active" id="managePane">
+                <div class="admin-panel">
+                    <h5 class="border-bottom pb-2 mb-3 text-secondary">1. Select Account</h5>
+
+                    <!-- ROLE TABS -->
+                    <ul class="nav nav-pills mb-3" id="roleTabs">
+                        <li class="nav-item">
+                            <button class="nav-link active btn-sm py-1 px-3" data-role="User">
+                                <i class="fas fa-user me-2"></i>Users
                             </button>
-                        </div>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link btn-sm py-1 px-3" data-role="NGO">
+                                <i class="fas fa-handshake me-2"></i>NGOs
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                    </div>
+                    <div class="user-list mb-4" id="userList">
                     </div>
 
-                    <div class="col-md-7">
-                        <h5 class="border-bottom pb-2 mb-3 text-secondary">3. Current Documents</h5>
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                            <table class="table table-hover align-middle small">
-                                <thead class="table-light sticky-top">
-                                    <tr>
-                                        <th>File</th>
-                                        <th>Size</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="docsTableBody"></tbody>
-                            </table>
+                    <div id="actionArea" style="display:none;">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <h5 class="border-bottom pb-2 mb-3 text-secondary">2. Upload File</h5>
+                                <div class="upload-area mb-3">
+                                    <div id="selectedUserName" class="fw-bold mb-2 text-dark"></div>
+                                    <i class="fas fa-cloud-upload-alt text-danger" style="font-size: 3rem;"></i>
+                                    <div class="mt-2 text-muted small">Drag & drop or click</div>
+                                    <input type="file" id="fileInput"
+                                        class="form-control form-control-sm w-75 mx-auto mt-3">
+                                    <button class="btn btn-danger w-75 mt-3" id="btnUpload">
+                                        <i class="fas fa-upload me-2"></i>Upload
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-7">
+                                <h5 class="border-bottom pb-2 mb-3 text-secondary">3. Current Documents</h5>
+                                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                    <table class="table table-hover align-middle small">
+                                        <thead class="table-light sticky-top">
+                                            <tr>
+                                                <th>File</th>
+                                                <th>Size</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="docsTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REVIEW TAB -->
+            <div class="tab-pane fade" id="reviewPane">
+                <div class="admin-panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0 text-secondary">Pending Reviews</h5>
+                        <button class="btn btn-sm btn-outline-primary" id="refreshReviewBtn">
+                            <i class="fas fa-sync-alt me-1"></i> Refresh
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>File</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewTableBody">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="reviewEmptyState" class="text-center py-5" style="display:none;">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3 opacity-25"></i>
+                        <p class="text-muted">No pending documents to review.</p>
                     </div>
                 </div>
             </div>
@@ -255,271 +176,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        // --- YOUR ORIGINAL LOGIC (ADAPTED) ---
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"
-
-        let allUsers = [];
-        let selectedUser = null;
-        let ADMIN_ID = null;
-
-        document.addEventListener('DOMContentLoaded', initializeAdmin);
-
-        function initializeAdmin() {
-            const adminDetails = JSON.parse(localStorage.getItem("adminDetails"));
-            if (!adminDetails || !adminDetails.adminID) {
-                window.location.href = "index.html"; // Guard clause
-                return;
-            }
-            ADMIN_ID = adminDetails.adminID;
-            loadUsers();
-        }
-
-        function logout() {
-            localStorage.clear();
-            window.location.href = "index.html";
-        }
-
-        async function loadUsers() {
-            try {
-                const res = await fetch('/api/documents/users');
-                const data = await res.json();
-                if (data.success) {
-                    allUsers = data.users;
-                    renderUsers(allUsers);
-                }
-            } catch (error) { console.error(error); }
-        }
-
-        function renderUsers(users) {
-            const list = document.getElementById('userList');
-            list.innerHTML = users.map(u => `
-                <div class="user-item" onclick="selectUser(${u.UserID}, '${u.Username}', this)">
-                    <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:35px; height:35px;">
-                        ${u.Username.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                        <div class="fw-bold small">${u.Username}</div>
-                        <small class="text-muted" style="font-size:0.75rem">${u.Email}</small>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Expanded getFileIcon logic (Same as ngo-doc.html)
-        function getFileIcon(type, name) {
-            // 1. Check MIME type first
-            if (type) {
-                type = type.toLowerCase();
-                if (type.includes('pdf')) return { icon: 'fa-file-pdf', color: '#e53e3e', bg: '#fff5f5' };
-                // Check Presentation and Spreadsheet BEFORE 'document'
-                if (type.includes('presentation') || type.includes('powerpoint') || type.includes('slideshow') || type.includes('pps')) return { icon: 'fa-file-powerpoint', color: '#e05822', bg: '#fffaf0' };
-                if (type.includes('sheet') || type.includes('excel') || type.includes('csv') || type.includes('spreadsheet') || type.includes('xls')) return { icon: 'fa-file-excel', color: '#38a169', bg: '#f0fff4' };
-                if (type.includes('word') || type.includes('document') || type.includes('msword')) return { icon: 'fa-file-word', color: '#3182ce', bg: '#ebf8ff' };
-                if (type.includes('image')) return { icon: 'fa-file-image', color: '#805ad5', bg: '#faf5ff' };
-                if (type.includes('text') || type.includes('txt')) return { icon: 'fa-file-alt', color: '#718096', bg: '#f7fafc' };
-                if (type.includes('zip') || type.includes('compressed') || type.includes('rar') || type.includes('tar')) return { icon: 'fa-file-archive', color: '#d69e2e', bg: '#fffff0' };
-            }
-
-            // 2. Fallback to Filename Extension
-            if (name) {
-                const ext = name.split('.').pop().toLowerCase();
-                if (['doc', 'docx'].includes(ext)) return { icon: 'fa-file-word', color: '#3182ce', bg: '#ebf8ff' };
-                if (['xls', 'xlsx', 'csv'].includes(ext)) return { icon: 'fa-file-excel', color: '#38a169', bg: '#f0fff4' };
-                if (['ppt', 'pptx', 'pps'].includes(ext)) return { icon: 'fa-file-powerpoint', color: '#e05822', bg: '#fffaf0' };
-                if (['pdf'].includes(ext)) return { icon: 'fa-file-pdf', color: '#e53e3e', bg: '#fff5f5' };
-                if (['zip', 'rar', '7z', 'tar', 'gz'].includes(ext)) return { icon: 'fa-file-archive', color: '#d69e2e', bg: '#fffff0' };
-                if (['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext)) return { icon: 'fa-file-image', color: '#805ad5', bg: '#faf5ff' };
-            }
-
-            return { icon: 'fa-file', color: '#718096', bg: '#edf2f7' };
-        }
-
-        function filterUsers(term) {
-            const filtered = allUsers.filter(u => u.Username.toLowerCase().includes(term.toLowerCase()));
-            renderUsers(filtered);
-        }
-
-        function selectUser(id, name, element) {
-            selectedUser = { id, name };
-            document.getElementById('actionArea').style.display = 'block';
-            document.getElementById('selectedUserName').innerText = `Target: ${name} `;
-
-            // Visual selection
-            document.querySelectorAll('.user-item').forEach(el => el.classList.remove('selected'));
-            element.classList.add('selected');
-
-            loadUserDocuments(id);
-        }
-
-        async function loadUserDocuments(userId) {
-            const res = await fetch(`/api/documents/user/${userId}`);
-            const data = await res.json();
-            const tbody = document.getElementById('docsTableBody');
-
-            if (data.success && data.documents.length > 0) {
-                tbody.innerHTML = data.documents.map(doc => {
-                    const iconData = getFileIcon(doc.FileType, doc.FileName);
-                    return `
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="me-3 d-flex align-items-center justify-content-center rounded" style="width: 40px; height: 40px; background-color: ${iconData.bg}; color: ${iconData.color};">
-                                    <i class="fas ${iconData.icon} fs-5"></i>
-                                </div>
-                                <div style="word-break: break-all;">${doc.FileName}</div>
-                            </div>
-                        </td>
-                        <td>${(doc.FileSize / 1024).toFixed(1)} KB</td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="previewDoc(${doc.DocumentID}, '${doc.FileType}', '${doc.FileName}')"><i class="fas fa-eye"></i></button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteDoc(${doc.DocumentID})"><i class="fas fa-trash"></i></button>
-                        </td>
-                        </tr>
-                `;
-                }).join('');
-            } else {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-3">No files found.</td></tr>';
-            }
-        }
-
-        async function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            if (!selectedUser) return Swal.fire('Warning', 'Select a user first!', 'warning');
-            if (!fileInput.files[0]) return Swal.fire('Warning', 'Select a file!', 'warning');
-
-            const formData = new FormData();
-            formData.append('document', fileInput.files[0]);
-            formData.append('userID', selectedUser.id);
-            formData.append('adminID', ADMIN_ID);
-
-            Swal.fire({ title: 'Uploading...', didOpen: () => Swal.showLoading() });
-
-            try {
-                const res = await fetch('/api/documents/upload', { method: 'POST', body: formData });
-                const data = await res.json();
-                if (data.success) {
-                    Swal.fire('Success', 'Uploaded!', 'success');
-                    fileInput.value = '';
-                    loadUserDocuments(selectedUser.id);
-                } else {
-                    Swal.fire('Error', data.error, 'error');
-                }
-            } catch (error) { Swal.fire('Error', 'Network Error', 'error'); }
-        }
-
-        function deleteDoc(docId) {
-            Swal.fire({
-                title: 'Delete?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d32f2f',
-                confirmButtonText: 'Yes'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        const res = await fetch(`/api/documents/${docId}/user/${selectedUser.id}`, { method: 'DELETE' });
-                        const data = await res.json();
-                        if (data.success) {
-                            loadUserDocuments(selectedUser.id);
-                            Swal.fire('Deleted', '', 'success');
-                        }
-                    } catch (e) { }
-                }
-            });
-        }
-
-        document.getElementById('closeModal').addEventListener('click', () => {
-            const modal = document.getElementById('previewModal');
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300); // Wait for transition
-        });
-
-        // --- PREVIEW FUNCTION ---
-        async function previewDoc(id, type, name) {
-            const modal = document.getElementById('previewModal');
-            const area = document.getElementById('previewArea');
-            document.getElementById('previewTitle').innerText = name;
-
-            modal.style.display = 'flex';
-            // Small delay to trigger CSS transition
-            setTimeout(() => modal.classList.add('show'), 10);
-
-            area.innerHTML = '<div class="d-flex flex-column align-items-center justify-content-center h-100"><div class="spinner-border text-primary mb-3"></div><div class="text-muted">Loading preview...</div></div>';
-
-            const url = `/api/documents/download/${id}/user/${selectedUser.id}`;
-
-            try {
-                if (type === 'application/pdf') {
-                    const loadingTask = pdfjsLib.getDocument(url);
-                    const pdf = await loadingTask.promise;
-                    area.innerHTML = '';
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const viewport = page.getViewport({ scale: 1.2 });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        canvas.style.marginBottom = '1rem';
-                        canvas.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
-                        area.appendChild(canvas);
-                        await page.render({ canvasContext: context, viewport: viewport }).promise;
-                    }
-                }
-                else if (type.includes('wordprocessingml')) {
-                    const response = await fetch(url);
-                    const arrayBuffer = await response.arrayBuffer();
-                    const result = await mammoth.convertToHtml({ arrayBuffer: arrayBuffer });
-                    if (result.value) area.innerHTML = `<div class="bg-white p-5 shadow-sm w-100 text-dark" style="max-width:800px;">${result.value}</div>`;
-                    else throw new Error("Empty document");
-                }
-                else if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) {
-                    const response = await fetch(url);
-                    const arrayBuffer = await response.arrayBuffer();
-                    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const html = XLSX.utils.sheet_to_html(worksheet, { id: "excelTable", editable: false });
-                    area.innerHTML = `<div class="bg-white p-3 overflow-auto w-100 text-dark">${html}</div>`;
-                    const table = area.querySelector('table');
-                    if (table) table.className = 'table table-bordered table-striped table-sm';
-                }
-                else if (type.startsWith('image/')) {
-                    area.innerHTML = `<img src="${url}" style="max-width:100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px;">`;
-                }
-                else if (type === 'text/plain') {
-                    const response = await fetch(url);
-                    const text = await response.text();
-                    area.innerHTML = `<pre class="bg-white p-4 w-100 border rounded" style="white-space: pre-wrap;">${text}</pre>`;
-                }
-                else if (type.includes('presentation') || type.includes('powerpoint')) {
-                    throw new Error("PPT_NOT_SUPPORTED");
-                }
-                else {
-                    throw new Error("FORMAT_NOT_SUPPORTED");
-                }
-            } catch (e) {
-                console.error(e);
-                let msg = "This file format cannot be viewed in the browser.";
-                let title = "Preview Unavailable";
-
-                if (e.message === "PPT_NOT_SUPPORTED") {
-                    title = "PowerPoint Preview";
-                    msg = "PowerPoint preview involves complex formatting not supported in the browser. Please download to view.";
-                }
-
-                area.innerHTML = `
-                    <div class="text-center p-5">
-                        <i class="fas fa-file-circle-xmark text-muted fa-3x mb-3"></i>
-                        <h4 class="text-dark">${title}</h4>
-                        <p class="text-muted mb-4">${msg}</p>
-                        <a href="${url}" class="btn btn-primary"><i class="fas fa-download me-2"></i>Download File</a>
-                    </div>`;
-            }
-        }
-    </script>
+    <script src="js/admin-doc.js"></script>
 </body>
 
 </html>

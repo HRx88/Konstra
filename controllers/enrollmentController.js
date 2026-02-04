@@ -1,4 +1,5 @@
 const Enrollment = require('../models/enrollment');
+const ProgramModule = require('../models/programModule');
 
 class EnrollmentController {
 
@@ -19,20 +20,43 @@ class EnrollmentController {
 
     static async createEnrollment(req, res) {
         try {
-            const { userId, programId, slot, details } = req.body;
-            if (!userId || !programId) {
-                return res.status(400).json({ success: false, message: 'User ID and Program ID are required' });
+            const { userId, programId, details, slotId } = req.body;
+            const result = await Enrollment.createEnrollment(userId, programId, { details, slotId });
+
+            if (!result.success) {
+                return res.status(400).json(result);
+            }
+            res.status(201).json(result);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    // Get Enrollments for a specific user
+    static async getUserEnrollments(req, res) {
+        try {
+            const userId = req.params.userId;
+            const enrollments = await Enrollment.getEnrollmentsByUserId(userId);
+            res.json(enrollments);
+        } catch (err) {
+            console.error('Get User Enrollments Error:', err);
+            res.status(500).json({ error: err.message });
+        }
+    }
+
+    // Get progress for an enrollment
+    static async getProgress(req, res) {
+        try {
+            const enrollmentId = parseInt(req.params.id);
+            if (isNaN(enrollmentId)) {
+                return res.status(400).json({ success: false, message: 'Invalid Enrollment ID' });
             }
 
-            const result = await Enrollment.createEnrollment(userId, programId, { slot, details });
-            if (result.success) {
-                res.json({ success: true, message: 'Enrollment successful' });
-            } else {
-                res.status(400).json(result);
-            }
-        } catch (error) {
-            console.error('Controller Create Error:', error);
-            res.status(500).json({ success: false, message: 'Server error creating enrollment' });
+            const progress = await ProgramModule.getUserProgress(enrollmentId);
+            res.json(progress || []);
+        } catch (err) {
+            console.error('Get Progress Error:', err);
+            res.status(500).json({ success: false, message: 'Server error fetching progress' });
         }
     }
 }

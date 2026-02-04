@@ -48,9 +48,19 @@ class Credential {
     let pool;
     try {
       // -----------------------------------------------------
+      // Step 0: Get Program Details (Name)
+      // -----------------------------------------------------
+      pool = await sql.connect(dbConfig);
+      const progResult = await pool.request()
+        .input('pid', sql.Int, programID)
+        .query('SELECT Title FROM Programs WHERE ProgramID = @pid');
+
+      const programName = progResult.recordset[0]?.Title || 'Certified Program';
+
+      // -----------------------------------------------------
       // Step A: Issue the Credential
       // -----------------------------------------------------
-      const issueDate = new Date().toISOString().split('T')[0]; 
+      const issueDate = new Date().toISOString().split('T')[0];
 
       const certifierPayload = {
         recipient: {
@@ -58,7 +68,10 @@ class Credential {
           email: recipientEmail
         },
         issueDate: issueDate,
-        groupId: groupID
+        groupId: groupID,
+        customAttributes: {
+          "custom.name": programName
+        }
       };
 
       console.log("[DEBUG] Step 1: Issuing Credential...", JSON.stringify(certifierPayload));
@@ -98,9 +111,9 @@ class Credential {
       // Step B: Fetch Designs (to get Image/PDF from Previews)
       // -----------------------------------------------------
       const designsUrl = `https://api.certifier.io/v1/credentials/${newCredentialId}/designs`;
-      
+
       console.log(`[DEBUG] Step 2: Fetching designs from ${designsUrl}`);
-      
+
       const designResponse = await fetch(designsUrl, {
         method: "GET",
         headers: {
@@ -124,7 +137,7 @@ class Credential {
       if (Array.isArray(designData) && designData.length > 0) {
         // We take the first design returned
         const design = designData[0];
-        
+
         if (design.previews && Array.isArray(design.previews)) {
           // Find PNG for ImageURL
           const pngObj = design.previews.find(p => p.format === 'png');
@@ -141,8 +154,8 @@ class Credential {
       // -----------------------------------------------------
       // Step C: Save to Database
       // -----------------------------------------------------
-      pool = await sql.connect(dbConfig);
-      
+      // pool is already connected from Step 0
+
       const insertQuery = `
         INSERT INTO Credentials 
         (UserID, ProgramID, CertifierCredentialID, PublicURL, PdfURL, ImageURL, Type, IssuedAt)
@@ -155,13 +168,13 @@ class Credential {
         .input("ProgramID", sql.Int, programID)
         .input("CertID", sql.NVarChar, newCredentialId)
         .input("PublicURL", sql.NVarChar, finalPublicUrl)
-        .input("PdfURL", sql.NVarChar, finalPdfUrl) 
+        .input("PdfURL", sql.NVarChar, finalPdfUrl)
         .input("ImageURL", sql.NVarChar, finalImageUrl)
         .query(insertQuery);
 
-      return { 
-        id: newCredentialId, 
-        url: finalPublicUrl, 
+      return {
+        id: newCredentialId,
+        url: finalPublicUrl,
         pdf: finalPdfUrl,
         image: finalImageUrl
       };

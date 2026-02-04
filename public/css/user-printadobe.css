@@ -1,0 +1,164 @@
+:root {
+    --brand-yellow: #FFD200;
+    --brand-dark: #1a1a1a;
+    --primary-red: #d32f2f;
+    --hover-red: #b71c1c;
+}
+
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+    color: #333;
+}
+
+/* --- CONTENT --- */
+/* .main-content handled in sidebar.css */
+
+
+/* --- CATALOG HERO --- */
+.catalog-hero {
+    background: white;
+    border-left: 5px solid var(--brand-yellow);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+#catalogSearch {
+    background-color: #f1f3f5;
+    height: 45px;
+    transition: all 0.3s;
+}
+
+#catalogSearch:focus {
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(255, 210, 0, 0.2);
+}
+
+/* --- CARD-STYLE TABS --- */
+.nav-tabs {
+    border: none;
+    gap: 15px;
+}
+
+.nav-tabs .nav-link {
+    color: #666;
+    font-weight: 700;
+    border: none;
+    background-color: white;
+    padding: 12px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.nav-tabs .nav-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    color: var(--primary-red);
+}
+
+.nav-tabs .nav-link.active {
+    background-color: white;
+    color: var(--brand-dark) !important;
+    border-left: 4px solid var(--brand-yellow);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* --- CATALOG CARDS --- */
+.catalog-card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.catalog-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+}
+
+.catalog-card .card-img-top {
+    transition: transform 0.5s ease;
+}
+
+.catalog-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.catalog-card .badge {
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-dark {
+    background-color: var(--primary-red);
+    border: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: all 0.3s;
+    color: white;
+}
+
+.btn-dark:hover {
+    background-color: var(--hover-red);
+    transform: translateY(-1px);
+    color: white;
+}
+
+.btn-outline-dark {
+    border-radius: 10px;
+    padding: 10px 15px;
+    border: 1.5px solid #dee2e6;
+    color: #666;
+}
+
+.btn-outline-dark:hover {
+    border-color: var(--brand-dark);
+    background-color: var(--brand-dark);
+    color: white;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .catalog-hero {
+        padding: 20px !important;
+    }
+
+    .nav-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 5px;
+    }
+
+    .nav-tabs .nav-link {
+        white-space: nowrap;
+    }
+}

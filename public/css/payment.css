@@ -1,0 +1,43 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.loader-card {
+    text-align: center;
+    padding: 40px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    /* Optional: Add a slight animation */
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #d32f2f;
+}
+
+.redirect-text {
+    margin-top: 20px;
+    font-weight: 500;
+}

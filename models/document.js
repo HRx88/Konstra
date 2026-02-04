@@ -7,7 +7,7 @@ class Document {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('userID', sql.Int, documentData.userID)
         .input('adminID', sql.Int, documentData.adminID)
@@ -33,12 +33,12 @@ class Document {
     }
   }
 
-  // Get documents by user ID
+  // Get documents by user ID (Received)
   static async getDocumentsByUser(userID) {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('userID', sql.Int, userID)
         .query(`
@@ -50,10 +50,12 @@ class Document {
             d.FilePath,
             d.UploadDate,
             a.Username as AdminName,
-            d.AdminID
+            d.AdminID,
+            d.ReviewStatus
           FROM Documents d
-          INNER JOIN Admins a ON d.AdminID = a.AdminID
+          LEFT JOIN Admins a ON d.AdminID = a.AdminID
           WHERE d.UserID = @userID
+          AND (d.ReviewStatus IS NULL OR d.ReviewStatus = 'Received')
           ORDER BY d.UploadDate DESC
         `);
 
@@ -71,7 +73,7 @@ class Document {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .query(`
           SELECT 
@@ -79,6 +81,7 @@ class Document {
             Username,
             Email,
             ProfilePicture,
+            Role,
             IsOnline,
             LastSeen
           FROM Users
@@ -100,7 +103,7 @@ class Document {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('documentID', sql.Int, documentID)
         .query(`
@@ -125,7 +128,7 @@ class Document {
     let pool;
     try {
       pool = await sql.connect(dbConfig);
-      
+
       const result = await pool.request()
         .input('searchTerm', sql.NVarChar, `%${searchTerm}%`)
         .query(`
@@ -149,7 +152,7 @@ class Document {
       if (pool) pool.close();
     }
   }
-  
+
   // Get single document (helper for controller)
   static async getDocumentById(documentID) {
     let pool;
@@ -162,7 +165,142 @@ class Document {
     } catch (err) {
       throw err;
     } finally {
-        if(pool) pool.close();
+      if (pool) pool.close();
+    }
+  }
+
+  // Upload document by user (for admin review)
+  static async uploadUserDocument(documentData) {
+    let pool;
+    try {
+      pool = await sql.connect(dbConfig);
+
+      // First try to get any admin ID to satisfy potential FK constraint
+      const adminResult = await pool.request().query('SELECT TOP 1 AdminID FROM Admins');
+      const defaultAdminID = adminResult.recordset[0]?.AdminID || 1;
+
+      const result = await pool.request()
+        .input('userID', sql.Int, documentData.userID)
+        .input('adminID', sql.Int, defaultAdminID)
+        .input('fileName', sql.NVarChar, documentData.fileName)
+        .input('fileType', sql.NVarChar, documentData.fileType)
+        .input('fileSize', sql.BigInt, documentData.fileSize)
+        .input('filePath', sql.NVarChar, documentData.filePath)
+        .input('reviewStatus', sql.NVarChar, 'Pending')
+        .query(`
+          INSERT INTO Documents (UserID, AdminID, FileName, FileType, FileSize, FilePath, UploadDate, ReviewStatus)
+          OUTPUT INSERTED.DocumentID, INSERTED.FileName, INSERTED.FileType, INSERTED.FileSize, INSERTED.UploadDate, INSERTED.ReviewStatus
+          VALUES (@userID, @adminID, @fileName, @fileType, @fileSize, @filePath, GETDATE(), @reviewStatus)
+        `);
+
+      return {
+        success: true,
+        document: result.recordset[0]
+      };
+    } catch (err) {
+      console.error('User Document Upload Error:', err);
+      throw err;
+    } finally {
+      if (pool) pool.close();
+    }
+  }
+
+  // Get documents uploaded by user
+  static async getUserUploads(userID) {
+    let pool;
+    try {
+      pool = await sql.connect(dbConfig);
+
+      const result = await pool.request()
+        .input('userID', sql.Int, userID)
+        .query(`
+          SELECT 
+            DocumentID,
+            FileName,
+            FileType,
+            FileSize,
+            FilePath,
+            UploadDate,
+            ReviewStatus,
+            AdminFeedback,
+            FeedbackFilePath,
+            FeedbackFileName
+          FROM Documents
+          WHERE UserID = @userID 
+          AND ReviewStatus IN ('Pending', 'Approved', 'Rejected')
+          ORDER BY UploadDate DESC
+        `);
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Get User Uploads Error:', err);
+      throw err;
+    } finally {
+      if (pool) pool.close();
+    }
+  }
+  // Get all pending documents for admin review
+  static async getPendingDocuments() {
+    let pool;
+    try {
+      pool = await sql.connect(dbConfig);
+
+      const result = await pool.request()
+        .query(`
+          SELECT 
+            d.DocumentID,
+            d.FileName,
+            d.FileType,
+            d.FileSize,
+            d.FilePath,
+            d.UploadDate,
+            u.Username,
+            u.Email
+          FROM Documents d
+          INNER JOIN Users u ON d.UserID = u.UserID
+          WHERE d.ReviewStatus = 'Pending'
+          ORDER BY d.UploadDate ASC
+        `);
+
+      return result.recordset;
+    } catch (err) {
+      console.error('Get Pending Docs Error:', err);
+      throw err;
+    } finally {
+      if (pool) pool.close();
+    }
+  }
+
+  // Update review status (and feedback)
+  static async updateReviewStatus(documentID, status, feedback = null, feedbackFilePath = null, feedbackFileName = null) {
+    let pool;
+    try {
+      pool = await sql.connect(dbConfig);
+
+      let query = `UPDATE Documents SET ReviewStatus = @status`;
+      if (feedback !== null) query += `, AdminFeedback = @feedback`;
+      if (feedbackFilePath !== null) query += `, FeedbackFilePath = @feedbackFilePath, FeedbackFileName = @feedbackFileName`;
+
+      query += ` WHERE DocumentID = @documentID`;
+
+      const request = pool.request()
+        .input('documentID', sql.Int, documentID)
+        .input('status', sql.NVarChar, status);
+
+      if (feedback !== null) request.input('feedback', sql.NVarChar, feedback);
+      if (feedbackFilePath !== null) {
+        request.input('feedbackFilePath', sql.NVarChar, feedbackFilePath);
+        request.input('feedbackFileName', sql.NVarChar, feedbackFileName);
+      }
+
+      await request.query(query);
+
+      return { success: true };
+    } catch (err) {
+      console.error('Update Status Error:', err);
+      throw err;
+    } finally {
+      if (pool) pool.close();
     }
   }
 }

@@ -1,0 +1,76 @@
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* --- PAGE SPECIFIC STYLES --- */
+.program-card {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.program-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+    background-color: #eee;
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.badge-type {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.badge-edu {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+}
+
+.badge-trip {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.price-tag {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #d32f2f;
+    margin-top: auto;
+}
+
+.nav-pills .nav-link {
+    color: #555;
+    background: white;
+    border: 1px solid #dee2e6;
+    margin-right: 10px;
+    border-radius: 20px;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+}
