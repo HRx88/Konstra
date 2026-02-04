@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="mb-4" id="participantContainer">
-                            <label class="form-label">Number of Participants</label>
+                            <label class="form-label" for="participantCount">Number of Participants</label>
                             <select class="form-select" id="participantCount">
                                 <option value="1">1 Person</option>
                                 <option value="2">2 People</option>
@@ -57,7 +57,7 @@
 
                         <!-- Date/Slot Selection (Visual) -->
                         <div class="mb-4" id="dateSelection">
-                            <label class="form-label mb-3">Select a Session</label>
+                            <label class="form-label mb-3" for="selectedSlot">Select a Session</label>
                             <div class="slot-grid" id="slotContainer">
                                 <!-- JS Injected -->
                             </div>
@@ -82,18 +82,18 @@
                         <div class="mb-3">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">First Name</label>
+                                    <label class="form-label" for="firstName">First Name</label>
                                     <input type="text" class="form-control" id="firstName" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Last Name</label>
+                                    <label class="form-label" for="lastName">Last Name</label>
                                     <input type="text" class="form-control" id="lastName" required>
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Email Address</label>
+                            <label class="form-label" for="email">Email Address</label>
                             <input type="email" class="form-control" id="email" required>
                         </div>
 
@@ -139,7 +139,7 @@
 
                     <!-- Discount Section -->
                     <div class="mt-3 pt-3 border-top">
-                        <label class="small fw-bold text-muted mb-1">Reference Code</label>
+                        <label class="small fw-bold text-muted mb-1" for="discountCodeInput">Reference Code</label>
                         <div class="input-group input-group-sm">
                             <select class="form-select" id="discountCodeInput">
                                 <option value="">-- Select a code --</option>

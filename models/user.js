@@ -184,29 +184,25 @@ class User {
       }
 
       let isValidPassword = false;
+      const isBcryptHash = user.Password && user.Password.startsWith('$2b$');
 
-      if (isUser) {
-        // For Users: Always use bcrypt (passwords are hashed during registration)
+      if (isBcryptHash) {
+        // Password is hashed
         isValidPassword = await bcrypt.compare(password, user.Password);
       } else {
-        // For Admins: Check if password is hashed or plain text
-        const isBcryptHash = user.Password.startsWith('$2b$');
+        // Password is plain text (legacy)
+        isValidPassword = (user.Password === password);
 
-        if (isBcryptHash) {
-          // Admin password is hashed
-          isValidPassword = await bcrypt.compare(password, user.Password);
-        } else {
-          // Admin password is plain text (legacy)
-          isValidPassword = (user.Password === password);
+        // Auto-upgrade to hashed password if login successful
+        if (isValidPassword) {
+          const hashedPassword = await bcrypt.hash(password, 10);
+          const tableName = isUser ? 'Users' : 'Admins';
+          const idField = isUser ? 'UserID' : 'AdminID';
 
-          // Auto-upgrade to hashed password if login successful
-          if (isValidPassword) {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            await pool.request()
-              .input('adminID', sql.Int, user.ID)
-              .input('hashedPassword', sql.NVarChar, hashedPassword)
-              .query('UPDATE Admins SET Password = @hashedPassword WHERE AdminID = @adminID');
-          }
+          await pool.request()
+            .input('id', sql.Int, user.ID)
+            .input('hashedPassword', sql.NVarChar, hashedPassword)
+            .query(`UPDATE ${tableName} SET Password = @hashedPassword WHERE ${idField} = @id`);
         }
       }
 

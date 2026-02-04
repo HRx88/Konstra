@@ -1,7 +1,36 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Get Session ID from URL (Stripe adds this on redirect)
+    // 1. Get Session ID and Type from URL
     const params = new URLSearchParams(window.location.search);
     const sessionId = params.get('session_id');
+    const type = params.get('type');
+
+    // --- 🛑 DONATION SUCCESS VIEW ---
+    if (type === 'donation') {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('donationSuccessState').style.display = 'block';
+
+        // Add redirection logic
+        const redirectMsg = document.getElementById('redirectMsg');
+        const countdownEl = document.getElementById('countdown');
+        if (redirectMsg && countdownEl) {
+            redirectMsg.style.display = 'block';
+            let timeLeft = 6;
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    window.location.href = 'our-project.html';
+                }
+            }, 1000);
+        } else {
+            // Fallback if elements not found
+            setTimeout(() => {
+                window.location.href = 'our-project.html';
+            }, 6000);
+        }
+        return;
+    }
 
     // 2. Get Form Data from Session Storage (Saved in enrollment.html)
     const enrollmentJson = sessionStorage.getItem('pendingEnrollment');

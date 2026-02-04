@@ -348,9 +348,9 @@ window.approveDoc = async function (docId) {
         title: 'Approve Document',
         html:
             '<div style="text-align: left;">' +
-            '<label class="form-label small text-muted">Feedback</label>' +
+            '<label class="form-label small text-muted" for="swal-feedback">Feedback</label>' +
             '<textarea id="swal-feedback" class="form-control" placeholder="Feedback (Optional)" style="height: 150px;"></textarea>' +
-            '<div class="mt-3"><label class="form-label small text-muted">Attach File (Optional)</label>' +
+            '<div class="mt-3"><label class="form-label small text-muted" for="swal-file">Attach File (Optional)</label>' +
             '<input id="swal-file" type="file" class="form-control"></div>' +
             '</div>',
         showCancelButton: true,
@@ -394,9 +394,9 @@ window.rejectDoc = async function (docId) {
         title: 'Reject Document',
         html:
             '<div style="text-align: left;">' +
-            '<label class="form-label small text-muted">Reason</label>' +
+            '<label class="form-label small text-muted" for="swal-feedback">Reason</label>' +
             '<textarea id="swal-feedback" class="form-control" placeholder="Reason for Rejection (Required)" style="height: 150px;"></textarea>' +
-            '<div class="mt-3"><label class="form-label small text-muted">Attach File (Optional)</label>' +
+            '<div class="mt-3"><label class="form-label small text-muted" for="swal-file">Attach File (Optional)</label>' +
             '<input id="swal-file" type="file" class="form-control"></div>' +
             '</div>',
         showCancelButton: true,

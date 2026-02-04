@@ -243,15 +243,15 @@ window.shareViaAnnouncement = async (code, type, value, programName = '', curren
         width: '600px',
         html: `
             <div class="mb-3 text-start">
-                <label class="form-label small text-muted fw-bold">TITLE</label>
+                <label class="form-label small text-muted fw-bold" for="swal-title">TITLE</label>
                 <input type="text" id="swal-title" class="form-control" value="🎉 Special Offer: ${discountText}${programInfo}!">
             </div>
             <div class="mb-3 text-start">
-                <label class="form-label small text-muted fw-bold">MESSAGE</label>
+                <label class="form-label small text-muted fw-bold" for="swal-content">MESSAGE</label>
                 <textarea id="swal-content" class="form-control" rows="4">Use code "${code}" at checkout to get ${discountText}${programInfo}!${remainingInfo}${usageInfo}\n\nLimited time only. Grab it now!</textarea>
             </div>
             <div class="text-start">
-                <label class="form-label small text-muted fw-bold">PRIORITY</label>
+                <label class="form-label small text-muted fw-bold" for="swal-priority">PRIORITY</label>
                 <select id="swal-priority" class="form-select">
                     <option value="Normal">Normal</option>
                     <option value="Important" selected>Important</option>
@@ -315,11 +315,11 @@ window.emailToUsers = async (code, type, value, programName = '') => {
         width: '600px',
         html: `
             <div class="mb-3 text-start">
-                <label class="form-label small text-muted fw-bold">SUBJECT</label>
+                <label class="form-label small text-muted fw-bold" for="swal-subject">SUBJECT</label>
                 <input type="text" id="swal-subject" class="form-control" value="🎁 Exclusive Offer: ${discountText}${programName ? ' on ' + programName : ''}!">
             </div>
             <div class="mb-3 text-start">
-                <label class="form-label small text-muted fw-bold">MESSAGE</label>
+                <label class="form-label small text-muted fw-bold" for="swal-body">MESSAGE</label>
                 <textarea id="swal-body" class="form-control" rows="6">Hi there!
 
 We're excited to offer you an exclusive discount!
