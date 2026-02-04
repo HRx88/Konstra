@@ -256,21 +256,23 @@ Konstra/
 | **Enrollment**      | `/enrollment.html`            | Enroll in a program              |
 | **Payment**         | `/payment.html`               | Stripe checkout page             |
 | **Payment Success** | `/success.html`               | Payment confirmation page        |
-| **Projects**        | `/our-project.html`           | Project portfolio                |
-| **Chat**            | `/chat.html`                  | User messaging interface         |
-| **Meetings**        | `/my-meetings.html`           | User's scheduled meetings        |
-| **Booking**         | `/booking-Consultation.html`  | Schedule consultations           |
-| **Credentials**     | `/user-credentials.html`      | View earned certificates         |
-| **Profile**         | `/profile.html`               | User profile management          |
-| **Admin Home**      | `/admin-home.html`            | Admin dashboard                  |
-| **Admin Programs**  | `/admin-printadobe.html`      | Manage programs                  |
-| **Admin Modules**   | `/admin-program-modules.html` | Manage course content            |
-| **Admin Projects**  | `/admin-projects.html`        | Manage public projects           |
-| **Admin Documents** | `/admin-doc.html`             | Review user documents            |
-| **Admin Chat**      | `/adminChat.html`             | Admin messaging interface        |
-| **Admin Profile**   | `/admin-profile.html`         | Admin tools & NGO creation       |
-| **NGO Dashboard**   | `/ngo-dashboard.html`         | NGO partner dashboard            |
-| **NGO Documents**   | `/ngo-doc.html`               | NGO document repository          |
+### 📑 Application Pages & Core Logic
+
+| Module / Page       | Key Functionality & Logic Handlers                                                                 |
+| ------------------- | -------------------------------------------------------------------------------------------------- |
+| `index.html`        | Public entry point; dynamic navigation and marketing sections.                                     |
+| `login.html`        | Multi-role authentication bridge supporting JWT and Google OAuth.                                  |
+| `user-dashboard.js` | **Progress Aggregator**: Calculates combined completion across parent and child program levels.    |
+| `enrollment.js`     | **Enrollment Engine**: Multi-step booking with **Stacked Discounts** and trip requirements collection. |
+| `payment.js`        | Checkout bridge; validates item selection and triggers secure Stripe integration.                  |
+| `program-content.js`| **Virtual Classroom**: Features **EOF Auto-Marking**, In-Video Quizzes, and time-based PDF unlocking. |
+| `admin-doc.js`      | **Review Engine**: **Live browser preview** for PDF/DOCX/XLSX; supports synchronous admin feedback. |
+| `admin-printadobe.js`| **Catalog Manager**: CRUD for programs with full image and session slot management.                |
+| `admin-program-modules.js` | **Curriculum Builder**: JSON-based Quiz creator and hierarchical child-program (Level) linker. |
+| `chat.js`           | **Support System**: Auto-initializes student support threads with real-time SSE notifications.       |
+| `adminChat.js`      | **Collaboration Hub**: Multi-thread admin view with **Deep Search** across conversation history.   |
+| `ngo-dashboard.html`| Partner-facing analytics driving impact tracking for CO2 and construction milestones.              |
+| `success.js`        | Post-transaction validator; verifies Stripe `session_id` to finalize enrollment records.           |
 
 ---
 
@@ -295,13 +297,13 @@ Accessible to all visitors without authentication.
 ### 👤 Authenticated User Portal (Student)
 Access via `user-dashboard.html`. Navigation is driven by the **Portal Sidebar**.
 
-- **Dashboard** (`user-dashboard.html`): Main landing; view learning progress, active courses, and announcements.
+- **Dashboard** (`user-dashboard.html`): Main landing; view learning progress, active courses, and **real-time announcements** via SSE.
 - **Documents** (`user-doc.html`): Secure repository for student project files and ID uploads.
 - **Chat** (`chat.html`): Real-time messaging hub for student support.
 - **Printadobe** (`user-printadobe.html`): Private course catalog for enrolled students to discover new modules.
 - **Credentials** (`user-credentials.html`): Digital vault for viewing and downloading earned certificates.
 - **Profile** (`profile.html`): Manage personal settings and account security.
-- **Overview** (`user-overview.html`): Statistical breakdown of learning milestones and impact.
+- **Overview** (`user-overview.html`): Statistical breakdown of learning milestones and aggregated impact.
 
 ### 👨‍🏫 Admin Portal
 Access via `admin-home.html`. Navigation is driven by the **Admin Sidebar**.
@@ -309,7 +311,7 @@ Access via `admin-home.html`. Navigation is driven by the **Admin Sidebar**.
 - **Dashboard** (`admin-home.html`): Control center with real-time KPIs and system activity feed.
 - **Documents** (`admin-doc.html`): Review queue for verifying student and partner documentation.
 - **Chat** (`chat.html`): Multi-channel communication hub for overseeing platform messages.
-- **Meetings** (`my-meetings.html`): Administrative tool for moderating scheduled video lessons.
+- **Meetings** (`my-meetings.html`): Administrative tool for moderating scheduled video lessons and managing **Live Meeting URLs**.
 - **PrintAdobe** (`admin-printadobe.html`): Master catalog management for all programs and trips.
 - **Credentials** (`admin-credentials.html`): Oversight for issuing and revoking digital student records.
 - **Projects** (`admin-projects.html`): Editor for managing the public-facing project portfolio.
@@ -355,43 +357,58 @@ Access via `ngo-dashboard.html`. Navigation is driven by the **Partner Sidebar**
     -   Progress reaches 100%.
     -   Certificate generated and accessible via `user-credentials.html`.
 
-### 2. 👨‍🏫 Admin Content Management Flow
+### 1. 🚀 Student Enrollment & Discovery Flow
 
-**Goal**: Create a new program and upload study materials.
+1.  **Catalog Selection**: User browses `index.html` -> `printadobe.html`.
+2.  **Enrollment Wizard** (`enrollment.html`):
+    *   Step 1: Select Session (Required for Lessons/Workshops).
+    *   Step 2: Enter personal details and **Trip Requirements** (Passport/Dietary) if applicable.
+    *   Step 3: **Discounts**: Apply Reference Codes. Select "All Levels" to trigger a **12.9% Bundle Discount** (Stacks with codes).
+3.  **Payment** (`payment.html`): Redirected to Stripe Checkout.
+4.  **Redirection** (`success.html`): System verifies Stripe `session_id` and finalizes DB records.
 
-1.  **Program Setup**
-    - Admin logs in -> `admin-printadobe.html`.
-    - Clicks **"Add New Program"**.
-    - Fills: Title, Price, Description. Uploads Cover Image.
-    - **Save**: Program is now visible in the catalog.
-2.  **Content Upload**
-    - Navigates to `admin-program-modules.html`.
-    - Selects the newly created program from dropdown.
-    - **Action**: "Add Module".
-    - Fills: Module Title (e.g., "Intro to Robotics").
-    - **File Upload**: Selects PDF/Video.
-    - **System**: Saves file to `public/uploads/modules/programs` and links path in DB.
-3.  **Publication**
-    - Module appears in the `program-content.html` for enrolled users effectively immediately.
+### 2. 📖 Interactive Learning Journey
 
-### 3. 📄 Document Verification Flow
+1.  **Dashboard** (`user-dashboard.html`): Shows **Aggregate Progress** (Parent Program + All enrolled Child Levels).
+2.  **Classroom** (`program-content.html`):
+    *   **Auto-Marking**: Videos mark complete at EOF; PDFs/Articles enabled after a timer (5-10s).
+    *   **In-Video Quizzes**: Playback pauses at timestamps; requires correct answers to proceed.
+    *   **Level Ups**: Unlock and enroll in "Next Levels" directly from the course sidebar.
+    *   **Live Sessions**: "Join Now" button appears on Dashboard/Meetings for active slots.
 
-**Goal**: Admin approves a document uploaded by a user (e.g., ID proof).
+### 3. 🛠️ Admin Content Mastery Flow
 
-1.  **Submission**
-    -   User/NGO uploads document via `profile.html` or `ngo-doc.html`.
-    -   Status set to `Pending`.
-2.  **Review**
-    -   Admin checks `admin-doc.html`.
-    -   Previews file (PDF/Image) directly in browser.
-3.  **Decision**
-    -   **Approve**: Status -> `Approved`. User notified via notification system.
-    -   **Reject**: Admin adds comment. Status -> `Rejected`.
+1.  **Program Creation** (`admin-printadobe.html`): Set base program details and upload marketing images.
+2.  **Session Management**: Create time slots and attach **Live Meeting URLs** for webinars.
+3.  **Advanced Curriculum** (`admin-program-modules.html`):
+    *   **Level Builder**: Create child programs (Levels 1, 2, 3) linked to parents.
+    *   **Module Editor**: Upload content (Video/PDF) or build **JSON-based Quizzes**.
+    *   **Interactive Overlays**: Embed `[QUIZ]` tags in descriptions for in-video pausing.
+4.  **Oversight**: Review user documents and issue digital credentials via the **Credentials** dashboard.
 
-### 4. 🤝 NGO Partner Collaboration Flow
+### 4. 📄 Intelligent Document Verification
+
+1.  **Submission**: User/NGO uploads files to `user-doc.html` / `ngo-doc.html`.
+2.  **Admin Review Channel** (`admin-doc.js`):
+    *   **Unified Queue**: Filterable by User/NGO roles.
+    *   **Live Preview**: Instant browser-side rendering for PDF, DOCX, and XLSX.
+    *   **Decision Engine**: Approve or Reject with **Synchronous Feedback** and attachment support.
+3.  **Audit**: Approved documents appear in the User's secure repository for lifelong access.
+
+### 5. 💬 Konstra Support & Collaboration
+
+1.  **Student Service** (`chat.js`):
+    *   **Auto-Onboarding**: New students are instantly connected to the Admin Support Desk.
+    *   **Real-time SSE/Socket**: Instant notification toasts and typing indicators.
+2.  **Admin Command Center** (`adminChat.js`):
+    *   **Omni-channel**: Manage dozens of simultaneous support threads.
+    *   **Deep Search**: Keyword-driven search across entire message history.
+    *   **Read Receipts**: Visual confirmation of student engagement.
+
+### 6. 🤝 NGO Partner Collaboration Flow
 
 1.  **Dashboard** (`ngo-dashboard.html`): Partner reviews Construction Analytics and CO2 savings.
-2.  **Coordination**: Uses **Book Consultation** (`booking-Consultation.html`) to schedule reviews.
+2.  **Coordination**: Uses **Book Consultation** (`booking-Consultation.html`) to schedule reviews with inline Calendly logic.
 3.  **Communication**: Uses **Partner Chat** (`chat.html`) for real-time support.
 4.  **Meetings**: Joins scheduled strategy calls via **My Meetings** (`my-meetings.html`).
 5.  **Documentation**: Uploads/Downloads project reports in **Documents** (`ngo-doc.html`).
