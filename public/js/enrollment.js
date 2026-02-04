@@ -162,7 +162,7 @@ function generateExtraFields() {
         // Education Program - Show Child Program Selector (Multi-Select, Optional)
         container.innerHTML = `
             <h6 class="fw-bold mb-3"><i class="fas fa-layer-group text-danger me-2"></i>Select Program Levels <span class="badge bg-secondary fw-normal">Optional</span></h6>
-            <p class="text-muted small mb-2">Select individual levels or <strong class="text-success">get 10% off when you select all levels!</strong></p>
+            <p class="text-muted small mb-2">Select individual levels or <strong class="text-success">get 12.9% off when you select all levels!</strong></p>
             <div id="childProgramContainer">
                 <div class="text-center py-3"><i class="fas fa-spinner fa-spin"></i> Loading options...</div>
             </div>
@@ -306,14 +306,14 @@ function updateChildProgramSelection() {
     // Update Global Price
     price = basePrice + additionalPrice;
 
-    // Bundle discount: 10% off if ALL child programs are selected (separate from reference code)
+    // Bundle discount: 12.9% off if ALL child programs are selected (separate from reference code)
     const allSelected = allCheckboxes.length > 0 && checkedBoxes.length === allCheckboxes.length;
 
     if (allSelected) {
         bundleDiscount = {
             code: 'BUNDLE_ALL',
             type: 'Percentage',
-            value: 10
+            value: 12.9
         };
         // Show bundle discount message
         updateDiscountMessage();
