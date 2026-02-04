@@ -241,38 +241,39 @@ Konstra/
 
 ## 🌐 Web Pages Guide
 
-| Page                | URL                           | Description                      |
-| ------------------- | ----------------------------- | -------------------------------- |
-| **Home**            | `/index.html`                 | Landing page with navigation     |
-| **About Us**        | `/about-us.html`              | Mission, vision, and team        |
-| **Product**         | `/product.html`               | Product showcase & AR viewer     |
-| **Login**           | `/login.html`                 | User login page                  |
-| **Register**        | `/register.html`              | New user registration            |
-| **User Dashboard**  | `/user-dashboard.html`        | Enrolled courses & progress      |
-| **Program Catalog** | `/printadobe_v2.html`         | Visual program guide & quiz      |
-| **Program List**    | `/printadobe.html`            | Filterable program search        |
-| **Program Details** | `/printadobe-details.html`    | Detailed program information     |
-| **Program Content** | `/program-content.html`       | Access enrolled course materials |
-| **Enrollment**      | `/enrollment.html`            | Enroll in a program              |
-| **Payment**         | `/payment.html`               | Stripe checkout page             |
-| **Payment Success** | `/success.html`               | Payment confirmation page        |
+| Page                | URL                        | Description                      |
+| ------------------- | -------------------------- | -------------------------------- |
+| **Home**            | `/index.html`              | Landing page with navigation     |
+| **About Us**        | `/about-us.html`           | Mission, vision, and team        |
+| **Product**         | `/product.html`            | Product showcase & AR viewer     |
+| **Login**           | `/login.html`              | User login page                  |
+| **Register**        | `/register.html`           | New user registration            |
+| **User Dashboard**  | `/user-dashboard.html`     | Enrolled courses & progress      |
+| **Program Catalog** | `/printadobe_v2.html`      | Visual program guide & quiz      |
+| **Program List**    | `/printadobe.html`         | Filterable program search        |
+| **Program Details** | `/printadobe-details.html` | Detailed program information     |
+| **Program Content** | `/program-content.html`    | Access enrolled course materials |
+| **Enrollment**      | `/enrollment.html`         | Enroll in a program              |
+| **Payment**         | `/payment.html`            | Stripe checkout page             |
+| **Payment Success** | `/success.html`            | Payment confirmation page        |
+
 ### 📑 Application Pages & Core Logic
 
-| Module / Page       | Key Functionality & Logic Handlers                                                                 |
-| ------------------- | -------------------------------------------------------------------------------------------------- |
-| `index.html`        | Public entry point; dynamic navigation and marketing sections.                                     |
-| `login.html`        | Multi-role authentication bridge supporting JWT and Google OAuth.                                  |
-| `user-dashboard.js` | **Progress Aggregator**: Calculates combined completion across parent and child program levels.    |
-| `enrollment.js`     | **Enrollment Engine**: Multi-step booking with **Stacked Discounts** and trip requirements collection. |
-| `payment.js`        | Checkout bridge; validates item selection and triggers secure Stripe integration.                  |
-| `program-content.js`| **Virtual Classroom**: Features **EOF Auto-Marking**, In-Video Quizzes, and time-based PDF unlocking. |
-| `admin-doc.js`      | **Review Engine**: **Live browser preview** for PDF/DOCX/XLSX; supports synchronous admin feedback. |
-| `admin-printadobe.js`| **Catalog Manager**: CRUD for programs with full image and session slot management.                |
-| `admin-program-modules.js` | **Curriculum Builder**: JSON-based Quiz creator and hierarchical child-program (Level) linker. |
-| `chat.js`           | **Support System**: Auto-initializes student support threads with real-time SSE notifications.       |
-| `adminChat.js`      | **Collaboration Hub**: Multi-thread admin view with **Deep Search** across conversation history.   |
-| `ngo-dashboard.html`| Partner-facing analytics driving impact tracking for CO2 and construction milestones.              |
-| `success.js`        | Post-transaction validator; verifies Stripe `session_id` to finalize enrollment records.           |
+| Module / Page              | Key Functionality & Logic Handlers                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `index.html`               | Public entry point; dynamic navigation and marketing sections.                                         |
+| `login.html`               | Multi-role authentication bridge supporting JWT and Google OAuth.                                      |
+| `user-dashboard.js`        | **Progress Aggregator**: Calculates combined completion across parent and child program levels.        |
+| `enrollment.js`            | **Enrollment Engine**: Multi-step booking with **Stacked Discounts** and trip requirements collection. |
+| `payment.js`               | Checkout bridge; validates item selection and triggers secure Stripe integration.                      |
+| `program-content.js`       | **Virtual Classroom**: Features **EOF Auto-Marking**, In-Video Quizzes, and time-based PDF unlocking.  |
+| `admin-doc.js`             | **Review Engine**: **Live browser preview** for PDF/DOCX/XLSX; supports synchronous admin feedback.    |
+| `admin-printadobe.js`      | **Catalog Manager**: CRUD for programs with full image and session slot management.                    |
+| `admin-program-modules.js` | **Curriculum Builder**: JSON-based Quiz creator and hierarchical child-program (Level) linker.         |
+| `chat.js`                  | **Support System**: Auto-initializes student support threads with real-time SSE notifications.         |
+| `adminChat.js`             | **Collaboration Hub**: Multi-thread admin view with **Deep Search** across conversation history.       |
+| `ngo-dashboard.html`       | Partner-facing analytics driving impact tracking for CO2 and construction milestones.                  |
+| `success.js`               | Post-transaction validator; verifies Stripe `session_id` to finalize enrollment records.               |
 
 ---
 
@@ -286,7 +287,13 @@ Accessible to all visitors without authentication.
   - Hero section, Feature highlights, Footer navigation.
 - **Information Pages**
   - **About Us** (`about-us.html`): Mission, vision, and team details.
-  - **PrintAdobe** (`printadobe_v2.html`): Courses and trips offered
+  - **PrintAdobe** (`printadobe_v2.html`): Courses and trips offered.
+    - **Track 1**: 3D Printing in Construction (`3D-PRINTING-IN-CONSTRUCTION.html`)
+    - **Track 2**: Architecture & Digital Fabrication (`ARCHITECTURE-&-DIGITAL-FABRICATION.html`)
+    - **Track 3**: Business, Innovation & Automation Strategy (`BUSINESS,-INNOVATION-&-AUTOMATION-STRATEGY.html`)
+    - **Track 4**: Industrial Robotics & Automation (`INDUSTRIAL-ROBOTICS-&-AUTOMATION.html`)
+    - **Track 5**: Sustainability & Emerging Technologies (`SUSTAINABILITY-&-EMERGING-TECHNOLOGIES.html`)
+    - **Trip 1**: PrintAdobe Cambodia Build Immersion (`PrintAdobe-Cambodia-Build-Immersion.html`)
   - **Our Projects** (`our-project.html`): Overview of initiatives.
     - _Sub-projects_: Strava (`project-strava.html`), 3D House (`project-strava-3dhouse.html`).
   - **Contact Us** (`contact-us.html`): Inquiry form and location map.
@@ -295,6 +302,7 @@ Accessible to all visitors without authentication.
   - **Register** (`register.html`): New user sign-up form.
 
 ### 👤 Authenticated User Portal (Student)
+
 Access via `user-dashboard.html`. Navigation is driven by the **Portal Sidebar**.
 
 - **Dashboard** (`user-dashboard.html`): Main landing; view learning progress, active courses, and **real-time announcements** via SSE.
@@ -306,12 +314,13 @@ Access via `user-dashboard.html`. Navigation is driven by the **Portal Sidebar**
 - **Overview** (`user-overview.html`): Statistical breakdown of learning milestones and aggregated impact.
 
 ### 👨‍🏫 Admin Portal
+
 Access via `admin-home.html`. Navigation is driven by the **Admin Sidebar**.
 
 - **Dashboard** (`admin-home.html`): Control center with real-time KPIs and system activity feed.
 - **Documents** (`admin-doc.html`): Review queue for verifying student and partner documentation.
 - **Chat** (`chat.html`): Multi-channel communication hub for overseeing platform messages.
-- **Meetings** (`my-meetings.html`): Administrative tool for moderating scheduled video lessons and managing **Live Meeting URLs**.
+- **Meetings** (`my-meetings.html`): Administrative tool for moderating scheduled video and managing **Live Meeting URLs**.
 - **PrintAdobe** (`admin-printadobe.html`): Master catalog management for all programs and trips.
 - **Credentials** (`admin-credentials.html`): Oversight for issuing and revoking digital student records.
 - **Projects** (`admin-projects.html`): Editor for managing the public-facing project portfolio.
@@ -319,6 +328,7 @@ Access via `admin-home.html`. Navigation is driven by the **Admin Sidebar**.
 - **Profile** (`admin-profile.html`): Management of admin credentials and new NGO partner onboarding.
 
 ### 🤝 NGO Partner Portal
+
 Access via `ngo-dashboard.html`. Navigation is driven by the **Partner Sidebar**.
 
 - **Dashboard** (`ngo-dashboard.html`): Impact analytics, construction milestones, and CO2 savings tracking.
@@ -337,33 +347,33 @@ Access via `ngo-dashboard.html`. Navigation is driven by the **Partner Sidebar**
 **Goal**: Purchase a course and complete it to earn a certificate.
 
 1.  **Discovery**
-    -   User lands on `index.html` or the visual hub `printadobe_v2.html`.
-    -   Browses catalog `printadobe.html` and selects a course.
-    -   Views dynamic details on `printadobe-details.html` (e.g., "3D Concrete Printing").
+    - User lands on `index.html` or the visual hub `printadobe_v2.html`.
+    - Browses catalog `printadobe.html` and selects a course.
+    - Views dynamic details on `printadobe-details.html` (e.g., "3D Concrete Printing").
 2.  **Authentication**
-    -   Clicks "Enroll".
-    -   **New User**: Redirects to `register.html` -> Account created.
-    -   **Existing User**: Redirects to `login.html`.
+    - Clicks "Enroll".
+    - **New User**: Redirects to `register.html` -> Account created.
+    - **Existing User**: Redirects to `login.html`.
 3.  **Secure Checkout**
-    -   Enters booking wizard `enrollment.html` (if applicable) or direct purchase.
-    -   Redirected to payment gateway `payment.html` (Stripe).
-    -   **Success**: Redirected to `success.html` -> Enrollment record created -> Email sent.
+    - Enters booking wizard `enrollment.html` (if applicable) or direct purchase.
+    - Redirected to payment gateway `payment.html` (Stripe).
+    - **Success**: Redirected to `success.html` -> Enrollment record created -> Email sent.
 4.  **Learning**
-    -   User lands on `user-dashboard.html`.
-    -   Clicks "Continue Learning" -> Opens `program-content.html`.
-    -   **Action**: Watches video/reads PDF -> Clicks "Complete Module".
-    -   **System**: Updates progress % in real-time.
+    - User lands on `user-dashboard.html`.
+    - Clicks "Continue Learning" -> Opens `program-content.html`.
+    - **Action**: Watches video/reads PDF -> Clicks "Complete Module".
+    - **System**: Updates progress % in real-time.
 5.  **Certification**
-    -   Progress reaches 100%.
-    -   Certificate generated and accessible via `user-credentials.html`.
+    - Progress reaches 100%.
+    - Certificate generated and accessible via `user-credentials.html`.
 
 ### 1. 🚀 Student Enrollment & Discovery Flow
 
 1.  **Catalog Selection**: User browses `index.html` -> `printadobe.html`.
 2.  **Enrollment Wizard** (`enrollment.html`):
-    *   Step 1: Select Session (Required for Lessons/Workshops).
-    *   Step 2: Enter personal details and **Trip Requirements** (Passport/Dietary) if applicable.
-    *   Step 3: **Discounts**: Apply Reference Codes. Select "All Levels" to trigger a **12.9% Bundle Discount** (Stacks with codes).
+    - Step 1: Select Session (Required for Lessons/Workshops).
+    - Step 2: Enter personal details and **Trip Requirements** (Passport/Dietary) if applicable.
+    - Step 3: **Discounts**: Apply Reference Codes. Select "All Levels" to trigger a **12.9% Bundle Discount** (Stacks with codes).
 3.  **Payment** (`payment.html`): Redirected to Stripe Checkout.
 4.  **Redirection** (`success.html`): System verifies Stripe `session_id` and finalizes DB records.
 
@@ -371,39 +381,39 @@ Access via `ngo-dashboard.html`. Navigation is driven by the **Partner Sidebar**
 
 1.  **Dashboard** (`user-dashboard.html`): Shows **Aggregate Progress** (Parent Program + All enrolled Child Levels).
 2.  **Classroom** (`program-content.html`):
-    *   **Auto-Marking**: Videos mark complete at EOF; PDFs/Articles enabled after a timer (5-10s).
-    *   **In-Video Quizzes**: Playback pauses at timestamps; requires correct answers to proceed.
-    *   **Level Ups**: Unlock and enroll in "Next Levels" directly from the course sidebar.
-    *   **Live Sessions**: "Join Now" button appears on Dashboard/Meetings for active slots.
+    - **Auto-Marking**: Videos mark complete at EOF; PDFs/Articles enabled after a timer (5-10s).
+    - **In-Video Quizzes**: Playback pauses at timestamps; requires correct answers to proceed.
+    - **Level Ups**: Unlock and enroll in "Next Levels" directly from the course sidebar.
+    - **Live Sessions**: "Join Now" button appears on Dashboard/Meetings for active slots.
 
 ### 3. 🛠️ Admin Content Mastery Flow
 
 1.  **Program Creation** (`admin-printadobe.html`): Set base program details and upload marketing images.
 2.  **Session Management**: Create time slots and attach **Live Meeting URLs** for webinars.
 3.  **Advanced Curriculum** (`admin-program-modules.html`):
-    *   **Level Builder**: Create child programs (Levels 1, 2, 3) linked to parents.
-    *   **Module Editor**: Upload content (Video/PDF) or build **JSON-based Quizzes**.
-    *   **Interactive Overlays**: Embed `[QUIZ]` tags in descriptions for in-video pausing.
+    - **Level Builder**: Create child programs (Levels 1, 2, 3) linked to parents.
+    - **Module Editor**: Upload content (Video/PDF) or build **JSON-based Quizzes**.
+    - **Interactive Overlays**: Embed `[QUIZ]` tags in descriptions for in-video pausing.
 4.  **Oversight**: Review user documents and issue digital credentials via the **Credentials** dashboard.
 
 ### 4. 📄 Intelligent Document Verification
 
 1.  **Submission**: User/NGO uploads files to `user-doc.html` / `ngo-doc.html`.
 2.  **Admin Review Channel** (`admin-doc.js`):
-    *   **Unified Queue**: Filterable by User/NGO roles.
-    *   **Live Preview**: Instant browser-side rendering for PDF, DOCX, and XLSX.
-    *   **Decision Engine**: Approve or Reject with **Synchronous Feedback** and attachment support.
+    - **Unified Queue**: Filterable by User/NGO roles.
+    - **Live Preview**: Instant browser-side rendering for PDF, DOCX, and XLSX.
+    - **Decision Engine**: Approve or Reject with **Synchronous Feedback** and attachment support.
 3.  **Audit**: Approved documents appear in the User's secure repository for lifelong access.
 
 ### 5. 💬 Konstra Support & Collaboration
 
 1.  **Student Service** (`chat.js`):
-    *   **Auto-Onboarding**: New students are instantly connected to the Admin Support Desk.
-    *   **Real-time SSE/Socket**: Instant notification toasts and typing indicators.
+    - **Auto-Onboarding**: New students are instantly connected to the Admin Support Desk.
+    - **Real-time SSE/Socket**: Instant notification toasts and typing indicators.
 2.  **Admin Command Center** (`adminChat.js`):
-    *   **Omni-channel**: Manage dozens of simultaneous support threads.
-    *   **Deep Search**: Keyword-driven search across entire message history.
-    *   **Read Receipts**: Visual confirmation of student engagement.
+    - **Omni-channel**: Manage dozens of simultaneous support threads.
+    - **Deep Search**: Keyword-driven search across entire message history.
+    - **Read Receipts**: Visual confirmation of student engagement.
 
 ### 6. 🤝 NGO Partner Collaboration Flow
 
