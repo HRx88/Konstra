@@ -20,12 +20,392 @@
                  2 -> Text and other content
             */
 
-            /* Temporary Damper to ensure the navbar + Footer maintain proper positioning */
-                    .Damper{
-                        height: 90vh;
+            /* Image Gallery Group */
+            
+
+            /* K1 Group */
+                .K1-Container{
+                    margin: 30px calc(3rem + 8px);
+                }
+
+                .K1-HR{
+                    /* Set the HR's dimensions */
+                        border-top: 2px solid #000000;
+                        max-width: 1600px;
+                        width: 100%;
+                    
+                    /* Set the HR's layout */
+                        margin: 0 auto 30px;
+                }
+
+                .K1-Items{
+                    /* Create the layout for the Product Images and Text */
+                        display: flex;
+                        flex-direction: row;
+                    
+                    /* Center the items */
+                        justify-content: center;
+                }
+
+                .Product-Container{
+                    flex: 1 1 520px;        /* allow it to grow/shrink */
+                    min-width: 320px;
+                    width: min(1600px, 100%); /* On big screen width = 1200px, on smaller screen = 100%. Essentially: max-width:1200px; width: 100%;*/
+                    margin: 0 auto;
+                }
+
+
+
+
+                /* Product Images */
+
+                    /* The entire Product Image section */
+                    .gallery{
+                        width: 100%;
+                        max-width: 1100px;
+                        margin: 0 auto;        /* center the whole component */
+                        display: grid;
+                        grid-template-columns: minmax(0, 1fr) 120px;
+                        gap: 16px;
+                        align-items: start; /* Ensure the Product Image main box is aligned to the top */
                     }
 
+                    /* The main product image box */
+                    .main{
+                        /* Box dimensions */
+                            /* height: 520px; */
+                            height: 650px;
+                            padding: 14px;
+
+                        /* Box design */
+                            background: #f4f4f4; /* The design of the background behind the image */
+                            border: 1px solid #e5e7eb;
+                            border-radius: 12px;
+                            box-sizing: border-box;
+                            overflow: hidden;
+                    }
+
+                    /* 3d model box */
+                    model-viewer{
+                        position: relative;
+                    }
+
+                    /* The hand inside the 3d model */
+                    #ar-prompt{
+                        position: absolute;
+                        inset: 0;
+                        display: grid;
+                        /* This makes the hand align top right */
+                            place-items: end;
+                            align-items:start;
+                        pointer-events: none;
+                        z-index: 3;
+                    }
+
+                    /* The hand dimensions */
+                    #ar-prompt img{
+                        width: 72px;
+                        height: 72px;
+                    }
+
+                    /* Both main image and model fill the main container */
+                    .main img,
+                    .main model-viewer{
+                        width: 100%;
+                        height: 100%;
+                        
+                        display: block;
+                        object-fit: contain;        /* applies to img; harmless for model-viewer */
+                        border-radius: 10px;
+                    }
+
+                     /* Thumbnails column */
+                    .thumbs{
+                        display: flex;
+                        flex-direction: column;
+                        gap: 12px;
+                    }
+
+                    /* Each thumbnail button */
+                    .thumb{
+                        border: 2px solid transparent;
+                        border-radius: 10px;
+                        padding: 6px;
+                        background: #ffffff;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                    }
+
+                    /* Thumbnail image itself */
+                    .thumb img{
+                        width: 100%;
+                        height: 90px;
+                        display: block;
+                        object-fit: contain;
+                    }
+
+                    /* Active/selected thumb */
+                    .thumb.active{
+                        /* border-color: #3b82f6; */
+                        outline: 1px solid #000000;
+                    }
+
+                    /* Hover feedback */
+                    .thumb:hover{
+                        outline: 1px solid #ff0000;
+                    }
+
+                /* K1 Texts */
+
+                    .K1-Text{
+                        flex: 1 1 420px;
+                        min-width: 320px;
+                        padding-left:50px;
+                    }
+                
+                    /* K1 Title */
+                        .K1-Text h1{
+                            /* Define the title styling */
+                                font-size: 40px;
+                                font-weight: 300;
+                                max-width: 215px;
+                            
+                            /* Create the Box*/
+                            background-color: #ffffff;
+                            box-shadow:
+                                        inset 0 5px 20px rgba(0,0,0,0.15), /* inner */
+                                        0 12px 28px rgba(0,0,0,0.25);     /* outer */
+                            padding: 10px 20px;
+                            margin: 0 auto 30px;
+                            
+                        }
+                    
+                    /* K1 Description */
+                        .K1-Description{
+                            /* Define the Text Box dimension */
+                                max-width: 580px;
+                                margin: 0 auto 30px;
+                                width: 100%;
+                        }
+
+                        .K1-Description h2{
+                            font-size: 18px;
+                            font-weight: 650;
+                            margin-bottom: 12px;
+                        }
+
+                        .K1-Description p{
+                            font-size: 16px;
+                            font-weight: 300;
+                        }
+
+                    /* K1 Features */
+                        .K1-Features{
+                            /* Define the Text Box dimension */
+                                max-width: 580px;
+                                width: 100%;
+                                margin: 0 auto 30px;
+                        }
+
+                        .K1-Features h2{
+                            font-size: 18px;
+                            font-weight: 650;
+                            margin-bottom: 12px;
+                        }
+
+                        .K1-Features ul li{
+                            /* List styling */
+                                font-size: 16px;
+                                font-weight: 300;
+
+                            /* List layout */
+                                margin-left: 25px;
+                                margin-bottom: 15px;
+                        }
+
+                    /* K1 Colorway */
+                        .K1-Colorway{
+                            /* Define the Text Box dimension */
+                                max-width: 580px;
+                                width: 100%;
+                                margin: 0 auto 30px;
+                        }
+
+                        .K1-Colorway h2{
+                            font-size: 18px;
+                            font-weight: 650;
+                            margin-bottom: 12px;
+                        }
+
+                        .K1-ColorBox{
+                            /* Define the Color Box dimension */
+                                width: 47px;
+                                height: 47px;
+
+                            /* Color Box Design */
+                                background-color: #9E2C2A;
+                                border: 2px solid #A8A8A8;
+                                display: inline-block;
+                                box-sizing: border-box;
+                                cursor: pointer;
+                        }
+
+                        .K1-ColorBox:hover{
+                            outline: 3px solid #ffffff;          /* white ring */
+                            outline-offset: 3px;                 /* spacing between box and ring */
+                            box-shadow: 0 0 0 2px #111111;       /* dark outer ring */
+                        }
+
+                    /* Enquire-Button Group */
+                    .Enquire-Box{
+                        max-width: 580px;
+                        width: 100%;
+
+                        /* Centralize the button */
+                            text-align: center;
+                            margin: 0 auto 30px;
+                    }
+
+                    
+            
+
+            /* K2 Group */
+                .K2-Container{
+                    margin: 0;
+                    position: relative;
+                }
+
+                .K2-Cover {
+                    max-width: 100vw;
+                    min-height: 210vh;
+                }
+
+                .K2-Cover img{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    object-fit: cover;
+                    z-index: 0;
+                }
+
+                .bg-overlay{
+                    background: linear-gradient(to top,
+                        rgba(255,255,255,0.4) 0%,
+                        rgba(0,0,0,0.6) 100%
+                    );
+                }
+
+                /* K2 Text */
+                .K2-Title{
+                    position: relative;
+                    z-index: 2;
+                    text-align: center;
+                }
+
+                .K2-Title h2{
+                    font-size: 100px;
+                    font-weight: 300;
+                    color: #ffffff;
+                    letter-spacing: 2px;
+                    margin-bottom: 222px;
+                    padding-top: 172px;
+                }
+
+                .K2-Title h1{
+                    font-size: 100px;
+                    font-weight: bold;
+                    color: #ffffff;
+                    margin-bottom: 222px;
+                }
+
+                .K2-Title h3{
+                    font-size: 90px;
+                    font-weight: 300;
+                    color: #000000;
+                    letter-spacing: 40px;
+                    margin-bottom: 222px;
+                }
+
+
+
             /* Responsiveness modifications */
+
+            /* Make the Gallery become a single row when midly compressed */
+                @media (max-width: 980px){
+                    .K1-Items{
+                        /* Create the layout for the Product Images and Text */
+                            display: flex;
+                            flex-direction: column;
+                        
+                        /* Center the items */
+                            justify-content: center;
+                    }
+                }
+            
+            /* Make the side thumbnails appear on the bottom when heavily compressed */
+                @media (max-width: 700px){
+
+                    /* Convert the main section to take up the entire width */
+                    .gallery{
+                        grid-template-columns: 1fr;
+                        grid-template-rows: auto auto;
+                        gap: 12px;
+                    }
+
+                    /* Make the thumbnails section a horizontal section */
+                    .thumbs{
+                        flex-direction: row;
+                        flex-wrap: nowrap;
+                        overflow-x: auto;
+                        justify-content: flex-start;
+                        gap: 10px;
+                        padding: 10px;
+                    }
+
+                    .thumb{
+                        /* Dimensions of the thumbnail */
+                            width: 84px;           
+                            padding: 6px;
+
+                        flex: 0 0 84px; /* THis allows the thumbnail to be in a scrolled state*/
+                    }
+
+                    .thumb img{
+                        height: 70px;
+                    }
+
+                    /* Create Stand off at the top of the title */
+                    .K1-Text h1{
+                        margin-top: 30px;
+                    }
+
+                }
+
+            /* Make the gallery smaller on shorter screens */
+            @media (max-height: 800px){
+                /* The main product image box */
+                    .main{
+                        /* Box dimensions */
+                            height: 415px;
+                    }
+
+                    .K1-Description h2{
+                        font-size: 16px;
+                    }
+
+                    .K1-Description p{
+                        font-size: 14px;
+                    }
+
+                    .K1-Features h2{
+                        font-size: 16px;
+                    }
+
+                    .K1-Features ul li{
+                        /* List styling */
+                            font-size: 14px;
+                    }
+            }
             
             
     </style>
@@ -55,8 +435,8 @@
                     <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
                     <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
                     <li><a href="index.html">HOME</a></li>
-                    <li><a href="about-us.html" class="currentPage">ABOUT US</a></li>
-                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html" class="currentPage">PRODUCT</a></li>
                     <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
                     <li><a href="our-project.html">OUR PROJECTS</a></li>
                     <li><a href="contact-us.html">CONTACT US</a></li>
@@ -70,13 +450,148 @@
         </nav>
         <!-- Insert page content from this point onwards -->
         
-        
-           
-        <!-- Damper Group -->
-            <section class="Damper">
+        <!-- K1 Group -->
+        <section class="K1-Container">
+            
+            <!-- Horizontal Rule -->
+            <hr class="K1-HR">
+
+            <!-- K1 Product Images and Descriptions -->
+            <div class="K1-Items">
+                
+                <!-- K1 Product Gallery -->
+                <div class="Product-Container">
+                    <div class="gallery">
+
+                        <!-- The main product image -->
+                        <div class="main">
+                            <!-- 3D model -->
+                                <model-viewer src="Media/object_0 (1).glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="poster.webp" shadow-intensity="1">
+                                    <div class="progress-bar hide" slot="progress-bar">
+                                        <div class="update-bar"></div>
+                                    </div>
+                                    <button slot="ar-button" id="ar-button">
+                                        View in your space
+                                    </button>
+                                    <div id="ar-prompt">
+                                        <img src="https://modelviewer.dev/shared-assets/icons/hand.png">
+                                    </div>
+                                </model-viewer>               
+
+                            <!-- This hidden image here allows the JS file to swap the src file path to the 
+                            path of the file thumbnail we click-->
+                                <img id="mainImg" src="Media/Konstra Robot.jpg" alt="Product image" style="display:none;">
+                        </div>
+
+
+                        <!-- Thumbnail images (The smaller images to the side) -->
+                        <div class="thumbs" id="thumbs">
+                            <button class="thumb active" type="button" data-type="model" data-src="Media/object_0%20(1).glb">
+                                <img src="Media/Konstra Robot.jpg" alt="3D Model">
+                            </button>
+
+                            <button class="thumb" type="button" data-type="image" data-src="Media/Product K1.png">
+                                <img src="Media/Product K1.png" alt="Thumbnail 2">
+                            </button>
+
+                            <button class="thumb" type="button" data-type="image" data-src="Media/Model K1 variant 1.png">
+                                <img src="Media/Model K1 variant 1.png" alt="Thumbnail 3">
+                            </button>
+
+                            <button class="thumb" type="button" data-type="image" data-src="Media/Model K1 variant 2.png">
+                                <img src="Media/Model K1 variant 2.png" alt="Thumbnail 4">
+                            </button>
+
+                            <button class="thumb" type="button" data-type="image" data-src="Media/Model K1 variant 3.png">
+                                <img src="Media/Model K1 variant 3.png" alt="Thumbnail 5">
+                            </button>
+
+                            <button class="thumb" type="button" data-type="image" data-src="Media/Model K1 variant 4.png">
+                                <img src="Media/Model K1 variant 4.png" alt="Thumbnail 6">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- K1 Product Texts -->
+                <div class="K1-Text">
+                    <h1>Model K1</h1>
+
+                    <!-- Product Description -->
+                    <div class="K1-Description">
+                        <h2>Description</h2>
+                        <p>
+                            The Konstra system is a mobile 3D-printing platform engineered for construction in 
+                            demanding environments. Built on a custom track-mounted base, it offers hydraulic 
+                            outriggers for up to one-tonne load stability and a Japanese diesel engine for 
+                            dependable on-site power. 
+                            <br><br>
+                            Its 270-degree rotational range and extendable tracks provide superior reach and 
+                            balance across rough terrain. A multi-axis KUKA robotic arm enables complex, 
+                            free-form concrete printing, while compatibility with diverse mortar and concrete 
+                            formulations supports industrial, architectural, and experimental applications.
+                        </p>
+                    </div>
+                    
+                    <!-- Product Features -->
+                    <div class="K1-Features">
+                        <h2>Product Features</h2>
+                        <ul>
+                            <li>Custom platform with integrated tracks for stable and versatile mobility</li>
+                            <li>Hydraulic outriggers on all four corners, each capable of carrying up to 1 tonne for enhanced site stability</li>
+                            <li>Japanese diesel engine for reliable, efficient power supply in remote or rugged environments</li>
+                            <li>Remote rough terrain mobility enabling deployment across challenging and uneven construction sites</li>
+                            <li>270-degree rotational freedom beyond the main machine mount, allowing highly flexible printing orientations</li>
+                            <li>Extendable track legs (+0.5 meters on each side) to increase footprint and operational stability when required</li>
+                            <li>Multi-axis robotic arm (KUKA) for complex free-form 3D printing and adaptive project scaling</li>
+                            <li>Compatible with a wide range of concrete and mortar formulations, supporting industrial, architectural, and specialty applications</li>
+                            <li>Modular rail system (work in progress) to allow scalable, continuous printing across larger project footprints</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Colorway -->
+                    <div class="K1-Colorway">
+                        <h2>Color</h2>
+                        <p class="K1-ColorBox"></p>
+                    </div>
+
+                    <!-- Enquire More Button -->
+                    <div class="Enquire-Box">
+                        <a class= "cta-btn" href="contact-us.html" >ENQUIRE MORE</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Horizontal Rule -->
+        <hr class="K1-HR">
+
+        <!-- K2 Group -->
+            <section class="K2-Container">
+
+                <!-- K2 Product Image and Description -->
+                <div class="K2-Cover">
+                    <img src="Media/K2_Cover.jpg">
+
+                    <!-- K2 Cover Overlay -->
+                    <div class="bg-overlay"></div>
+
+                    <!-- K2 Title -->
+                    <div class="K2-Title">
+                        <h2>
+                            <span class="color_conversion">K</span>ONSTRA PRESENTS
+                        </h2>
+
+                        <h1>
+                            THE K2
+                        </h1>
+
+                        <h3>
+                            COMING SOON
+                        </h3>
+                    </div>
+                </div>
             </section>
-
-
 
 
         <!-- Footer Group -->
@@ -106,4 +621,7 @@
         </footer>
         <!-- All Javascript components here -->
         <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/k1Gallery.js"></script> 
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> <!-- Plug in for the 3D model -->
+
 </html>

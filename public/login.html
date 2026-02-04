@@ -22,17 +22,16 @@
     /* Login Group */
         .Login-Container {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 30px calc(3em + 8px);
+            padding: 30px calc(3rem + 8px);
         }
 
         .auth-container {
-            background: white;
+            background: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             padding: 40px;
             width: 100%;
             max-width: 400px;
@@ -76,7 +75,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #C80606;
         }
 
         .user-type-selector {
@@ -96,15 +95,14 @@
         }
 
         .user-type-option.active {
-            border-color: #667eea;
+            border-color: #C80606;
             background-color: #f0f4ff;
-            color: #667eea;
+            color: #C80606;
         }
 
         .auth-button {
             width: 100%;
             padding: 12px;
-            /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
             background: #C80606;
             color: white;
             border: none;
@@ -131,7 +129,7 @@
         }
 
         .auth-footer a {
-            color: #667eea;
+            color: #C80606;
             text-decoration: none;
             font-weight: 500;
         }
@@ -213,6 +211,63 @@
             padding: 0 10px;
             font-size: 14px;
         }
+
+        /* Responsiveness Modification */
+        @media (max-height: 800px) {
+            .Login-Container{
+                padding: 20px calc(3rem + 8px);
+                justify-content: center;
+            }
+
+            .auth-container{
+                max-width: 360px;
+                padding: 22px;
+            }
+
+            .auth-header{ 
+                margin-bottom: 7px; 
+            }
+
+            .auth-header h1{ 
+                font-size: 22px; 
+                margin-bottom: 6px; 
+            }
+
+            .auth-header p{ 
+                font-size: 13px; 
+            }
+
+            .google-auth-button{ 
+                padding: 10px; 
+                font-size: 14px; 
+                margin-bottom: 8px; 
+            }
+
+            .divider{
+                margin-bottom: 6px;
+            }
+
+            .form-group{ 
+                margin-bottom: 12px; 
+            }
+
+            .form-group input{ 
+                padding: 10px 12px; 
+                font-size: 13px; 
+            }
+
+            .auth-button{ 
+                padding: 10px; 
+                font-size: 14px; 
+            }
+
+            .auth-footer{ 
+                margin-top: 12px; 
+                padding-top: 12px; 
+            }
+            
+        }
+
     </style>
 </head>
 

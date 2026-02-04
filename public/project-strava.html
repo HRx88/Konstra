@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="Author" content="Codi Chew">
+        <meta name="Description" content="MDC ASG for Konstra - Fantastic 4">
+        <meta name="Date created" content="6 December 2025">
+        <meta name="viewport" content="Width=device-width, initial scale=1.0">
+        <link rel="icon" a href="Media/Konstra Logo B.png">
+        <link rel="stylesheet" href="css/index.css">
+        <title>Konstra</title>
+    </head>
+    <style>
+        /* For specific styles applicable only to this page */
+
+            /*
+                Z-index Guide:
+                 0 -> Background Video / Image
+                 1 -> Overlay
+                 2 -> Text and other content
+                 3 -> Floating Box for ALO Page in PrintAdobe
+            */
+
+            /* Cambodia Context Section */
+                .Cambodia-Section{
+                width: 100%;
+                padding: 70px calc(3rem + 8px);
+                box-sizing: border-box;
+                background: #f5f5f5;
+                }
+
+                .Cambodia-Inner{
+                width: min(1200px, 100%);
+                margin: 0 auto;
+                }
+
+                .Cambodia-Header{
+                margin: 10px 0 26px;
+                }
+
+                .Cambodia-HeaderSpaced{
+                margin-top: 44px;
+                }
+
+                .Cambodia-H2{
+                margin: 0;
+                font-size: clamp(26px, 3.2vw, 40px);
+                line-height: 1.2;
+                }
+
+                .Cambodia-Divider{
+                height: 2px;
+                width: 100%;
+                background: rgba(0,0,0,0.2);
+                margin-top: 10px;
+                }
+
+                .Cambodia-H3{
+                margin: 0;
+                font-size: clamp(22px, 2.8vw, 34px);
+                line-height: 1.2;
+                }
+
+                .Cambodia-AccentLine{
+                width: 160px;
+                height: 3px;
+                background: #e11d2e;
+                margin: 10px 0 18px;
+                }
+
+                .Cambodia-Kicker{
+                margin: 0 0 10px;
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                opacity: 0.75;
+                }
+
+                .Cambodia-Intro{
+                margin: 0 0 26px;
+                font-size: 16px;
+                line-height: 1.75;
+                opacity: 0.9;
+                max-width: 100ch;
+                }
+
+                /* Hero Stat Card */
+                .Cambodia-HeroCard{
+                position: relative;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                background: #fff;
+                min-height: 420px;
+                }
+
+                .Cambodia-HeroMedia{
+                height: 100%;
+                }
+
+                .Cambodia-HeroMedia img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                min-height: 420px;
+                filter: saturate(0.95);
+                }
+
+                .Cambodia-HeroOverlay{
+                position: absolute;
+                inset: 18px;
+                max-width: 560px;
+                padding: 18px 18px;
+                border-radius: 16px;
+                background: rgba(0,0,0,0.55);
+                color: #fff;
+                backdrop-filter: blur(6px);
+                }
+
+                .Cambodia-StatTitle{
+                margin: 0 0 12px;
+                font-size: clamp(20px, 2.2vw, 30px);
+                line-height: 1.15;
+                }
+
+                .Cambodia-StatNumber{
+                font-weight: 800;
+                }
+
+                .Cambodia-StatBody p{
+                margin: 0 0 10px;
+                line-height: 1.65;
+                opacity: 0.95;
+                font-size: 14px;
+                }
+
+                .Cambodia-Cite{
+                margin: 10px 0 0;
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                opacity: 0.85;
+                }
+
+                /* Two panel stack */
+                .Cambodia-Grid2{
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 18px;
+                margin-top: 18px;
+                }
+
+                .Cambodia-Grid2Tight{
+                margin-top: 28px;
+                gap: 18px;
+                }
+
+                /* Panels */
+                .Cambodia-Panel{
+                display: grid;
+                grid-template-columns: 1.1fr 0.9fr;
+                gap: 18px;
+                align-items: center;
+                background: #fff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .Cambodia-PanelFlip{
+                grid-template-columns: 0.9fr 1.1fr;
+                }
+
+                .Cambodia-PanelText{
+                padding: 18px 18px;
+                }
+
+                .Cambodia-PanelTitle{
+                margin: 0 0 10px;
+                font-size: clamp(18px, 2.1vw, 26px);
+                line-height: 1.2;
+                }
+
+                .Cambodia-PanelText p{
+                margin: 0 0 10px;
+                line-height: 1.7;
+                opacity: 0.88;
+                font-size: 14px;
+                }
+
+                .Cambodia-PanelMedia img{
+                width: 100%;
+                height: 100%;
+                min-height: 260px;
+                display: block;
+                object-fit: cover;
+                }
+
+                /* Spotlight */
+                .Cambodia-Spotlight{
+                display: grid;
+                grid-template-columns: 1.1fr 0.9fr;
+                gap: 22px;
+                align-items: center;
+                background: #fff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .Cambodia-SpotlightText{
+                padding: 20px 20px;
+                }
+
+                .Cambodia-SpotlightText p{
+                margin: 0 0 12px;
+                line-height: 1.75;
+                opacity: 0.9;
+                font-size: 14px;
+                }
+
+                .Cambodia-SpotlightMedia img{
+                width: 100%;
+                height: 100%;
+                min-height: 320px;
+                display: block;
+                object-fit: cover;
+                }
+
+                /* Cards */
+                .Cambodia-Card{
+                background: #fff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                padding: 18px 18px;
+                }
+
+                .Cambodia-CardTitle{
+                margin: 0;
+                font-size: 22px;
+                line-height: 1.2;
+                }
+
+                .Cambodia-Card p{
+                margin: 0 0 12px;
+                line-height: 1.75;
+                opacity: 0.9;
+                font-size: 14px;
+                }
+
+                .Cambodia-CardMedia{
+                margin-top: 14px;
+                border-radius: 16px;
+                overflow: hidden;
+                background: rgba(0,0,0,0.03);
+                }
+
+                .Cambodia-CardMedia img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                min-height: 240px;
+                }
+
+                /* Solution split */
+                .Cambodia-SolutionSplit{
+                display: grid;
+                grid-template-columns: 0.95fr 1.05fr;
+                gap: 22px;
+                align-items: start;
+                margin-top: 18px;
+                }
+
+                .Cambodia-SolutionMedia{
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .Cambodia-SolutionMedia img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                min-height: 340px;
+                }
+
+                .Cambodia-SolutionText{
+                background: #fff;
+                border-radius: 18px;
+                padding: 18px 18px;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .Cambodia-SolutionText p{
+                margin: 0 0 12px;
+                line-height: 1.75;
+                opacity: 0.9;
+                font-size: 14px;
+                }
+
+                /* Gallery */
+                .Cambodia-GalleryBlock{
+                margin-top: 30px;
+                }
+
+                .Cambodia-Gallery{
+                display: grid;
+                grid-template-columns: 1.1fr 1fr 1fr 1fr;
+                gap: 16px;
+                align-items: stretch;
+                }
+
+                .Cambodia-PlanCard{
+                background: #fff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                display: grid;
+                grid-template-rows: 180px 1fr;
+                }
+
+                .Cambodia-PlanThumb img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                }
+
+                .Cambodia-PlanBody{
+                padding: 14px 14px;
+                text-align: center;
+                }
+
+                .Cambodia-PlanTitle{
+                margin: 0 0 10px;
+                font-size: 18px;
+                }
+
+                .Cambodia-PlanDesc{
+                margin: 0 0 12px;
+                line-height: 1.65;
+                opacity: 0.88;
+                font-size: 13px;
+                }
+
+                .Cambodia-PlanBtn{
+                display: inline-block;
+                }
+
+                .Cambodia-ViewCard{
+                border-radius: 18px;
+                overflow: hidden;
+                background: #111;
+                position: relative;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                min-height: 280px;
+                }
+
+                .Cambodia-ViewCard img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                opacity: 0.95;
+                }
+
+                .Cambodia-ViewLabel{
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                margin: 0;
+                padding: 8px 10px;
+                border-radius: 999px;
+                background: rgba(0,0,0,0.55);
+                color: #fff;
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                }
+
+                /* PrintAdobe split */
+                .Cambodia-PrintAdobeSplit{
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                gap: 22px;
+                align-items: center;
+                margin-top: 30px;
+                background: #fff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .Cambodia-PrintAdobeText{
+                padding: 20px 20px;
+                }
+
+                .Cambodia-PrintAdobeText p{
+                margin: 0 0 12px;
+                line-height: 1.75;
+                opacity: 0.9;
+                font-size: 14px;
+                }
+
+                .Cambodia-PrintAdobeMedia img{
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                min-height: 320px;
+                }
+
+                /* Before After */
+                .Cambodia-Vision{
+                margin-top: 34px;
+                background: #fff;
+                border-radius: 18px;
+                padding: 18px 18px;
+                box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+                }
+
+                .BA-Wrap{
+                position: relative;
+                margin-top: 14px;
+                border-radius: 18px;
+                overflow: hidden;
+                background: #111;
+                aspect-ratio: 16 / 9;
+                }
+
+                .BA-After,
+                .BA-Before{
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                }
+
+                .BA-Before{
+                clip-path: inset(0 50% 0 0);
+                }
+
+                .BA-Range{
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+                cursor: ew-resize;
+                }
+
+                .BA-Knob{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                width: 3px;
+                background: #ffffff;
+                box-shadow: 0 0 0 6px rgba(0,0,0,0.25);
+                }
+
+                .BA-Labels{
+                position: absolute;
+                inset: 14px 14px auto 14px;
+                display: flex;
+                justify-content: space-between;
+                pointer-events: none;
+                }
+
+                .BA-Tag{
+                padding: 8px 12px;
+                border-radius: 999px;
+                background: rgba(0,0,0,0.55);
+                color: #fff;
+                font-size: 12px;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                }
+
+            /* Responsiveness modifications */
+                @media (max-width: 900px){
+                .Cambodia-HeroOverlay{
+                    position: static;
+                    inset: auto;
+                    max-width: none;
+                    margin: 14px;
+                }
+
+                .Cambodia-HeroMedia img{
+                    min-height: 320px;
+                }
+
+                .Cambodia-Panel,
+                .Cambodia-PanelFlip{
+                    grid-template-columns: 1fr;
+                }
+
+                .Cambodia-PanelMedia img{
+                    min-height: 220px;
+                }
+
+                .Cambodia-Spotlight{
+                    grid-template-columns: 1fr;
+                }
+
+                .Cambodia-SolutionSplit{
+                    grid-template-columns: 1fr;
+                }
+
+                .Cambodia-Gallery{
+                    grid-template-columns: 1fr;
+                }
+
+                .Cambodia-ViewCard{
+                    min-height: 240px;
+                }
+
+                .Cambodia-PrintAdobeSplit{
+                    grid-template-columns: 1fr;
+                }
+                }
+                
+
+
+    </style>
+    <body>
+
+        <!-- Return to Top Button (Top) -->
+        <div id="top"></div>
+
+        <!-- NavBar Group -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <!-- Navbar Logo -->
+                <a href="Index.html" class="navbar-logo"  id="navbar-logo-alt">
+                    <img src="Media/Konstra Logo B.png">
+                </a>
+
+                <!-- Hamburger dropdown links-->
+                 <button class="navbar-toggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                 </button>
+
+                <!-- Navbar Links -->
+                <ul class ="navbar-menu">
+                    <!--
+                    <li><a href="#" class="currentPage">HOME</a></li>
+                    Note: Set the class currentPage when working on that specific page
+                    to display the selected state of that link.
+                    -->
+                    <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
+                    <li class="Menu_Logo"><a href="index.html" class="Burger_Logo"><img src="Media/Konstra Logo B.png"></a></li>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="about-us.html">ABOUT US</a></li>
+                    <li><a href="product.html">PRODUCT</a></li>
+                    <li><a href="printadobe_v2.html">PRINTADOBE</a></li>
+                    <li><a href="our-project.html">OUR PROJECTS</a></li>
+                    <li><a href="contact-us.html">CONTACT US</a></li>
+                    <li class="account">
+                        <a href="login.html">
+                            <img src="Media/Profile Alt.png" alt="Account Icon">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- Insert page content from this point onwards -->
+
+        <!-- Cambodia Context Group -->
+<section class="Cambodia-Section" id="Gray-Screen">
+
+  <div class="Cambodia-Inner">
+
+    <!-- Section 1: Why Cambodia -->
+    <header class="Cambodia-Header">
+      <h2 class="Cambodia-H2">Why Cambodia?</h2>
+      <div class="Cambodia-Divider"></div>
+    </header>
+
+    <!-- Hero Stat Card -->
+    <div class="Cambodia-HeroCard">
+      <div class="Cambodia-HeroMedia">
+        <!-- Image slot 1 -->
+        <img src="Media/Stung Meanchey Riverside.jpg" alt="Cambodia urban housing context">
+      </div>
+
+      <div class="Cambodia-HeroOverlay">
+        <p class="Cambodia-Kicker">Key Context</p>
+
+        <h3 class="Cambodia-StatTitle">
+          <span class="Cambodia-StatNumber color_conversion">40%</span>
+          of Cambodia’s Urban population lives in slums
+        </h3>
+
+        <div class="Cambodia-StatBody">
+          <p>
+            According to the Habitat for Humanity, approximately 40% of Cambodia’s urban population
+            resides in slums based on data shared by UN-Habitat in 2023.
+          </p>
+          <p>
+            Although Cambodia achieved lower middle-income status in 2015, poverty rose again during the Covid-19 pandemic,
+            pushing an estimated 460,000 Cambodians into poverty.
+          </p>
+          <p>
+            Approximately 4 in 10 people live in urban areas.
+          </p>
+
+          <p class="Cambodia-Cite">Habitat for Humanity</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Stat Panels -->
+    <div class="Cambodia-Grid2">
+
+      <div class="Cambodia-Panel">
+        <div class="Cambodia-PanelText">
+          <h3 class="Cambodia-PanelTitle">
+            <span class="Cambodia-StatNumber color_conversion">191</span>
+            areas of poverty in Phnom Penh alone
+          </h3>
+
+          <p>
+            According to Sahmakum Teang Tnaut (STT), a Phnom Penh based NGO, 191 locations urban locations have been identified as areas of poverty.
+          </p>
+
+          <p>
+            These communities are home to nearly 19,539 families which represents 89,879 people.
+            This is 3.94% of Phnom Penh's population where many of them are in debt.
+          </p>
+
+          <p>
+            A fraction of those living in these areas also face pressure from eviction.
+          </p>
+        </div>
+
+        <div class="Cambodia-PanelMedia">
+          <!-- Image slot 2 -->
+          <img src="Media/bidonville-Boeng-Salang.jpg" alt="Community streets in Phnom Penh">
+        </div>
+      </div>
+
+      <div class="Cambodia-Panel Cambodia-PanelFlip">
+        <div class="Cambodia-PanelText">
+          <h3 class="Cambodia-PanelTitle">
+            By <span class="Cambodia-StatNumber color_conversion">2030</span>, one third of Cambodians will be living in cities
+          </h3>
+
+          <p>
+            UN-Habitat's 2023 report projects that by 2030, one-third of Cambodia's entire population will be living in cities.
+          </p>
+
+          <p>
+            Urban growth is accelerating in Phnom Penh, Sihanoukville, Battambang, and Siem Reap,
+            placing increased pressure on existing housing, drainage, infrastructure, and support systems.
+          </p>
+
+          <p>
+            This rapid shift highlights the urgency of ensuring that growing urban centers, especially Phnom Penh,
+            are supported with sustainable and equitable development.
+          </p>
+
+          <p class="Cambodia-Cite">UN-HABITAT</p>
+        </div>
+
+        <div class="Cambodia-PanelMedia">
+          <!-- Image slot 3 -->
+          <img src="Media/Phnom Penh Road Collapse.jpg" alt="Urban street in Cambodia">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section 2: Where can Konstra help -->
+    <header class="Cambodia-Header Cambodia-HeaderSpaced">
+      <h2 class="Cambodia-H2">Where can Konstra help?</h2>
+      <div class="Cambodia-Divider"></div>
+    </header>
+
+    <div class="Cambodia-Spotlight">
+      <div class="Cambodia-SpotlightText">
+        <h3 class="Cambodia-H3">STUENG MEANCHEY</h3>
+        <div class="Cambodia-AccentLine"></div>
+
+        <p>
+          Our initial focus is the Stung Meanchey area within Khan Meanchey, Phnom Penh.
+          This district is home to several vulnerable communities which includes Stung Meanchey I and II,
+          which are located along the canal and contain clusters of modest housing built close to the waterway.
+        </p>
+
+        <p>
+          Although the canal underwent major clean-up works in 2023, nearby neighborhoods continue to face issues
+          such as drainage stress during heavy rains and occasional land instability, as seen in recent road collapses caused by erosion.
+        </p>
+
+        <p>
+          Historically, the area surrounding the former Stung Meanchey landfill was home to families who relied on waste-scavenging to survive,
+          underscoring the long-standing economic vulnerability of parts of this district.
+          While Stung Meanchey III, which is generally more built-up based on current urban development patterns,
+          still contains pockets of households that remain economically fragile and would benefit from additional support.
+        </p>
+      </div>
+
+      <div class="Cambodia-SpotlightMedia">
+        <!-- Image slot 4 -->
+        <img src="Media/Stung Meanchey.jpg" alt="Aerial view of Phnom Penh area">
+      </div>
+    </div>
+
+    <!-- Section 3: Development Area + Partnerships -->
+    <div class="Cambodia-Grid2 Cambodia-Grid2Tight">
+
+      <div class="Cambodia-Card">
+        <h3 class="Cambodia-CardTitle">Development Area</h3>
+        <div class="Cambodia-AccentLine"></div>
+
+        <p>
+          Our project aims to develop two specific locations within Stung Meanchey II.
+          Point A (outlined in orange) covers approximately 5,673 m², while Point B (outlined in yellow) spans an estimated 6,000 m² of land.
+        </p>
+
+        <p>
+          The development area lies just south of the former Stung Meanchey dumpsite and near Lenkov Village,
+          a relocation community established to support families who previously lived around the landfill.
+        </p>
+
+        <p>
+          These locations were selected because of their proximity to existing residential clusters, including households relocated from the former dumpsite.
+          Developing in this area helps maintain community continuity, supports families that remain economically vulnerable,
+          and aligns with the district’s ongoing urban redevelopment.
+          The chosen land pockets are currently underutilized, making them well-suited for smaller-scale, community-focused housing projects
+          that can integrate smoothly with surrounding infrastructure and social networks.
+        </p>
+
+        <div class="Cambodia-CardMedia">
+          <!-- Image slot 5 -->
+          <img src="Media/Area of Focus.jpg" alt="Map showing development points">
+        </div>
+      </div>
+
+      <div class="Cambodia-Card">
+        <h3 class="Cambodia-CardTitle">Partnerships and Collaborations</h3>
+        <div class="Cambodia-AccentLine"></div>
+
+        <p>
+          Stung Meanchey has long been supported by several NGOs working to improve community well-being,
+          including the Cambodian Children’s Fund (CCF), People Improvement Organization (PIO), and ISF Cambodia.
+        </p>
+
+        <p>
+          These organisations provide essential services such as education, family support, and community assistance that help strengthen local livelihoods.
+        </p>
+
+        <p>
+          However, despite the presence of long-standing NGOs that have improved conditions for many families,
+          physical infrastructure and affordable housing remain notable gaps.
+          Several pockets within Stung Meanchey II still contain sub-optimal structures, limited drainage resilience,
+          and economically vulnerable households recovering from the transition based livelihoods.
+        </p>
+
+        <div class="Cambodia-CardMedia">
+          <!-- Image slot 6 -->
+          <img src="Media/Lenkov Village Tertiary.jpg" alt="Housing supported by community organisations">
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section 4: Our Solution -->
+    <header class="Cambodia-Header Cambodia-HeaderSpaced">
+      <h2 class="Cambodia-H2">Our Solution</h2>
+      <div class="Cambodia-Divider"></div>
+    </header>
+
+    <p class="Cambodia-Intro">
+      To address development gaps within the district, Konstra aims to introduce a sustainable 3D-printed housing solution in Stueng Meanchey II.
+      By partnering with established local NGOs, we seek to complement existing community efforts and provide safe, durable homes that support long-term well-being.
+      Our goal is to help cultivate an environment where families can live securely, grow together, and truly call the community their home.
+    </p>
+
+    <div class="Cambodia-SolutionSplit">
+
+      <div class="Cambodia-SolutionMedia">
+        <!-- Image slot 7 -->
+        <img src="Media/Support Konstra.png" alt="3D printing construction activity">
+      </div>
+
+      <div class="Cambodia-SolutionText">
+        <h3 class="Cambodia-H3">3D Printing Concrete?</h3>
+        <div class="Cambodia-AccentLine"></div>
+
+        <p>
+          3D concrete printing is an additive manufacturing technique used in construction.
+          It produces a three-dimensional structure by extruding concrete layer by layer based on a digital model.
+        </p>
+
+        <p>
+          This allows walls and structural elements to be formed without traditional formwork, which normally requires building timber molds to shape and hold concrete until it cures.
+        </p>
+
+        <p>
+          Compared to conventional construction, 3D concrete printing greatly reduces waste by depositing only the exact amount of material needed for each section.
+          The automated layer-by-layer process shortens construction time, eliminates labour-intensive steps such as assembling and removing formwork,
+          and reduces dependence on large on-site teams.
+        </p>
+
+        <p>
+          By removing the need for timber formwork, it also lowers material costs, minimizes resource use, and reduces deforestation linked to formwork production.
+          Additionally, 3D concrete printing can operate in harsher or hazardous environments, improving worker safety while maintaining consistent build quality.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Proposed housing solution gallery -->
+    <div class="Cambodia-GalleryBlock">
+      <h3 class="Cambodia-H3">Proposed housing solution</h3>
+      <div class="Cambodia-AccentLine"></div>
+
+      <div class="Cambodia-Gallery">
+
+        <div class="Cambodia-PlanCard">
+          <div class="Cambodia-PlanThumb">
+            <!-- Image slot 8 -->
+            <img src="Media/House_1.png" alt="Starter home concept">
+          </div>
+
+          <div class="Cambodia-PlanBody">
+            <h4 class="Cambodia-PlanTitle">Starter Home</h4>
+            <p class="Cambodia-PlanDesc">
+              A compact, efficient home suitable for a wide range of individuals. With an external stair for efficient land use
+            </p>
+            <a class="cta-btn Cambodia-PlanBtn" href="project-strava-3dhouse.html">Learn more</a>
+          </div>
+        </div>
+
+        <div class="Cambodia-ViewCard">
+          <!-- Image slot 9 -->
+          <img src="Media/House_2.png" alt="Front View">
+          <p class="Cambodia-ViewLabel">Front View</p>
+        </div>
+
+        <div class="Cambodia-ViewCard">
+          <!-- Image slot 10 -->
+          <img src="Media/House_5.png" alt="Left Side View">
+          <p class="Cambodia-ViewLabel">Left Side View</p>
+        </div>
+
+        <div class="Cambodia-ViewCard">
+          <!-- Image slot 11 -->
+          <img src="Media/House_3.png" alt="Rear View">
+          <p class="Cambodia-ViewLabel">Rear View</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PrintAdobe mini block -->
+    <div class="Cambodia-PrintAdobeSplit">
+
+      <div class="Cambodia-PrintAdobeText">
+        <h3 class="Cambodia-H3">PrintAdobe</h3>
+        <div class="Cambodia-AccentLine"></div>
+
+        <p>
+          PrintAdobe is Konstra’s skill-building initiative aimed at empowering the Stueng Meanchey community.
+          Through structured workshops, residents and local students are trained in 3D-printed construction learning how to prepare materials,
+          operate printing systems, monitor print quality, and maintain equipment.
+        </p>
+
+        <p>
+          By integrating local participation into the construction process, PrintAdobe creates meaningful employment,
+          equips youth with industry-relevant technical skills, and ensures community ownership of the housing development.
+          Over time, this initiative strengthens long-term sustainability by enabling residents to support future maintenance, expansion, and new builds independently.
+        </p>
+      </div>
+
+      <div class="Cambodia-PrintAdobeMedia">
+        <!-- Image slot 12 -->
+        <img src="Media/Finding Inspiration .jpg" alt="Training and sketching session">
+      </div>
+
+    </div>
+
+    <!-- Our Vision before after slider -->
+    <div class="Cambodia-Vision">
+      <h3 class="Cambodia-H3">Our Vision</h3>
+      <div class="Cambodia-AccentLine"></div>
+
+      <div class="BA-Wrap" data-ba>
+        <!-- Image slot 13 -->
+        <img class="BA-After" src="Media/Concept Art.jpg" alt="After vision">
+        <!-- Image slot 14 -->
+        <img class="BA-Before" src="Media/bidonville-Boeng-Salang.jpg" alt="Before context">
+
+        <div class="BA-Labels">
+          <span class="BA-Tag BA-TagLeft color_conversion">Before</span>
+          <span class="BA-Tag BA-TagRight color_conversion">After</span>
+        </div>
+
+        <input class="BA-Range" type="range" min="0" max="100" value="50" aria-label="Before after slider">
+        <div class="BA-Knob" aria-hidden="true"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+        
+
+
+        <!-- Return to Top Button -->
+        <div class="Return-Btn" id="backToTop">
+            <a href="#top">
+                <img src="Media/Return_Btn.png" alt="Return to top">
+            </a>
+        </div>
+
+
+
+        <!-- Footer Group -->
+        <footer>
+            <div class="footer-container">
+                <div class="footer-left">
+                    <p>Copyright © 2025 Konstra3d, All Rights Reserved.</p>
+                    <p>Privacy Policy</p>
+                    <p>Cookie Policy</p>
+                </div>
+
+                <div class="footer-right">
+                    <p>FOLLOW US</p>
+                    <ul class="Socials">
+                        <li>
+                            <a href="https://www.instagram.com/konstrarobotics" target="_blank"><img src="Media/Instagram_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/company/konstra-robotics/" target="_blank"><img src="Media/LinkedIn_White.png"></a>
+                        </li>
+                        <li>
+                            <a href="https://www.facebook.com/61578675961442/about/" target="_blank"><img src="Media/Facebook_White.png"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </footer>
+
+
+        <!-- All Javascript components here -->
+        <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
+        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
+        <script>
+  (function(){
+    const wrap = document.querySelector("[data-ba]");
+    if(!wrap) return;
+
+    const range = wrap.querySelector(".BA-Range");
+    const beforeImg = wrap.querySelector(".BA-Before");
+    const knob = wrap.querySelector(".BA-Knob");
+
+    function apply(val){
+      const pct = Math.max(0, Math.min(100, Number(val)));
+      beforeImg.style.clipPath = "inset(0 " + (100 - pct) + "% 0 0)";
+      knob.style.left = pct + "%";
+    }
+
+    apply(range.value);
+
+    range.addEventListener("input", function(e){
+      apply(e.target.value);
+    });
+  })();
+</script>
+    </body>
+</html>
