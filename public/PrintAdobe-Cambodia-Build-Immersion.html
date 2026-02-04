@@ -13,25 +13,20 @@
     <style>
         /* For specific styles applicable only to this page */
 
-            /*
+            /* 
                 Z-index Guide:
-                 0 -> Background Video / Image
+                 0 -> Background Video / Image 
                  1 -> Overlay
                  2 -> Text and other content
-                 3 -> Floating Box for ALO Page in PrintAdobe
             */
-
-            html{
-                scroll-behavior: smooth;
-            }
 
             /* Header Group */
                 .Header-Container{
                     position: relative;
                     overflow: hidden;
-                    min-height: 90vh;
-                    max-height: 1000px;
-                    /* padding: 10px 10px 59px 10px; */
+                    /* min-height: 43svh;  */
+                    min-height: 360px;
+                    margin-bottom: 59px;
                 }
 
                 .Header-Thumbnail{
@@ -43,189 +38,78 @@
                     z-index: 0;
                 }
 
-                .bg-overlay{
-                    background: rgba(0, 0, 0, 0.3) !important; /* 60% black */
-                }
-
-                .Header-Title{
-                    position: absolute;
-                    inset: 0;
-                    z-index: 2;
-
-                    display: flex;
-                    align-items: center;      /* vertical center */
-                    justify-content: center;  /* horizontal center */
-
-                    text-align: center;
-                    padding: 0 24px;          /* prevents edge touching on small screens */
-                }
-
                 .Header-Title h1{
                         /* Set the position so it can be placed above the thumbnail + Overlay */
                             position: relative;
                             z-index: 2;
-
+                        
                         /* Define the color, font size, and weight */
                             color: #ffffff;
-                            font-size: 75px;
+                            font-size: 47px;
                             font-weight: bold;
-                            letter-spacing: 2px;
+
+                        /* Centralize the title */
+                        text-align: center;
+                        margin: 160px 0 36px;
                 }
 
-            /* Floating InfoBar Group */
+                .Header-Title p{
+                    /* Set the position to be placed over the overlay */
+                        position: relative;
+                        z-index: 2;
 
-                /* Define the design of the overall floating section */
-                .FloatingBar-Container{
-                    position: relative;
-                    background: transparent;
-                    margin: 0 calc(3rem + 8px);
-                }
+                    /* Set the color and styling */
+                        color: #ffffff;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0 20px;
 
-                /* Define the box design */
-                .FloatingBar-Box{
-                    max-width: 1000px;
-                    margin: -55px auto 0;
-                    background: #fff;
-                    border-radius: 18px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                    padding: 25px 15px;
-                    z-index: 5;
-
-                    /* This is the rise into place effect */
-                        transform: translateY(30px);
-                        opacity: 0;
-                        transition: transform 800ms ease, opacity 300ms ease;
-                }
-
-                /* when activated, it locks into place visually */
-                .FloatingBar-Box.is-active{
-                transform: translateY(0);
-                opacity: 1;
-                }
-
-                /* This ensures info bar is always located there, without this the bar will disappear when scrolling away */
-                .FloatingBar-Box.is-sticky{
-                position: sticky;
-                top: 90px;
-                }
-
-                /* The overall style of the items in the floatin infor bar */
-                .FloatingBar-Content{
-                    display: flex;
-                    justify-content: space-evenly;
-                    gap: 14px;
-                    align-items: center;
-                    flex-wrap: wrap;
-                    margin: 0 calc(3rem + 8px);
-                }
-
-                .tab-btn{
-                    font-size: 18px;
-                    border: 0;
-                    background: transparent;
-                    cursor: pointer;
-                    padding: 12px 18px;
-                    border-radius: 999px;
-                    font-weight: 600;
-                    transition: background 200ms ease, color 200ms ease, transform 200ms ease;
-                }
-
-                .tab-btn:hover{
-                    background: rgba(0,0,0,0.06);
-                    transform: translateY(-1px);
-                }
-
-                .tab-btn.active{
-                    background: #111;
-                    color: #ffffff;
-                }
-
-                .tab-panel{
-                    padding: 36px 0;
-                }
-
-                #HeroEndTrigger{
-                    height: 1px;
-                }
-
-
-            /* Floating Bar Content */
-                .FloatingContent-Container{
-                    margin: 0 auto;
-                    max-width: 1150px;
-                    width: 100%;
-                    padding: 0 calc(3rem + 8px);
-
+                    text-align: center; /* Centralize the text */
 
                 }
-
-                .FloatingContent-Wrapper{
-                    display: grid;
-                    gap: 20px;
-                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                    justify-content: center;
-                    align-items: start;
+            
+            /* Course Description Group */
+                .Course-Container{
+                        margin: 60px calc(3rem + 6px) 48px;
                 }
 
-                .FloatingContent-Container h2{
+                .Course-Content{
+                    /* Centralize the group */
+                        max-width: 1140px;
+                        width: 100%;
+                        margin: 0 auto;
+                }
+
+                .Course-Title h3{
                     font-size: 40px;
-                    font-weight: 600;
-                    letter-spacing: 2px;
-                    margin-bottom: 70px;
+                    font-weight: 200;
+                    margin-bottom: 17px;
+
+                    /* Inner and Outer Shadow */
+                        /* outer shadow (soft blur) */
+                        text-shadow:
+                            0 10px 18px rgba(0,0,0,0.4),
+
+                        /* inner-ish highlight (fake inner shadow) */
+                        0 -1px 0 rgba(255,255,255,0.9);
                 }
 
-                .FloatingContent-Container p{
+                .Course-Description p{
+                    max-width: 1100px; /* Description Box layout */
                     font-size: 18px;
-                    margin-bottom: 20px;
+                    font-weight: normal;
+                    margin-left: 32px;
                 }
 
-                .FloatingContent-Container img{
-                    max-width: 1200px;
-                    width: 100%;
+                .Course-List li{
+                    margin-left: 80px;
+                    padding: 5px 0;
                 }
-
-                .FloatingDataCard{
-                    width: 100%;
-                    max-width: 370px;
-                    min-height: 150px;
-                    background-color: transparent;
-                    border: 1px solid rgba(0,0,0,0.08);
-                    border-radius: 20px;
-                    padding: 18px 22px;
-                    box-sizing: border-box;
-                    box-shadow: 0 10px 18px rgba(0,0,0,0.12);
-                }
-
-                .FloatingDataCard-Title{
-                    display: flex;
-                    flex-direction: row;
-                    gap: 20px;
-                    margin-bottom: 20px;
-                }
-
-                .FloatingDataCard-Title img{
-                    width: 28px;
-                    height: 28px;
-                    object-fit: contain;
-                }
-
-                .FloatingDataCard-Title p{
-                    margin: 0;
-                    font-size: 20px;
-                    font-weight: 450;
-                    color: #000000;
-                }
-
-                .FloatingDataCard-Content p{
-                    margin: 0;
-                    font-size: 18px;
-                    color: #111;
-                    opacity: 0.7;
-                }
-
-
-
+                
             /* Topics Covered Group */
+                .Topics-Container{
+                    margin: 60px calc(3rem + 6px) 48px;
+                }
 
                 /* Dropdown box styling */
                     .Topics-Drop{
@@ -238,8 +122,8 @@
 
                         /* Shadow Styling */
                             box-shadow:
-                            inset 0 5px 2px rgba(0,0,0,0.04), /* inner */
-                            0 12px 28px rgba(0,0,0,0.1);     /* outer */
+                            inset 0 5px 2px rgba(0,0,0,0.2), /* inner */
+                            0 12px 28px rgba(0,0,0,0.3);     /* outer */
                     }
 
                     .Topics-Drophead{
@@ -253,7 +137,7 @@
 
                     .Topics-Level h4{
                         max-width: 1100px; /* Description Box layout */
-                        font-size: 18px;
+                        font-size: 20px;
                         font-weight: normal;
                         margin-left: 10px;
                     }
@@ -278,334 +162,94 @@
                     line-height: 1.6;
                     }
 
-            /* OIP Infograph Group  */
-                .OIP-Container{
-                    /* Determine the layout of the section */
-                        display: flex;
-                        align-items: stretch; /* Make the elements absorb all the space within the section*/
-                        margin-top: 60px;
-                        margin: 60px calc(3rem +8px) 0;
-
-                    /* Dimensions of the section */
-                        width: 100%;
-                        max-width: 100svw;
-                        min-height: 90vh;
-                }
-
-                /* Left Box */
-                .OIPLeft-Box{
-                    background-color: #000221;
-                    flex: 0.77; /* Width of the section the left section takes*/
-                    min-width: 0; /* Prevents flex overflow*/
-                    display: flex;
-                    align-items: flex-start;
-
-                }
-
-                .OIPLeft-Text{
-                    width: 100%;
-                    max-width: 620px;                   /* controls line length */
-                    padding: 60px 42px 60px 50px;          /* gives consistent “breathing space” */
-                    margin-left: auto;                  /* pushes text toward the right edge of left panel */
-                }
-
-                .OIPLeft-Box h1{
-                    font-size: 35px;
-                    font-weight: 700;
-                    margin-bottom: 25px;
-                    max-width: 510px;
-                    width: 100%;
-                    color: #ff5b5b;
-                }
-
-                .OIPLeft-Box p{
-                    font-size: 16px;
-                    font-weight: 300;
-                    max-width: 510px;
-                    width: 100%;
-                    color: #ffffff;
-                }
-
-                /* Right box */
-                .OIPRight-Box{
-                    position: relative;
-                    min-height: 90vh;
-                    flex: 1 1 0;
-                    min-width: 0;
-                    width: 100%;
-
-                    /* Center the scroller vertically */
-                        display: flex;
-                        align-items: center;
-                }
-
-                /* The overlay inserted prior to the right box to make it look like the images is going inbetween the left box */
-                .OIPRight-Box::before{
-                    /* Establish the overlay box layout */
-                        content: "";
-                        position: absolute;
-                        inset: 0;
-
-                    /* Overlay box design */
-                        width: 120px;
-                        background-color: #000221;
-                        z-index: -1;
-                        pointer-events: none;
-                }
-
-                .OIPRight-Scroller{
-                    /* Box layout */
-                        position: relative;
-                        display: flex;
-                        gap: 22px;
-                        align-items: center;
-
-                    /* Box behavior */
-                        flex: 1;
-                        overflow: hidden;
-                        overflow-x: auto;
-                        overflow-y: hidden;
-                        padding: 40px 30px;
-
-                        /* Scrolling specific */
-                            -webkit-overflow-scrolling: touch; /* webkit is for older devices who needs the prefix*/
-                            scroll-snap-type: x mandatory; /* Allow the scroll to snap to an image instead of stopping at weird location like in between the images*/
-                            scroll-behavior: smooth;
-                            scrollbar-width: none; /* Firefox */
-                            cursor: grab;
-                            /* Ensure you wont accidentally drag the image */
-                                -webkit-user-select: none;
-                                user-select: none;
-                }
-
-                .OIPRight-Scroller::-webkit-scrollbar{
-                    display: none;     /* Chrome/Safari/Edge */
-                }
-
-                .OIPRight-Scroller.is-dragging{
-                    cursor: grabbing;
-                }
-
-                /* Hide scrollbar but keep scroll function */
-                    .OIPRight-Box{
-                        scrollbar-width: none; /* Firefox */
+                    /* Styling for the module content */
+                    .Topics-ModInfo h5{
+                        font-weight: bold;
+                        font-size: 18px;
+                        margin-top: 20px;
                     }
 
-                .OIPOval{
-                    flex: 0 0 auto;
-
-                    width: clamp(250px, 17vw, 330px);   /* Make the image responsive */
-                    aspect-ratio: 330 / 546;            /* keeps your oval proportion */
-                    overflow: hidden;
-
-                    border-radius: 999px;
-                    display: block;
-
-                    /* Scrolling specific */
-                            scroll-snap-align: center;
-                            /* prevent selecting the image when dragging */
-                                user-select: none;
-                                -webkit-user-drag: none;
-                }
-
-                .OIPRight-Scroller img{
-                    /* Image behavior and dimensions*/
-                        width: 100%;
-                        height: 100%;
-                        object-fit: cover;
-                        display: block;
-                    
-                    /* Stop browser’s native image drag */
-                    -webkit-user-drag: none;
-                    -webkit-user-drag: none;
-                    pointer-events: none;   /* prevents “picking up” the image */
-                }
-
-            /* Value Group */
-                .TripValue-Section{
-                    width: 100%;
-                    background: #ffffff;
-                    padding: 80px calc(3rem + 8px);
-                }
-
-                .TripValue-Inner{
-                    width: min(1140px, calc(100% - 48px));
-                    margin: 0 auto;
-                }
-
-                .TripValue-Title{
-                    font-size: 34px;
-                    font-weight: 750;
-                    letter-spacing: 0.2px;
-                    color: #000221;
-                    margin: 0 0 12px 0;
-                }
-
-                .TripValue-Lead{
-                    max-width: 760px;
-                    margin: 0 0 28px 0;
-                    color: rgba(0,0,0,0.72);
-                    line-height: 1.6;
-                }
-
-                .TripValue-Grid{
-                    display: grid;
-                    grid-template-columns: repeat(2, minmax(0, 1fr));
-                    gap: 18px;
-                }
-
-                .TripValue-Card{
-                    border-radius: 18px;
-                    background: #f7f7fb;
-                    border: 1px solid rgba(0,0,0,0.06);
-                    padding: 22px 22px;
-                    box-shadow: 0 10px 26px rgba(0,0,0,0.10);
-                }
-
-                .TripValue-Card h3{
-                    font-size: 18px;
-                    margin: 0 0 8px 0;
-                    color: #000221;
-                }
-
-                .TripValue-Card p{
-                    margin: 0;
-                    color: rgba(0,0,0,0.72);
-                    line-height: 1.6;
-                }
-
-
-            /* Quick facts Group */
-                .TripFacts-Section{
-                    width: 100%;
-                    background: #000221;
-                    /* padding: 44px 0; */
-                    padding: 44px calc(3rem + 8px);
-                }
-
-                .TripFacts-Inner{
-                    width: min(1140px, calc(100% - 48px));
-                    margin: 0 auto;
-                }
-
-                .TripFacts-Grid{
-                    display: grid;
-                    grid-template-columns: repeat(4, minmax(0, 1fr));
-                    gap: 16px;
-                }
-
-                .TripFacts-Item{
-                    background: rgba(255,255,255,0.06);
-                    border: 1px solid rgba(255,255,255,0.10);
-                    border-radius: 16px;
-                    padding: 16px 16px;
-                }
-
-                .TripFacts-Kicker{
-                    margin: 0 0 6px 0;
-                    font-size: 12px;
-                    letter-spacing: 0.8px;
-                    text-transform: uppercase;
-                    color: rgba(255,255,255,0.70);
-                }
-
-                .TripFacts-Value{
-                    margin: 0;
-                    font-size: 14px;
-                    font-weight: 650;
-                    color: #ffffff;
-                    line-height: 1.4;
-                }
-
-            /* Responsiveness modifications */
-
-                /* Make the Title smaller when  */
-                    @media (max-width: 880px){
-                        .Header-Title h1{
-                            font-size: 60px;
-                    }
+                    .Topics-ModContent {
+                        margin-left: 20px;
                     }
 
-                    /* Course Card Behavior when compressed */
-                    @media (max-width: 715px){
-                        .Curriculum-Container{
-                            justify-items: center;
-                        }
+                    .Topics-ModContent li{
+                        margin-left: 40px;
                     }
 
-
-
-                /* Enhance readability for the OIP section when compressed */
-                    @media (max-width: 1220px){
-                        .OIPLeft-Box h1{
-                            font-size: 33px;
-                        }
+                    .Topics-Seperator{
+                        margin: 20px 0;
+                        border-top: 1px solid #000000;
                     }
 
-                    @media (max-width: 1100px){
-                        .OIPLeft-Box h1{
-                            font-size: 31px;
-                        }
+            /* Learning Outcome Group  */
+                .LearningOutcome-Quote{
+                    margin-left: 42px;
+                    font-weight: 400;
+                    color: #ff0000;
+                }
 
-                        .OIPOval{
-                        width: clamp(200px, 17vw, 330px);
-                        }
-                    }
+                .LearningOutcome-List li{
+                    margin-left: 60px;
+                }
 
-                    @media (max-width: 1100px){
-                        .OIP-Container{
+            /* Highlights Group*/
+
+                /* Backgroung box styling */
+                    .Highlights-Box{
+
+                        /* Determine box element layout */
                             display: flex;
                             flex-direction: column;
-                        }
 
-                        .OIPLeft-Text{
-                            margin: 0 auto;
-                        }
+                        /* Determine style of the box */
+                            background: #f4f4f4;
+                            border-radius: 20px;
+                            max-width: 1108px;
+                            margin-bottom: 50px;
 
-                        .OIPRight-Box{
-                            min-height: 60vh;
-                        }
-
-                        .OIPRight-Box::before{
-                            display: none;
-                        }
+                        /* Shadow */
+                        box-shadow:
+                            0 12px 28px rgba(0,0,0,0.5);     /* outer */
                     }
 
+                /* Box content text styling */
+                    .Course-Description h4{
+                        /* Text position */
+                        text-align:left;
+                        margin: 15px;
 
-
-
-
-                /* Responsive for Section 3 */
-                    @media (max-width: 860px){
-                        .TripValue-Grid{
-                            grid-template-columns: 1fr;
-                        }
-
-                        .TripValue-Title{
-                            font-size: 30px;
-                        }
+                        /* Text styling */
+                        font-size: 25px;
+                        font-weight: bold;
                     }
 
-                /* Responsive for Section 4 */
-                    @media (max-width: 920px){
-                    .TripFacts-Grid{
-                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                /* Box content Image styling */
+                    .Highlights-Box img{
+                        /* Image Size */
+                            max-width: 1060px;
+                            height: 800px;
+                            object-fit: cover;
+                            display: block;
+                        margin: 40px 40px 0 40px;
                     }
+                
+                /* Box content Description styling */
+                    .Highlights-Box p{
+                        /* Text position */
+                        text-align:left;
+                        margin: 30px 40px;
+
+                        /* Text styling */
+                        font-size: 20px;
+                        font-weight: 300;
                     }
 
-                    @media (max-width: 520px){
-                    .TripFacts-Grid{
-                        grid-template-columns: 1fr;
-                    }
-                    }
-
-
+            /* Responsiveness modifications */
+            
+            
     </style>
     <body>
-
-        <!-- Return to Top Button (Top) -->
-        <div id="top"></div>
-
         <!-- NavBar Group -->
         <nav class="navbar">
             <div class="navbar-container">
@@ -623,9 +267,9 @@
 
                 <!-- Navbar Links -->
                 <ul class ="navbar-menu">
-                    <!--
-                    <li><a href="#" class="currentPage">HOME</a></li>
-                    Note: Set the class currentPage when working on that specific page
+                    <!-- 
+                    <li><a href="#" class="currentPage">HOME</a></li> 
+                    Note: Set the class currentPage when working on that specific page 
                     to display the selected state of that link.
                     -->
                     <!-- Display the logo here but set it to hidden until the hamburger menu is activated -->
@@ -645,623 +289,899 @@
             </div>
         </nav>
         <!-- Insert page content from this point onwards -->
-
+        
         <!-- Header Group -->
         <section class="Header-Container">
 
             <!-- Header Thumbnail -->
-            <img class="Header-Thumbnail" src="Media/ALO Cover.jpg">
+            <img class="Header-Thumbnail" src="Media/Curriculum 1.jpeg">
 
             <!-- Overlay -->
             <div class="bg-overlay"></div>
 
             <!-- Title -->
             <div class="Header-Title">
-                <h1>3 DAYS PRINTADOBE CAMBODIA BUILD IMMERSION</h1>
+                <h1><span class="color_conversion">3D PRINTING</span> IN CONSTRUCTION</h1>
+
+                <p>Explore the world of 3D Construction with Konstra</p>
             </div>
         </section>
 
-        <!-- Trigger for the InfoBar -->
-        <div id="InfoBar-Trigger"></div>
+        <!-- Course Description Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
 
-        <!-- Floating InfoBar Group -->
-        <section class="FloatingBar-Container">
-            <div class="FloatingBar-Box" id="FloatingBarBox">
-                <div class="FloatingBar-Content" role="tablist" aria-label="Trip Tabs">
+                <div class="Course-Title">
+                    <h3>Why Choose This Course?</h3>
+                </div>
 
-                    <button class="tab-btn active" role="tab"
-                        aria-selected="true" aria-controls="panel-overview" id="tab-overview"
-                        data-tab="panel-overview">
-                        Trip Overview
-                    </button>
-
-                    <button class="tab-btn" role="tab"
-                        aria-selected="false" aria-controls="panel-focus" id="tab-focus"
-                        data-tab="panel-focus">
-                        Area of Focus
-                    </button>
-
-                    <button class="tab-btn" role="tab"
-                        aria-selected="false" aria-controls="panel-itinerary" id="tab-itinerary"
-                        data-tab="panel-itinerary">
-                        Itinerary
-                    </button>
-
-                    <button class="tab-btn" role="tab"
-                        aria-selected="false" aria-controls="panel-outcomes" id="tab-outcomes"
-                        data-tab="panel-outcomes">
-                        Learning Outcomes
-                    </button>
-
-                    <button class="tab-btn" role="tab"
-                        aria-selected="false" aria-controls="panel-faqs" id="tab-faqs"
-                        data-tab="panel-faqs">
-                        FAQs
-                    </button>
+                <div class="Course-Description">
+                    <p>
+                        Learn how buildings can be printed, not assembled. This track gives 
+                        you a clear, step-by-step progression from understanding how 
+                        construction 3D printing works, to planning prints reliably, to 
+                        learning what it takes to deploy the technology in real-world 
+                        sites—especially in emerging markets where cost, speed, and 
+                        sustainability matter.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- The content triggered from selecting the buttons in the Infobar -->
-            <!-- Tab Panels -->
-            <section class="FloatingContent-Container" id="FloatingContent">
+        <!-- About This Course Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
 
-                <!-- Trip Overview -->
-                <section class="tab-panel active" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview">
-                    <h2><span class="color_conversion">Trip Overview</span></h2>
+                <div class="Course-Title">
+                    <h3>About this Course</h3>
+                </div>
 
-                    <div class="FloatingContent-Wrapper">
-                        <!-- Trip Duration -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/Trip Duration Icon.png">
-                                <p>Trip Duration</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>3 Days 2 Nights</p>
-                            </div>
-                        </div>
-
-                        <!-- Flight Cost -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/Flight Cost Icon.png">
-                                <p>Flight Cost</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>Inclusive in $2999</p>
-                            </div>
-                        </div>
-
-                        <!-- Trip Duration -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/Calendar Icon.png">
-                                <p>Planned Date of Travel</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>To be Confirmed</p>
-                            </div>
-                        </div>
-
-                        <!-- Trip Duration -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/Cities Visiting Icon.png">
-                                <p>Cities Visiting</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>Phnom Penh, Cambodia</p>
-                            </div>
-                        </div>
-
-                        <!-- Trip Duration -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/Meals Icon.png">
-                                <p>Meals & Accomodation</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>Meals & accomodation will be covered by Konstra</p>
-                            </div>
-                        </div>
-
-                        <!-- Trip Duration -->
-                        <div class="FloatingDataCard">
-                            <div class="FloatingDataCard-Title">
-                                <img src="Media/itinerary Icon.png">
-                                <p>Trip Duration</p>
-                            </div>
-                            <div class="FloatingDataCard-Content">
-                                <p>Site visits, partners & community engagements</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Area of Focus -->
-                <section class="tab-panel" role="tabpanel" id="panel-focus" aria-labelledby="tab-focus" hidden>
-                    <h2><span class="color_conversion">Area of Focus</span></h2>
+                <div class="Course-Description">
                     <p>
-                        <span class="Bold-Conversion">Location:</span> Stueng Meanchey, Phnom Penh, Cambodia
-                    </p>
-                    <p>
-                        Konstra's area of focus is Stueng Meanchey II in Khan Meanchey, Phnom Penh, near the
-                        former Stueng Meanchey dumpsite and Lenkov Village, where vulnerable communities live
-                        in modest housing along the canal. Even after major canal clean up works in 2023, the
-                        district still faces drainage stress during heavy rains and occasional land instability
-                        from erosion, and parts of the community remain economically fragile due to
-                        long-standing hardship tied to the former landfill area.
-                    </p>
-                </section>
-
-                <!-- Itinerary -->
-                <section class="tab-panel" role="tabpanel" id="panel-itinerary" aria-labelledby="tab-itinerary" hidden>
-                    <h2><span class="color_conversion">Itinerary</span></h2>
-                    <p>
-                        <!-- Day 1 -->
-                            <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                            <details class="Topics-Drop">
-
-                                <!-- Summary is the clickable header in the details and the
-                                section users see before expanding the section -->
-                                <summary class="Topics-Drophead">
-
-                                    <!-- Level Title -->
-                                    <div class="Topics-Level">
-                                        <h4>
-                                            <span class="Bold-Conversion">Day 1: Singapore ⌯✈︎ Phnom Penh (Arrival)</span>
-                                        </h4>
-                                    </div>
-
-                                    <!-- Expand or Close section Icon -->
-                                    <span class="Topics-Icon"></span>
-
-                                </summary>
-
-                                <!-- Visable information upon expanding the section -->
-
-                                <div class="Topics-Dropbody">
-                                    <p class="Topics-Description">
-                                        Participants will arrive in Phnom Penh and be transferred to the
-                                        accommodation. The day focuses on settling in and understanding the
-                                        context of the immersion. A short orientation session will be conducted
-                                        to introduce the programme objectives, safety guidelines, and an
-                                        overview of the community and project site. Participants will also
-                                        have the opportunity to meet the Konstra team and fellow learners.
-                                    </p>
-                                </div>
-                            </details>
-
-                        <!-- Day 2 -->
-                            <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                            <details class="Topics-Drop">
-
-                                <!-- Summary is the clickable header in the details and the
-                                section users see before expanding the section -->
-                                <summary class="Topics-Drophead">
-
-                                    <!-- Level Title -->
-                                    <div class="Topics-Level">
-                                        <h4>
-                                            <span class="Bold-Conversion">Day 2: Phnom Penh, Stueng Meanchey Community, Project Site, and Local Partner Facilities Visits</span>
-                                        </h4>
-                                    </div>
-
-                                    <!-- Expand or Close section Icon -->
-                                    <span class="Topics-Icon"></span>
-
-                                </summary>
-
-                                <!-- Visable information upon expanding the section -->
-
-                                <div class="Topics-Dropbody">
-                                    <p class="Topics-Description">
-                                        The second day focuses on on-ground exposure. Participants will visit
-                                        the project area to observe existing conditions and understand the
-                                        challenges faced by the local community. Guided walkthroughs and
-                                        discussions will provide insight into housing, infrastructure, and
-                                        environmental considerations. Learners will engage in dialogue with
-                                        partners to better appreciate how design decisions are shaped by
-                                        real-world constraints.
-
-                                        Participants will take part in structured learning activities with 
-                                        our partners in the region, which may include observing 3D printing 
-                                        processes, understanding workflow planning, and discussing 
-                                        sustainability considerations. Time will be allocated for team 
-                                        discussions and reflection sessions to consolidate learning and share 
-                                        observations. This day emphasises translating experience into meaningful 
-                                        insights.
-                                    </p>
-                                </div>
-                            </details>
-
-                        <!-- Day 3 -->
-                            <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                            <details class="Topics-Drop">
-
-                                <!-- Summary is the clickable header in the details and the
-                                section users see before expanding the section -->
-                                <summary class="Topics-Drophead">
-
-                                    <!-- Level Title -->
-                                    <div class="Topics-Level">
-                                        <h4>
-                                            <span class="Bold-Conversion">Day 3: Phnom Penh ⌯✈︎ Singapore (Return)</span>
-                                        </h4>
-                                    </div>
-
-                                    <!-- Expand or Close section Icon -->
-                                    <span class="Topics-Icon"></span>
-
-                                </summary>
-
-                                <!-- Visable information upon expanding the section -->
-
-                                <div class="Topics-Dropbody">
-                                    <p class="Topics-Description">
-                                        The final day focuses on consolidating key takeaways from the immersion.
-                                        Participants will reflect on their learning journey and discuss how the
-                                        experience can be applied to future academic or professional work. The
-                                        programme concludes with preparation for departure and return travel.
-                                    </p>
-                                </div>
-                            </details>
-                    </p>
-                </section>
-
-                <!-- Learning Outcomes -->
-                <section class="tab-panel" role="tabpanel" id="panel-outcomes" aria-labelledby="tab-outcomes" hidden>
-                    <h2><span class="color_conversion">Learning Outcomes</span></h2>
-                        <img src="Media/Learning Outcome 2.jpg">
-                    <!-- <p>
-                        By participating in the PrintAdobe Cambodia Build Immersion, learners will gain
-                        meaningful exposure beyond classroom-based learning. The programme is designed to
-                        develop both practical understanding and professional competencies through real-world
-                        engagement.
+                        This is a 3-level pathway that takes you from fundamentals → workflows → real deployment.
                         <br><br>
-                        Participants will learn how design and construction decisions are influenced by
-                        on-the-ground constraints such as cost, material availability, environmental
-                        conditions, and community needs. This experience encourages learners to think
-                        critically about adaptability and problem-solving in unfamiliar contexts.
-                        <br><br>
-                        The immersion also strengthens cross-cultural communication skills, as learners
-                        interact with local partners, community members, and multidisciplinary teams.
-                        Through guided discussions and reflections, participants gain a deeper appreciation
-                        of social responsibility and ethical design practices.
-                        <br><br>
-                        In addition, learners will develop teamwork and collaboration skills by working closely
-                        with peers in a dynamic environment. The programme fosters independence, resilience,
-                        and the ability to translate theoretical knowledge into practical insights that can be
-                        applied to future academic and professional projects.
-                    </p> -->
-                </section>
-
-                <!-- FAQ -->
-                <section class="tab-panel" role="tabpanel" id="panel-faqs" aria-labelledby="tab-faqs" hidden>
-                    <h2><span class="color_conversion">FAQs</span></h2>
-
-                    <!-- FAQ Questions-->
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Who is this programme suitable for?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    This programme is suitable for PrintAdobe learners and individuals who
-                                    are interested in hands-on learning, community engagement, and real-world
-                                    exposure. No prior overseas project experience is required, but
-                                    participants should be open-minded and willing to learn.
-                                </p>
-                            </div>
-                        </details>
-
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Do I need prior construction or technical experience?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    No prior construction or technical experience is required. The programme
-                                    focuses on learning through observation, guided activities, and engagement
-                                    rather than technical execution.
-                                </p>
-                            </div>
-                        </details>
-
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Will accommodation and meals be provided?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    Yes. Accommodation and daily meals will be provided for the duration of the
-                                    immersion programme to ensure participants are supported throughout the trip.
-                                </p>
-                            </div>
-                        </details>
-
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Is the programme safe?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    Participant safety is a priority. Konstra works with trusted local partners
-                                    and implements basic safety briefings and on-ground supervision throughout
-                                    the programme.
-                                </p>
-                            </div>
-                        </details>
-
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Will there be guidance during the trip?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    Yes. Participants will be guided by Konstra team members and project
-                                    partners who will provide context, support, and structured learning
-                                    throughout the immersion.
-                                </p>
-                            </div>
-                        </details>
-
-                        <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
-                        <details class="Topics-Drop">
-
-                            <!-- Summary is the clickable header in the details and the
-                            section users see before expanding the section -->
-                            <summary class="Topics-Drophead">
-
-                                <!-- Level Title -->
-                                <div class="Topics-Level">
-                                    <h4>
-                                        <span class="Bold-Conversion">Is this a volunteer programme or a study tour?</span>
-                                    </h4>
-                                </div>
-
-                                <!-- Expand or Close section Icon -->
-                                <span class="Topics-Icon"></span>
-
-                            </summary>
-
-                            <!-- Visable information upon expanding the section -->
-
-                            <div class="Topics-Dropbody">
-                                <p class="Topics-Description">
-                                    This programme is a learning immersion rather than a volunteer or
-                                    sightseeing tour. The focus is on exposure, understanding real-world
-                                    challenges, and experiential learning.
-                                </p>
-                            </div>
-                        </details>
-                </section>
-            </section>
-
-
-        <!-- OIP Infograph Group -->
-        <section class="OIP-Container">
-            <div class="OIPLeft-Box">
-                <div class="OIPLeft-Text">
-                    <h1>
-                        <!-- Go beyond sightseeing. Learn how real projects run on the ground and how culture shapes 
-                        partnership in Phnom Penh. -->
-                        Immersive Build Experience — Cambodia
-                    </h1>
-                    <p>
-                        <!-- Step beyond conventional learning and experience how design, technology, and community needs
-                        intersect in real project environments. This immersion places learners on the ground, where
-                        decisions are shaped by social, environmental, and operational realities that cannot be
-                        replicated in a classroom setting.
-                        <br><br>
-                        Through guided site visits, partner engagements, and structured reflection sessions,
-                        participants gain first-hand exposure to real challenges while developing critical thinking,
-                        adaptability, and cross-cultural communication skills. The experience is designed to deepen
-                        understanding, encourage responsible design thinking, and translate theory into meaningful,
-                        practical insights. -->
-                        For advanced learners, PrintAdobe offers a supervised overseas build experience in 
-                        Cambodia, where theory meets real construction environments.
-                        <br><br>
-                        Participants observe and support live 3D construction printing in low-resource 
-                        settings, gaining first-hand exposure to how robotics, materials, logistics, and 
-                        site constraints interact in the real world. This experience deepens understanding of 
-                        construction automation while developing professional awareness of deployment 
-                        challenges beyond simulations.
-
+                        <ul class="Course-List">
+                            <li>
+                                <span class="Bold-Conversion">Level 1:</span> Level 1: Core concepts (printers, materials, process, safety) so you understand the full pipeline.
+                            </li>
+                            <li>
+                                <span class="Bold-Conversion">Level 2:</span> Print-ready thinking (design rules, toolpaths, QC, calibration, monitoring) so prints work consistently.
+                            </li>
+                            <li>
+                                <span class="Bold-Conversion">Level 3:</span> Site execution (logistics, local materials, regulations, partnerships, community, risk) so projects can run in real conditions.
+                            </li>
+                        </ul>
                     </p>
                 </div>
             </div>
-            <div class="OIPRight-Box">
-                <div class="OIPRight-Scroller">
+        </section>
+
+        <!-- Career & Pathway Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Career Pathways</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        Graduates may be suited for roles or pathways such as but not limited to:
+                        <br><br>
+                        <ul class="Course-List">
+                            <li>Construction 3D Printing Technician (Trainee)</li>
+                            <li>Digital Fabrication Assistant / Technician</li>
+                            <li>Robotic Construction Site Support</li>
+                            <li>Materials & QA Assistant (Printable Mix / QC)</li>
+                            <li>Deployment / Project Planning Assistant (Emerging Markets)</li>
+                        </ul>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Entry Requirement Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Entry Requirements</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <p>
+                        <!-- Age Req -->
+                        <span class="Bold-Conversion">Age:</span>
+                        This module is recommended to candidates aged 16 - 25, younger participants (13 - 15) are also 
+                        <span class="Bold-Conversion">encouraged</span> to join if interested.
+                        <br><br>
+                        <!-- Exprience Req -->
+                        <span class="Bold-Conversion">Prior Experience:</span>
+                        Prior experience on construction or 3D printing is <span class="Bold-Conversion">not required</span>
+                        <br><br>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Topics Covered Group -->
+        <section class="Topics-Container">
+            <div class="Course-Content">
+
+                <!-- Title -->
+                <div class="Course-Title">
+                    <h3>What You Will Learn</h3>
+                </div>
+
+                <!-- Level Modules -->
                     
-                    <div class="OIPOval">
-                        <img src="Media/Stung Meanchey Deumo.jpg">
+                <!-- Level 1 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 1 - Foundations of 3D Construction Printing</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 22 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 4-6 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Concept & scenario based quiz + group project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This course aims to give learners a solid mental model of how construction 3D printing 
+                            works — without overwhelming them. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How does a robot actually print a building?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Explain end-to-end how a construction printer turns a digital model into a physical structure.</li>
+                                <li>Describe key hardware, materials, workflows, and use cases using correct terminology. </li>
+                                <li>Be eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 1</span> priced at SGD $600</li>
+                            </ul>
+                            <br>
+
+                            The content curated is crafted in alignment with:
+                            <ul class="LearningOutcome-List">
+                                <li>Polytechnic short courses</li>
+                                <li>Intro certification standards</li>
+                                <li>Parent expectations for commitment without overload</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Pre-recorded video lessons</li>
+                                <li>Short readings and diagrams</li>
+                                <li>Simple case examples from Konstra projects</li>
+                                <li>Lightweight quizzes after each module</li>
+                            </ul>
+                            
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Why 3D Printing in Construction? <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Summarize benefits and limitations vs conventional construction (cost, speed, labor, sustainability).</li>
+                                        <li>Recognize major global pilots and emerging markets using the tech.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Short lecture + case mini-debate; news-article critique (what's hype vs reality?)<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Reflection note or short quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Core Concepts & Vocabulary <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Define key terms (gantry, robotic arm, toolpath, rheology, buildability, layer height, G-code).</li>
+                                        <li>Sketch the “digital-to-built” pipeline at a high level.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Concept-mapping exercise; vocabulary card sort.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Concept map submission + short MCQ.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online + worksheet.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Printers, Motion & Control <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Compare different construction printer types and where each is used.</li>
+                                        <li>Identify main subsystems (motion system, pump, nozzle, control, safety).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Virtual or on-site printer walk-through; subsystem identification task.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Labelled diagram + oral/written explanation.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Ideally on Konstra hardware; fallback: video/simulation.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Materials 101 - Printable Concrete & Beyond <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Describe what makes a mix pumpable and buildable.</li>
+                                        <li>List common admixtures and their roles (accelerators, superplasticizers, fibers).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Lab demo with mortar consistency comparisons; mix “cards” exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short lab worksheet.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab-based (Konstra or partner lab).
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: The Printing Process & Quality Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Trace a simple wall print sequence (start, perimeters, layers, stops).</li>
+                                        <li>Identify common defects (sagging, cold joints, misalignment) from photos/videos.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Watch annotated print run; group diagnosis of “what went wrong” scenarios.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Scenario-based quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Video from Konstra projects + guided discussion.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Use Cases, Safety & Ethics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Match typical applications (housing, infrastructure, emergency shelters) to contexts.</li>
+                                        <li>Describe core safety considerations and ethical issues (jobs, community impact, code compliance).</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Safety checklist game; mini case on housing in an emerging market.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Group poster / slide or short written response.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 1 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Test Format:</span> 30-40 item online test (concepts + scenario questions) plus a short group presentation explaining “How our robot prints a basic house wall.”​<br>
+                                </div>
+                            </div>
+
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 2 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 2 - Robotic Printing Workflows & Materials</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 33 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 6-8 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Capstone mini-project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This course aims to move from “understanding” to operational thinking. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How do we print walls, openings, and structures reliably?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will:
+                            <ul class="LearningOutcome-List">
+                                <li>Convert a simple design into a print-ready concept respecting design rules.</li>
+                                <li>Adjust key process and material parameters to maintain print quality.</li>
+                                <li>Be eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 2</span> priced at SGD $900</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds upon the skills of Level 1 with:
+                            <ul class="LearningOutcome-List">
+                                <li>Serious technical depth</li>
+                                <li>Strong step-up from Level 1</li>
+                                <li>Higher value → justifies higher price</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Deeper technical videos</li>
+                                <li>Workflow diagrams and simulations</li>
+                                <li>Material behaviour scenarios</li>
+                                <li>Group-based case analysis (remote-friendly)</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Design for Printability <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Apply geometric rules (minimum thickness, radius, overhang limits) to a simple layout.</li>
+                                        <li>Identify features that are hard or impossible to print.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> CAD-based exercise modifying a conventional wall layout into a printable one.​<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Before/after design submission with brief justification.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> CAD lab or online CAD.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Slicing & Toolpath Basics <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Explain layer height, print speed, infill/voids, and path continuity in concrete printing.</li>
+                                        <li>Interpret a simple toolpath visualization.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Use slicing software to generate and inspect toolpaths for a small wall segment.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short practical quiz (identify parameters, predict outcome).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Computer lab / simulation.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Mix Design & Quality Control <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Outline a basic printable mix design and key QC tests (slump flow/flow table, penetration, early strength).</li>
+                                        <li>Relate changes in water or admixture dosage to print behavior.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Lab mixing demo or virtual lab; analyze QC data from real print trials.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Lab report or data-analysis worksheet.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab or remote data set from Konstra.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Printer Setup, Calibration & Operation <br>
+                                </h5>
+
+                                <!-- Content -->
+                               <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Perform or describe coordinate setup, zeroing, and path verification steps.</li>
+                                        <li>Run through a safe start-up and shutdown sequence.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span>  On-printer or simulator practice; checklist run-through.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Practical competency checklist + short oral/written test.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Konstra hardware or high-fidelity simulator.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Process Window & Environmental Effects <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Explain the relationship between speed, extrusion, and layer stability.</li>
+                                        <li>Propose parameter tweaks for hot, cold, windy, or rainy conditions.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Parameter “what-if” simulation; case study of a failed hot-climate print.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Scenario-based assignment.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Automation, Sensing & Monitoring <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Describe how sensors (flow, pressure, position) and scanning (LiDAR, cameras) support quality.</li>
+                                        <li>Distinguish open-loop vs closed-loop control in simple terms.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Video/visualization of monitored print; interpret basic sensor plots.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short written responses or mini-quiz.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Finishing, Testing & Documentation <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>List typical post-processing and integration steps (grouting, reinforcement tie-ins, finishes).</li>
+                                        <li>Explain basic mechanical testing and documentation requirements.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Site or lab photos walk-through; documentation template exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Sample QA/inspection report for a printed test element.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Level 2 Assessment -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Assessment <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Test Format:</span> Capstone mini-project: teams take a simple house wall from concept → print-aware design → sliced toolpaths → process parameter plan + QC checklist (graded against a rubric).<br>
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+
+                <!-- Level 3 -->
+                <!-- Details is a built in HTML toggle container that can be collapsed or expanded -->
+                <details class="Topics-Drop">
+
+                    <!-- Summary is the clickable header in the details and the 
+                    section users see before expanding the section -->
+                    <summary class="Topics-Drophead">
+
+                        <!-- Level Title -->
+                        <div class="Topics-Level">
+                            <h4>
+                                <span class="Bold-Conversion">Level 3 - Site Deployment & Emerging Market Builds</span>
+                            </h4>
+                        </div>
+
+                        <!-- Expand or Close section Icon -->
+                        <span class="Topics-Icon"></span>
+
+                    </summary>
+
+                    <!-- Visable information upon expanding the section -->
+
+                    <div class="Topics-Dropbody">
+                        <p class="Topics-Description">
+                            <!-- Level Description -->
+                            <span class="Bold-Conversion">Target:</span> Ages 16-25 (advanced 13-18)<br>
+                            <span class="Bold-Conversion">Total Duration:</span> 45 hours<br>
+                            <span class="Bold-Conversion">Delivery Timeline:</span> 8-10 weeks<br>
+                            <span class="Bold-Conversion">Assessment: </span> Capstone Project<br>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Learning Outcome Group -->
+                            <h3>Learning Outcomes</h3>
+
+                            This is where PrintAdobe becomes non-generic. By answering the question of:
+                            <br><br>
+                            <span class="LearningOutcome-Quote">“How do we deploy this technology in real, imperfect environments?”</span>
+                            <br><br>
+
+                            Upon completion of this course, learners will be:
+                            <ul class="LearningOutcome-List">
+                                <li>Plan a full deployment of a construction 3D printer in a constrained/emerging-market context.</li>
+                                <li>Address logistics, regulation, community, and risk—not just technology.</li>
+                                <li>eligible for the <span class="Bold-Conversion">PrintAdobe Certified Construction Printer — Level 3 (Industry Ready)</span> priced at SGD $1,500</li>
+                            </ul>
+                            <br>
+
+                            The content curated builds provides students with:
+                            <ul class="LearningOutcome-List">
+                                <li>Industry-ready experience</li>
+                                <li>Pre-immersion qualification</li>
+                                <li>Professional-grade certification</li>
+                            </ul>
+                            <br>
+
+                            Learning Format:
+                            <ul class="LearningOutcome-List">
+                                <li>Advanced case studies</li>
+                                <li>Site deployment simulations</li>
+                                <li>Real constraints (terrain, climate, logistics)</li>
+                                <li>Mentor or instructor feedback</li>
+                            </ul>
+                                    
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 1 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 1: Site Selection & Ground Conditions <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Define criteria for a viable print site in low-resource contexts.</li>
+                                        <li>Identify key tolerances and preparation steps for foundations and printer setup.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Analyze 2-3 candidate sites (photos, basic data); choose the best and justify.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short site selection report.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 2 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 2: Logistics, Power & Water <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Map transport routes, staging areas, and storage for a remote project.</li>
+                                        <li>Propose power and water solutions under constrained infrastructure.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Logistics mapping on a simple site plan; utility planning exercise.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> One-page logistics & utilities plan.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 3 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 3: Local Materials & Market Realities <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Assess how local cement, sand, and aggregates might affect mix design.</li>
+                                        <li>Strategize around supply-chain reliability for materials and spare parts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> “Local materials dossier” review; adaptation brainstorming.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Short memo on mix and supply-chain strategy.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Lab.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 4 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 4: Regulations, Financing & Partnerships <br>
+                                </h5>
+
+                                <!-- Content -->
+                               <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Identify key regulators, approvals, and code questions for a pilot project.</li>
+                                        <li>Sketch basic funding/partnership models with NGOs, governments, or developers.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span>  Stakeholder-mapping workshop; simple business-case canvas.<br>
+                                    <span class="Bold-Conversion">Assessment:</span>  2-3 page concept note (problem, partners, approvals, budget sketch).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/Online
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 5 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 5: Community-Centred Design & Workforce <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Integrate cultural, climatic, and social factors into printed housing layouts.</li>
+                                        <li>Outline a local training and jobs plan around the printer.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Co-design exercise using a fictional community brief; role-play with “community stakeholders.”<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Revised layout + 1-page community engagement and training plan.<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 6 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 6: Deployment Playbook & Risk Management <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Draft a phased deployment plan (pilot → cluster → scale-up).</li>
+                                        <li>Build a basic risk register with mitigations for technical and non-technical risks.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Group “playbook” drafting; risk-identification workshop.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> Deployment playbook (timeline, roles, risks, mitigations).<br>
+                                    <span class="Bold-Conversion">Delivery:</span> Online.
+                                </div>
+                            </div>
+
+                            <hr class="Topics-Seperator">
+
+                            <!-- Module 7 -->
+                            <div class="Topics-ModInfo">
+
+                                <!-- Title -->
+                                <h5>
+                                    Module 7: Capstone - Emerging Market Build Plan <br>
+                                </h5>
+
+                                <!-- Content -->
+                                <div class="Topics-ModContent">
+                                    <span class="Bold-Conversion">Outcomes:</span> 
+                                    <ul>
+                                        <li>Integrate all previous modules into a coherent, realistic project proposal.</li>
+                                        <li>Communicate technical and social aspects clearly to non-experts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Activities:</span> Team project on a chosen country/site using Konstra as technology partner.<br>
+                                    <span class="Bold-Conversion">Assessment:</span> 
+                                    <ul>
+                                        <li>Integrate all previous modules into a coherent, realistic project proposal.</li>
+                                        <li>Communicate technical and social aspects clearly to non-experts.</li>
+                                    </ul>
+                                    <span class="Bold-Conversion">Delivery:</span> Classroom/online.
+                                </div>
+                            </div>
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </section>
+           
+        <!-- Highlights Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
+
+                <div class="Course-Title">
+                    <h3>Highlights</h3>
+                </div>
+
+                <div class="Course-Description">
+                    <!-- Highlight Title -->
+                    <h4>PrintAdobe Students prototyping</h4>
+
+                    <!-- Highlight Box -->
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H1.jpeg">
+                        <p>
+                            PrintAdobe Students at Konstra Labs learning how digital designs turn into 
+                            real objects in minutes. Here, they learn the fundamentals of slicing, 
+                            print settings, and quality checks.
+                        </p>
                     </div>
 
-                    <div class="OIPOval">
-                        <img src="Media/Lenkov Village.jpg">
+                    <h4>Capstone Group Project</h4>
+
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H2.jpeg">
+                        <p>
+                            Our capstone projects resides in guided sessions with our industry partners. 
+                            Allowing students to build confidence through step-by-step tasks, troubleshooting, 
+                            and mini challenges.
+                        </p>
                     </div>
 
-                    <div class="OIPOval">
-                        <img src="Media/Stung Meanchey Riverside.jpg">
-                    </div>
+                    <h4>Introducing Prototyping To Young Learners </h4>
 
-                    <div class="OIPOval">
-                        <img src="Media/Speech.jpg">
-                    </div>
-
-                    <div class="OIPOval">
-                        <img src="Media/ALO_1.jpg">
+                    <div class="Highlights-Box">
+                        <img src="Media/Curriculum 1_H3.jpeg">
+                        <p>
+                            In PrintAdobe, we encourage students of all ages who are keen to join our exciting 
+                            courses. Younger students will get hands-on with 3D printing—learning setup, 
+                            basic calibration, and how to turn ideas into physical prototypes.
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Section 3: What you will take away -->
-        <section class="TripValue-Section">
-            <div class="TripValue-Inner">
-                <h2 class="TripValue-Title">What you will take away</h2>
-                <p class="TripValue-Lead">
-                This is a field immersion designed to connect learning to real constraints, real people, and real decisions.
-                </p>
+        <!-- More Info Group -->
+        <section class="Course-Container">
+            <div class="Course-Content">
 
-                <div class="TripValue-Grid">
-                <article class="TripValue-Card">
-                    <h3>Real world exposure</h3>
-                    <p>
-                    Observe how housing, infrastructure, and community systems function on the ground and how trade offs are made
-                    when resources are limited.
-                    </p>
-                </article>
+                <div class="Course-Title">
+                    <h3>Need More Info?</h3>
+                </div>
 
-                <article class="TripValue-Card">
-                    <h3>Human centered thinking</h3>
+                <div class="Course-Description">
                     <p>
-                    Learn to listen first, ask better questions, and translate lived experiences into practical needs and design
-                    considerations.
+                        Feel free to contact us <a href="contact-us.html">here</a>, we would love to answer any queries you have for us.
                     </p>
-                </article>
-
-                <article class="TripValue-Card">
-                    <h3>Problem framing under constraints</h3>
-                    <p>
-                    Practice defining the right problem before jumping to solutions, balancing safety, cost, time, and feasibility.
-                    </p>
-                </article>
-
-                <article class="TripValue-Card">
-                    <h3>Collaboration and reflection</h3>
-                    <p>
-                    Build team communication through guided debriefs, documenting insights and turning observations into action
-                    steps.
-                    </p>
-                </article>
                 </div>
             </div>
         </section>
-
-        <!-- Section 4 (Optional): Quick facts -->
-        <section class="TripFacts-Section">
-            <div class="TripFacts-Inner">
-                <div class="TripFacts-Grid">
-                <div class="TripFacts-Item">
-                    <p class="TripFacts-Kicker">Duration</p>
-                    <p class="TripFacts-Value">3 Days</p>
-                </div>
-
-                <div class="TripFacts-Item">
-                    <p class="TripFacts-Kicker">Location</p>
-                    <p class="TripFacts-Value">Stung Meanchey, Phnom Penh</p>
-                </div>
-
-                <div class="TripFacts-Item">
-                    <p class="TripFacts-Kicker">Format</p>
-                    <p class="TripFacts-Value">Site visits and guided reflection</p>
-                </div>
-
-                <div class="TripFacts-Item">
-                    <p class="TripFacts-Kicker">Focus</p>
-                    <p class="TripFacts-Value">Community needs and build context</p>
-                </div>
-                </div>
-            </div>
-        </section>
-
-
-        <!-- Return to Top Button -->
-        <div class="Return-Btn" id="backToTop">
-            <a href="#top">
-                <img src="Media/Return_Btn.png" alt="Return to top">
-            </a>
-        </div>
-
-
+        
 
         <!-- Footer Group -->
         <footer>
@@ -1286,15 +1206,8 @@
                         </li>
                     </ul>
                 </div>
-            </div>
+            </div> 
         </footer>
-
-
         <!-- All Javascript components here -->
         <script src="js/NavBarHamburger.js"></script> <!-- Navbar Hamburger Menu -->
-        <script src="js/ReturnToTop.js"></script><!-- Return to Top Button -->
-        <script src="js/FloatingBox.js"></script>
-        <script src="js/ALO_Horizontal Scroll.js"></script>
-        <script src="js/dragScroll.js"></script>
-    </body>
 </html>

@@ -96,88 +96,6 @@
                     margin-left: 80px;
                     padding: 5px 0;
                 }
-
-                .Course-List .color_conversion {
-                    font-size: 18px;
-                }
-
-
-            /* Cost Breakdown */
-                .PA-Container{
-                    margin: 60px calc(3rem + 8px) 48px;
-                }
-
-                .PA-Cost{
-                    width: min(1200px, 100%);
-                    margin: 0 auto;
-                    max-width: 1140px;
-                }
-
-                .PA-CostTitle{
-                    font-size: 40px;
-                    font-weight: 400;
-                    margin-bottom: 17px;
-                }
-
-                /* Horizontal grid */
-                .PA-CostGrid{
-                    display: grid;
-                    grid-template-columns: repeat(3, minmax(0, 1fr));
-                    gap: 14px;
-                    padding: 0 32px
-                }
-
-                .PA-CostTile{
-                background: #ffffff;
-                border: 1px solid rgba(0,0,0,0.08);
-                border-radius: 16px;
-                padding: 18px 18px;
-                box-shadow: 0 10px 18px rgba(0,0,0,0.10);
-                }
-
-                .PA-CostTile--muted{
-                opacity: 0.85;
-                }
-
-                .PA-CostLabel{
-                margin: 0 0 8px;
-                font-size: 16px;
-                font-weight: 600;
-                opacity: 0.75;
-                }
-
-                .PA-CostPrice{
-                margin: 0;
-                font-size: 24px;
-                font-weight: 800;
-                }
-
-                /* Bundle row (simple, no extra info) */
-                .PA-BundleRow{
-                margin-top: 14px;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                background: #e11e1e;
-                color: #fff;
-                border-radius: 16px;
-                padding: 16px 18px;
-                margin: 16px 32px;
-                }
-
-                .PA-BundleLabel{
-                margin: 0;
-                font-size: 16px;
-                font-weight: 700;
-                opacity: 0.9;
-                }
-
-                .PA-BundlePrice{
-                margin: 0;
-                font-size: 22px;
-                font-weight: 900;
-                }
                 
             /* Topics Covered Group */
                 .Topics-Container{
@@ -360,32 +278,6 @@
                     margin-top: 40px;
                 }
             }
-
-
-            
-
-/* Responsive */
-@media (max-width: 980px){
-  .PA-CostGrid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px){
-  .PA-Cost{
-    padding: 0 18px;
-  }
-
-  .PA-CostGrid{
-    grid-template-columns: 1fr;
-  }
-
-  .PA-BundleRow{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-}
             
     </style>
     <body>
@@ -449,7 +341,6 @@
                 <p>Explore the world of 3D Construction with Konstra</p>
             </div>
         </section>
-
 
         <!-- Course Description Group -->
         <section class="Course-Container">
@@ -547,41 +438,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Cost Breakdown (PrintAdobe) -->
-            <section class="PA-Container">
-                <div class="PA-Cost">
-
-                    <!-- Title -->
-                    <div class="Course-Title">
-                            <h3>Cost Breakdown</h3>
-                    </div>
-
-                    <!-- Content -->
-                    <div class="PA-CostGrid">
-                        <div class="PA-CostTile">
-                        <p class="PA-CostLabel">Level 1</p>
-                        <p class="PA-CostPrice">SGD 700</p>
-                        </div>
-
-                        <div class="PA-CostTile">
-                        <p class="PA-CostLabel">Level 2</p>
-                        <p class="PA-CostPrice">SGD 900</p>
-                        </div>
-
-                        <div class="PA-CostTile">
-                        <p class="PA-CostLabel">Level 3</p>
-                        <p class="PA-CostPrice">SGD 1,500</p>
-                        </div>
-                    </div>
-
-                    <div class="PA-BundleRow">
-                        <p class="PA-BundleLabel">Bundle Price (All 3 Levels)</p>
-                        <p class="PA-BundlePrice">SGD 2,700</p>
-                    </div>
-                </div>
-        </section>
-
 
         <!-- Topics Covered Group -->
         <section class="Topics-Container">
