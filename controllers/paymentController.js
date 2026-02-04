@@ -73,9 +73,11 @@ class PaymentController {
 
             // 3. Prepare Image URL (must be absolute for Stripe)
             let absoluteImageUrl = image;
-            if (image && image.startsWith('/')) {
+            if (!image || image === 'null' || image === 'undefined') {
+                absoluteImageUrl = null;
+            } else if (image.startsWith('/')) {
                 absoluteImageUrl = `${domain}${image}`;
-            } else if (image && !image.startsWith('http')) {
+            } else if (!image.startsWith('http')) {
                 // If it's a relative path without leading slash
                 absoluteImageUrl = `${domain}/${image}`;
             }
@@ -105,8 +107,9 @@ class PaymentController {
             }
 
             const metadata = {
-                userId: userId.toString(),
-                programId: programId.toString(),
+                userId: userId ? userId.toString() : 'guest',
+                programId: programId ? programId.toString() : 'none',
+                isDonation: isDonation ? "true" : "false",
                 slot: slot ? slot.toString() : null,
                 details: typeof prunedDetails === 'string' ? prunedDetails : JSON.stringify(prunedDetails)
             };
@@ -141,7 +144,13 @@ class PaymentController {
             }
 
             // 2. Extract Metadata
-            const { userId, programId, slot, details } = session.metadata;
+            const { userId, programId, slot, details, isDonation } = session.metadata;
+
+            // --- 🛑 DONATION BYPASS ---
+            if (isDonation === "true") {
+                console.log(`[PAYMENT] Processing donation from user ${userId}. Skipping enrollment.`);
+                return res.redirect('/success.html?type=donation');
+            }
 
             // 3. Create Enrollment
             // Parse details if it was stored as a string

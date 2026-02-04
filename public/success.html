@@ -30,13 +30,15 @@
 
     <!-- 🔒 The line here only applies to the donation feature - Codi -->
 
-        <!-- Donation Success State -->
-            <div id="donationSuccessState" class="card" style="display: none;">
-                <div class="icon-success"><i class="fas fa-check-circle"></i></div>
-                <h1 class="fw-bold">Payment Complete!</h1>
-                <p class="text-muted">Thank you for supporting Konstra. Your donation was successful.</p>
-                <a href="our-project.html" class="btn btn-dark mt-3">Back to Project</a>
-            </div>
+    <!-- Donation Success State -->
+    <div id="donationSuccessState" class="card" style="display: none;">
+        <div class="icon-success"><i class="fas fa-check-circle"></i></div>
+        <h1 class="fw-bold">Payment Complete!</h1>
+        <p class="text-muted">Thank you for supporting Konstra. Your donation was successful.</p>
+        <p class="text-primary mt-3" id="redirectMsg" style="display: none;">Redirecting to project page in <span
+                id="countdown">6</span> seconds...</p>
+        <a href="our-project.html" class="btn btn-dark mt-3">Back to Project</a>
+    </div>
 
     <!-- Error State -->
     <div id="errorState" class="card" style="display: none;">

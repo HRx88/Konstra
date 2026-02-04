@@ -59,12 +59,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const member = JSON.parse(localStorage.getItem('memberDetails'));
         const userId = member ? (member.memberID || member.id || member.UserID || member.ID) : null;
 
-        if (!userId) {
+        const isDonation = item && item.toLowerCase() === 'donation';
+
+        if (!userId && !isDonation) {
             document.querySelector('.loader-card').style.display = 'none';
             await Swal.fire({
                 icon: 'warning',
                 title: 'Login Required',
-                text: 'Please log in to complete payment.',
+                text: 'Please log in to complete this purchase.',
                 confirmButtonColor: '#d32f2f'
             });
             window.location.href = 'login.html';

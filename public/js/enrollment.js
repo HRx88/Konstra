@@ -123,11 +123,11 @@ function generateExtraFields() {
         container.innerHTML = `
             <h6 class="fw-bold mb-3"><i class="fas fa-passport text-danger me-2"></i>Trip Requirements</h6>
             <div class="mb-3">
-                <label class="form-label">Passport Number</label>
+                <label class="form-label" for="passport">Passport Number</label>
                 <input type="text" class="form-control" id="passport" placeholder="Required for site entry">
             </div>
              <div class="mb-3">
-                <label class="form-label">Dietary Restrictions</label>
+                <label class="form-label" for="dietary">Dietary Restrictions</label>
                 <select class="form-select" id="dietary">
                     <option value="None">None</option>
                     <option value="Vegetarian">Vegetarian</option>
