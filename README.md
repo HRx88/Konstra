@@ -259,21 +259,26 @@ Konstra/
 
 ### 📑 Application Pages & Core Logic
 
-| Module / Page              | Key Functionality & Logic Handlers                                                                     |
-| -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `index.html`               | Public entry point; dynamic navigation and marketing sections.                                         |
-| `login.html`               | Multi-role authentication bridge supporting JWT and Google OAuth.                                      |
-| `user-dashboard.js`        | **Progress Aggregator**: Calculates combined completion across parent and child program levels.        |
-| `enrollment.js`            | **Enrollment Engine**: Multi-step booking with **Stacked Discounts** and trip requirements collection. |
-| `payment.js`               | Checkout bridge; validates item selection and triggers secure Stripe integration.                      |
-| `program-content.js`       | **Virtual Classroom**: Features **EOF Auto-Marking**, In-Video Quizzes, and time-based PDF unlocking.  |
-| `admin-doc.js`             | **Review Engine**: **Live browser preview** for PDF/DOCX/XLSX; supports synchronous admin feedback.    |
-| `admin-printadobe.js`      | **Catalog Manager**: CRUD for programs with full image and session slot management.                    |
-| `admin-program-modules.js` | **Curriculum Builder**: JSON-based Quiz creator and hierarchical child-program (Level) linker.         |
-| `chat.js`                  | **Support System**: Auto-initializes student support threads with real-time SSE notifications.         |
-| `adminChat.js`             | **Collaboration Hub**: Multi-thread admin view with **Deep Search** across conversation history.       |
-| `ngo-dashboard.html`       | Partner-facing analytics driving impact tracking for CO2 and construction milestones.                  |
-| `success.js`               | Post-transaction validator; verifies Stripe `session_id` to finalize enrollment records.               |
+| Module / Page              | Key Functionality & Logic Handlers                                                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `index.html`               | Public entry point; dynamic navigation and marketing sections.                                               |
+| `login.html`               | Multi-role authentication bridge supporting JWT and Google OAuth.                                            |
+| `user-dashboard.js`        | **Progress Aggregator**: Calculates combined completion across parent and child program levels.              |
+| `enrollment.js`            | **Enrollment Engine**: Multi-step booking with **Stacked Discounts** and trip requirements collection.       |
+| `payment.js`               | Checkout bridge; validates item selection and triggers secure Stripe integration.                            |
+| `program-content.js`       | **Virtual Classroom**: Features **EOF Auto-Marking**, In-Video Quizzes, and time-based PDF unlocking.        |
+| `admin-doc.js`             | **Review Engine**: **Live browser preview** for PDF/DOCX/XLSX; supports synchronous admin feedback.          |
+| `admin-printadobe.js`      | **Catalog Manager**: CRUD for programs with full image and session slot management.                          |
+| `admin-program-modules.js` | **Curriculum Builder**: JSON-based Quiz creator and hierarchical child-program (Level) linker.               |
+| `chat.js`                  | **Support System**: Auto-initializes student support threads with real-time SSE notifications.               |
+| `adminChat.js`             | **Collaboration Hub**: Multi-thread admin view with **Deep Search** across conversation history.             |
+| `ngo-dashboard.html`       | Partner-facing analytics driving impact tracking for CO2 and construction milestones.                        |
+| `success.js`               | Post-transaction validator; verifies Stripe `session_id` to finalize enrollment records.                     |
+| `admin-discounts.js`       | **Marketing Suite**: Omni-channel sharing for discount codes via Announcements and bulk SMTP email.          |
+| `ProjectStrava_3DModel.js` | **Interactive AR Hub**: Dynamic toggle engine for switching between 3D GLB/USDZ models and reference images. |
+| `DonationPopUp.js`         | **Global Give-Back**: Universal accessible overlay system with backdrop-click and ESC-key support.           |
+| `NavBarAlt.js`             | **Adaptive Navigation**: Scroll-aware transition engine; switches UI theme at 80% viewport depth.            |
+| `discountController.js`    | Backend logic for **Batch Mailing** and cross-model integration between Discounts and Announcements.         |
 
 ---
 
@@ -295,11 +300,15 @@ Accessible to all visitors without authentication.
     - **Track 5**: Sustainability & Emerging Technologies (`SUSTAINABILITY-&-EMERGING-TECHNOLOGIES.html`)
     - **Trip 1**: PrintAdobe Cambodia Build Immersion (`PrintAdobe-Cambodia-Build-Immersion.html`)
   - **Our Projects** (`our-project.html`): Overview of initiatives.
-    - _Sub-projects_: Strava (`project-strava.html`), 3D House (`project-strava-3dhouse.html`).
+    - **Interactive AR Hub**: Strava Project(`project-strava.html`) with 3D model viewer (`ProjectStrava_3DModel.js`).
+    - _Sub-projects_: 3D House (`project-strava-3dhouse.html`).
   - **Contact Us** (`contact-us.html`): Inquiry form and location map.
 - **Authentication**
   - **Login** (`login.html`): User/Admin/NGO login with JWT and Google OAuth support.
   - **Register** (`register.html`): New user sign-up form.
+- **Global Utilities**
+  - **Donation Hub** (`DonationPopUp.js`): Accessible cross-platform overlay for one-time contributions.
+  - **AR Viewer**: Integrated 3D engine accessible via project details.
 
 ### 👤 Authenticated User Portal (Student)
 
@@ -423,13 +432,29 @@ Access via `ngo-dashboard.html`. Navigation is driven by the **Partner Sidebar**
 4.  **Meetings**: Joins scheduled strategy calls via **My Meetings** (`my-meetings.html`).
 5.  **Documentation**: Uploads/Downloads project reports in **Documents** (`ngo-doc.html`).
 
-### 5. 🛠️ Admin Management Flow
+### 7. � Admin Marketing & Engagement Flow
 
-1.  **Oversight**: Admin monitors global KPIs on **Dashboard** (`admin-home.html`).
-2.  **Content**: Updates catalog via **PrintAdobe** (`admin-printadobe.html`) and modules.
-3.  **Users**: Creates NGO accounts or resets user access in **Profile** (`admin-profile.html`).
-4.  **Verification**: Reviews student identity documents in **Documents** (`admin-doc.html`).
-5.  **Meetings**: Moderates scheduled training sessions in **Meetings** (`my-meetings.html`).
+1.  **Promotion Creation**: Admin creates a new campaign in **Discounts** (`admin-discounts.js`).
+2.  **Omni-channel Casting**:
+    - **Social Sync**: Share the discount code instantly as a system-wide **Announcement**.
+    - **Bulk Notify**: Trigger an **SMTP Broadcast** to email all registered students via the Marketing Suite.
+3.  **Audit**: Monitor usage counters and success rates directly from the Discount dashboard.
+
+### 8. 🛠️ Global Platform Governance
+
+1.  **KPI Tracking**: Admin monitors global system health on **Dashboard** (`admin-home.html`).
+2.  **Access Control**: Manages NGO account lifecycle and user resets in **Profile** (`admin-profile.html`).
+3.  **Verification**: Conducts multi-format secure document reviews in **Documents** (`admin-doc.html`).
+
+### 9. 🧡 Philanthropy & Give-Back Flow
+
+**Goal**: Support Konstra's mission through universal donations.
+
+1.  **Trigger**: User clicks "Support Us" or "Donate" button on any public/authenticated page.
+2.  **Interaction** (`DonationPopUp.js`):
+    - **Accessibility**: Modal opens with zero-latency; supports ESC-key and backdrop dismissal.
+    - **Logic**: Dynamic providing real-time impact context.
+3.  **Completion**: Seamless redirection to secure contribution portal.
 
 ## 🧪 Postman Testing
 
@@ -587,3 +612,18 @@ docker-compose up -d --build
 ```
 
 ---
+
+### 7. 🎨 Rich Media & Interactive Experiences
+
+1.  **Strava 3D Viewer** (`ProjectStrava_3DModel.js`):
+    - **Stateful Toggles**: Seamlessly switches between the Interactive 3D Model viewer and Gallery images.
+    - **Focus Management**: Dynamic thumbnail tracking with `.is-active` state resolution.
+2.  **Adaptive Global UI**:
+    - **Theme Transitions** (`NavBarAlt.js`): Navbar automatically morphs from transparent to high-contrast once the user scrolls past **80% of the viewport height**.
+    - **Accessible Overlays** (`DonationPopUp.js`): Context-aware donation triggers with full keyboard and backdrop dismissal support.
+
+### 8. 🛡️ Advanced Document Lifecycle
+
+1.  **Admin Marketing Engine** (`admin-discounts.js`):
+    - **Announcement Casting**: Convert a static discount code into a high-priority system announcement in one click.
+    - **SMTP Broadcasts**: Integrated `emailController` triggers to notify all registered students of new promotions.
