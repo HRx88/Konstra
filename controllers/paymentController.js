@@ -66,6 +66,8 @@ class PaymentController {
             // 2. Define Redirect URLs
             // CHANGE THIS DOMAIN IF DEPLOYING (e.g., https://your-site.com)
             const domain = 'http://localhost:8000';
+            // For AWS
+            // const domain = 'http://13.216.85.167:8000';
 
             // Success URL now points to our backend handler with the session_id
             const successUrl = `${domain}/api/payment/success?session_id={CHECKOUT_SESSION_ID}`;
