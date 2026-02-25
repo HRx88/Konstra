@@ -233,7 +233,7 @@ function renderContent() {
             }
                 </p>
                 ${currentTab === 'active' ? `
-                <a href="printadobe.html" class="btn btn-warning px-5 py-2 fw-bold shadow-sm rounded-pill transition-all">
+                <a href="user-printadobe.html" class="btn btn-warning px-5 py-2 fw-bold shadow-sm rounded-pill transition-all">
                     <i class="fas fa-compass me-2"></i>Browse Catalog
                 </a>` : ''}
             </div>
